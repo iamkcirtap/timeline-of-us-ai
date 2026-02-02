@@ -1540,6 +1540,22 @@
     <div id="transitionOverlay" style="position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4000;transition:opacity 0.45s ease"></div>
 
     <script>
+        // Simple password protection for testing
+        (function() {
+            const correctPassword = 'OurTimeline2025'; // Change this to your desired password
+            const hasAccess = sessionStorage.getItem('timeline_access');
+            
+            if (!hasAccess) {
+                const enteredPassword = prompt('🔒 Enter password to view Our Love Timeline:');
+                if (enteredPassword === correctPassword) {
+                    sessionStorage.setItem('timeline_access', 'true');
+                } else {
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg, #ff6b9d 0%, #ffc1cc 100%);color:white;font-family:Georgia,serif;text-align:center;"><div><h1 style="font-size:3rem;margin-bottom:1rem;">❌ Access Denied</h1><p style="font-size:1.2rem;opacity:0.9;">Invalid password. Please try again.</p></div></div>';
+                    throw new Error('Access denied');
+                }
+            }
+        })();
+
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const timelineDots = document.querySelectorAll('.timeline-dot');

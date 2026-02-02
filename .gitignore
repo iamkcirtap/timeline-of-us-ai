@@ -73,6 +73,7 @@ CODE-REVIEW-REPORT.md
 
 # GitHub Workflow & Config (Developer Only)
 .github/
+!.github/workflows/
 
 # Archive & Backup Files
 *.zip
