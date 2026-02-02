@@ -68,7 +68,7 @@ temp/
 Thumbs.db
 
 # Project Documentation & Reports
-CODE_REVIEW-REPORT.md
+CODE-REVIEW-REPORT.md
 *.md~
 
 # GitHub Workflow & Config (Developer Only)
