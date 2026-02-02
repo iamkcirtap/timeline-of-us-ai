@@ -87,6 +87,7 @@ CODE-REVIEW-REPORT.md
 components/
 scripts/
 assets/audio/
+archive/
 
 # OS & Application Generated
 .AppleDouble
