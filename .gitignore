@@ -1,0 +1,105 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+*.logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache Files
+.cache/
+.parcel-cache/
+.eslintcache
+.npm
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# IDE Workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Testing
+coverage/
+.nyc_output/
+
+# Build & Distribution
+dist/
+build/
+out/
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# System Files
+.gitkeep
+Thumbs.db
+
+# Project Documentation & Reports
+CODE_REVIEW-REPORT.md
+*.md~
+
+# GitHub Workflow & Config (Developer Only)
+.github/
+
+# Archive & Backup Files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.backup
+*.bak
+
+# Legacy & Unused Directories
+components/
+scripts/
+assets/audio/
+
+# OS & Application Generated
+.AppleDouble
+.LSOverride
+*.swp
+.viminfo
+.netrwhist
+*~
+.externalToolBuilders/
+.recommenders/
+
+# Node-related
+.node-gyp/
+
+# Optional REPL history
+.node_repl_history

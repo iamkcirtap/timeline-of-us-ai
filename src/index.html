@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Timeline ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-pink: #ff6b9d;
+            --secondary-pink: #ffc1cc;
+            --accent-red: #ff1744;
+            --soft-white: #fff5f7;
+            --text-dark: #4a4a4a;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--soft-white) 0%, var(--secondary-pink) 100%);
+            color: var(--text-dark);
+            overflow: auto;
+            height: 100vh;
+        }
+
+        /* Floating hearts animation */
+        .heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .heart-explosion {
+            position: absolute;
+            font-size: 40px;
+            opacity: 1;
+            animation: heartFloatUp 5s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartFloatUp {
+            0% {
+                transform: scale(0.3) translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                transform: scale(1.5) translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1) translateY(-100px) rotate(10deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.8) translateY(-300px) rotate(25deg);
+                opacity: 0;
+            }
+        }
+
+        /* Slideshow Container */
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* Apply slide-in only when explicitly requested */
+        .slide.slide-in-right {
+            animation: slideInFromRight 0.6s cubic-bezier(.22,.9,.37,1) forwards;
+        }
+
+        .slide.slide-out-left {
+            animation: slideOutLeft 0.6s cubic-bezier(.22,.9,.37,1) forwards;
+        }
+
+        .slide.slide-out-right {
+            animation: slideOutRight 0.6s cubic-bezier(.22,.9,.37,1) forwards;
+        }
+
+        @keyframes slideOutLeft {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-100px) scale(0.95);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px) scale(0.95);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: none; }
+            to { opacity: 0; transform: scale(0.98); }
+        }
+
+        /* Prevent default slide animation when we want pure fades */
+        .slide.active.no-slide {
+            animation: none !important;
+        }
+
+        /* End reveal animation (used when closing letter) */
+        @keyframes endRevealIn {
+            from { opacity: 0; transform: scale(0.96) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .end-reveal-in {
+            animation: endRevealIn 0.7s cubic-bezier(.22,.9,.37,1) forwards;
+        }
+
+        /* Intro -> March transition (staggered fade out/in) */
+        .album-cover.exit .album-book,
+        .album-cover.exit .album-title,
+        .album-cover.exit .photo-grid-mini,
+        .album-cover.exit .click-prompt {
+            animation: introFadeOut 0.6s ease forwards;
+        }
+        .album-cover.exit .album-title { animation-delay: 0s; }
+        .album-cover.exit .photo-grid-mini { animation-delay: 0.1s; }
+        .album-cover.exit .album-book { animation-delay: 0.2s; }
+        .album-cover.exit .click-prompt { animation-delay: 0.3s; }
+
+        @keyframes introFadeOut {
+            to { opacity: 0; transform: translateY(8px); }
+        }
+
+        .timeline-slide.first-enter .timeline-month,
+        .timeline-slide.first-enter .timeline-photo,
+        .timeline-slide.first-enter .timeline-text {
+            opacity: 0;
+            animation: introFadeIn 0.8s ease forwards;
+        }
+        .timeline-slide.first-enter .timeline-month { animation-delay: 0.15s; }
+        .timeline-slide.first-enter .timeline-photo { animation-delay: 0.35s; }
+        .timeline-slide.first-enter .timeline-text { animation-delay: 0.55s; }
+
+        @keyframes introFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide.fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .slide.fade-out {
+            animation: fadeOut 0.6s ease-out forwards;
+        }
+
+        /* Intro Slide */
+        .intro-slide {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-red) 100%);
+            color: white;
+        }
+
+        .intro-slide h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .intro-slide p {
+            font-size: 1.5rem;
+            font-style: italic;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .intro-slide .start-journey {
+            font-size: 1.2rem;
+            padding: 15px 40px;
+            background: white;
+            color: var(--accent-red);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .intro-slide .start-journey:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Timeline Slides */
+        .timeline-slide {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .timeline-month {
+            font-size: 2.5rem;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 23, 68, 0.85);
+            padding: 15px 40px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .timeline-photo {
+            max-width: 600px;
+            max-height: 400px;
+            width: 90%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .timeline-text {
+            text-align: center;
+            font-size: 1.3rem;
+            max-width: 700px;
+            color: white;
+            font-style: italic;
+            line-height: 1.6;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+            background: rgba(255, 23, 68, 0.75);
+            padding: 20px 30px;
+            border-radius: 15px;
+        }
+
+        /* Love Letter Slide */
+        .letter-slide {
+            padding: 60px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: left;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .letter-slide h2 {
+            font-size: 2.5rem;
+            color: var(--accent-red);
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .letter-slide .letter-date {
+            text-align: right;
+            font-style: italic;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .letter-slide .letter-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+        }
+
+        .letter-slide .letter-content p {
+            margin-bottom: 20px;
+        }
+
+        .letter-slide .letter-signature {
+            text-align: right;
+            font-size: 1.3rem;
+            font-style: italic;
+            margin-top: 40px;
+            color: var(--accent-red);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 20px 30px;
+            border-radius: 15px;
+            display: inline-block;
+            float: right;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Navigation Arrows */
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent-red);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+            pointer-events: auto;
+        }
+        
+        .nav-arrow.disabled {
+            display: none;
+        }
+
+        .nav-arrow:hover {
+            background: var(--primary-pink);
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-arrow.prev {
+            left: 20px;
+        }
+
+        .nav-arrow.next {
+            right: 20px;
+        }
+
+        .nav-arrow.hidden {
+            display: none;
+        }
+
+        /* Timeline Slider at Bottom */
+        .timeline-slider {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 -4px 15px rgba(255, 107, 157, 0.2);
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .timeline-slider.disabled {
+            display: none;
+        }
+
+        .slider-track {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            max-width: 1200px;
+            width: 100%;
+            overflow-x: auto;
+            padding: 10px 40vw;
+            scroll-snap-type: x mandatory;
+            scroll-padding: 0 40vw;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .slider-track::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .timeline-dot {
+            scroll-snap-align: center;
+            flex: 0 0 auto;
+        }
+
+        .slider-track::-webkit-scrollbar-track {
+            background: var(--secondary-pink);
+            border-radius: 10px;
+        }
+
+        .slider-track::-webkit-scrollbar-thumb {
+            background: var(--primary-pink);
+            border-radius: 10px;
+        }
+
+        .timeline-dot {
+            min-width: 80px;
+            flex: 0 0 auto;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--secondary-pink);
+            border: 3px solid var(--primary-pink);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 5px;
+            transform-origin: center;
+        }
+
+        .timeline-dot:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .timeline-dot.active {
+            background: var(--primary-pink);
+            color: white;
+            border-color: var(--accent-red);
+            transform: scale(1.2);
+        }
+
+        .timeline-dot.intro {
+            display: none;
+        }
+
+        .timeline-dot#endDot {
+            display: none;
+        }
+
+        .timeline-dot.hidden {
+            display: none;
+        }
+
+        /* Audio Controls */
+        .audio-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 50%;
+            padding: 15px;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .audio-btn:hover {
+            width: auto;
+            padding: 15px 20px;
+            border-radius: 30px;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        .audio-icon {
+            font-size: 1.5rem;
+            color: var(--primary-pink);
+            transition: all 0.3s ease;
+        }
+
+        .audio-info {
+            display: none;
+            margin-left: 12px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .audio-btn:hover .audio-info {
+            display: flex;
+        }
+
+        .song-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .song-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            white-space: nowrap;
+        }
+
+        .play-pause {
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .play-pause:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px 140px;
+                box-sizing: border-box;
+                overflow-y: auto;
+            }
+
+            .album-container {
+                gap: 24px;
+            }
+
+            .album-title {
+                font-size: 2rem;
+            }
+
+            .photo-grid-mini {
+                gap: 8px;
+            }
+
+            .mini-photo {
+                font-size: 0.75rem;
+            }
+
+            .intro-slide h1 {
+                font-size: 2rem;
+            }
+
+            .intro-slide p {
+                font-size: 1.1rem;
+            }
+
+            .timeline-month {
+                font-size: 1.8rem;
+            }
+
+            .timeline-photo {
+                max-height: 260px;
+            }
+
+            .timeline-text {
+                font-size: 1.05rem;
+            }
+
+            .letter-slide {
+                padding: 30px 20px;
+            }
+
+            .letter-slide h2 {
+                font-size: 1.8rem;
+            }
+
+            .letter-slide .letter-content {
+                font-size: 1rem;
+            }
+
+            .nav-arrow {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .nav-arrow.prev {
+                left: 10px;
+            }
+
+            .nav-arrow.next {
+                right: 10px;
+            }
+
+            .timeline-dot {
+                min-width: 60px;
+                height: 60px;
+                font-size: 0.7rem;
+            }
+
+            .audio-btn {
+                width: 50px;
+                height: 50px;
+                top: 10px;
+                right: 10px;
+                padding: 12px;
+            }
+
+            .audio-btn:hover {
+                padding: 12px 16px;
+            }
+        }
+
+        /* Album Cover Slide */
+        .album-cover {
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-red) 100%);
+            cursor: pointer;
+        }
+
+        .album-cover.exit {
+            pointer-events: none;
+        }
+
+        .album-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .album-book {
+            width: 360px;
+            height: 480px;
+            perspective: 1000px;
+            transition: transform 0.3s ease;
+        }
+
+        .album-book:hover {
+            transform: scale(1.05);
+        }
+
+        .album-front {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .album-title {
+            font-size: 2.5rem;
+            color: var(--accent-red);
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+        }
+
+        .photo-grid-mini {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .mini-photo {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--secondary-pink), var(--primary-pink));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .click-prompt {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .prompt-text {
+            font-style: italic;
+            font-size: 1.8rem;
+        }
+
+        .arrow-left, .arrow-right, .arrow-up {
+            font-size: 1.8rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* Envelope Slide */
+        .envelope-slide {
+            background: linear-gradient(135deg, var(--soft-white) 0%, var(--secondary-pink) 100%);
+        }
+
+        .envelope-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .envelope {
+            width: 350px;
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-body {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border: 3px solid var(--primary-pink);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .envelope-flap {
+            width: 0;
+            height: 0;
+            border-left: 175px solid transparent;
+            border-right: 175px solid transparent;
+            border-top: 125px solid var(--accent-red);
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top;
+            transition: transform 1.6s cubic-bezier(.22,.9,.37,1);
+            z-index: 2;
+        }
+
+        .envelope:hover .envelope-flap {
+            transform: rotateX(-20deg);
+        }
+
+        .wax-seal {
+            font-size: 3rem;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
+        .letter-peek {
+            width: 280px;
+            height: 180px;
+            background: var(--soft-white);
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .envelope-prompt {
+            text-align: center;
+            color: var(--accent-red);
+            font-size: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Letter Overlay Styles */
+        .letter-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            pointer-events: none;
+        }
+
+        .letter-overlay.active {
+            pointer-events: auto;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .letter-paper {
+            background: var(--soft-white);
+            max-width: 900px;
+            width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.5);
+            position: relative;
+            opacity: 0;
+            transform: scale(0.72) translateY(60px);
+            transition: transform 1.6s cubic-bezier(.22,.9,.37,1), opacity 1.6s ease;
+        }
+
+        .letter-body {
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 90px 50px 50px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .letter-overlay.active .letter-paper {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .letter-overlay.revealed .letter-body {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .close-letter-x {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-letter-x:hover {
+            background: var(--primary-pink);
+            transform: scale(1.1);
+        }
+
+        .letter-paper h2 {
+            font-size: 2.5rem;
+            color: var(--accent-red);
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .letter-paper .letter-date {
+            text-align: right;
+            font-style: italic;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .letter-paper .letter-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .letter-paper .letter-content p {
+            margin-bottom: 20px;
+        }
+
+        .letter-paper .letter-signature {
+            text-align: right;
+            font-size: 1.3rem;
+            font-style: italic;
+            margin-top: 40px;
+            color: var(--accent-red);
+        }
+
+        .envelope.opened .envelope-flap {
+            transform: rotateX(-180deg);
+        }
+
+        /* Closing Slide */
+        .closing-slide {
+            background: linear-gradient(135deg, var(--accent-red) 0%, var(--primary-pink) 100%);
+            color: white;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .closing-content {
+            max-width: 800px;
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 24px 80px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .closing-meta {
+            position: absolute;
+            left: 50%;
+            bottom: 8px;
+            transform: translateX(-50%);
+            opacity: 0.55;
+            font-size: 0.75rem;
+        }
+
+        .closing-title {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .closing-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-style: italic;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .closing-text:nth-child(2) { animation-delay: 0.3s; }
+        .closing-text:nth-child(3) { animation-delay: 0.6s; }
+        .closing-text:nth-child(4) { animation-delay: 0.9s; }
+
+        .closing-hearts {
+            font-size: 3rem;
+            margin: 40px 0;
+            animation: fadeIn 1s ease-out 1.2s forwards;
+            opacity: 0;
+        }
+
+        .closing-footer {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            font-weight: bold;
+            animation: fadeIn 1s ease-out 1.5s forwards;
+            opacity: 0;
+        }
+
+        .replay-btn {
+            padding: 15px 40px;
+            background: white;
+            color: var(--accent-red);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: fadeIn 1s ease-out 1.8s forwards;
+            opacity: 0;
+        }
+
+        .replay-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-slider.hidden {
+            display: none;
+        }
+
+        .restart-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 50%;
+            padding: 15px;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .restart-btn .restart-icon {
+            font-size: 1.5rem;
+            color: var(--primary-pink);
+        }
+
+        .restart-btn .restart-text {
+            display: none;
+            margin-left: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            white-space: nowrap;
+        }
+
+        .restart-btn:hover,
+        .restart-btn:active,
+        .restart-btn:focus {
+            width: auto;
+            padding: 15px 20px;
+            border-radius: 30px;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        .restart-btn:hover .restart-text,
+        .restart-btn:active .restart-text,
+        .restart-btn:focus .restart-text {
+            display: inline;
+        }
+
+        .restart-btn.hidden {
+            display: none;
+        }
+
+        .closing-footer-note {
+            font-size: 0.9rem;
+            margin-top: 20px;
+            opacity: 0.5;
+            font-weight: normal;
+            font-style: italic;
+            animation: fadeIn 1s ease-out 2s forwards;
+            opacity: 0;
+        }            @media (max-width: 768px) {
+            .restart-btn {
+                width: 50px;
+                height: 50px;
+                top: 10px;
+                left: 10px;
+                padding: 12px;
+            }
+
+            .restart-btn:hover {
+                padding: 12px 16px;
+            }
+
+            .album-book {
+                width: 300px;
+                height: 380px;
+            }
+
+            .album-title {
+                font-size: 2rem;
+            }
+
+            .prompt-text {
+                font-size: 1.5rem;
+            }
+
+            .envelope {
+                width: 280px;
+                height: 200px;
+            }
+
+            .envelope-flap {
+                border-left: 140px solid transparent;
+                border-right: 140px solid transparent;
+                border-top: 100px solid var(--accent-red);
+            }
+
+            .closing-title {
+                font-size: 2rem;
+            }
+
+            .closing-text {
+                font-size: 1.2rem;
+            }
+
+            .letter-paper {
+                padding: 40px 20px;
+            }
+
+            .letter-paper h2 {
+                font-size: 1.8rem;
+            }
+
+            .letter-paper .letter-content {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide {
+                padding: 24px 16px 130px;
+            }
+
+            .album-title {
+                font-size: 1.7rem;
+            }
+
+            .prompt-text {
+                font-size: 1.3rem;
+            }
+
+            .timeline-slide {
+                padding: 24px 16px 110px;
+            }
+
+            .timeline-photo {
+                max-height: 220px;
+            }
+
+            .album-book {
+                width: 240px;
+                height: 320px;
+            }
+
+            .envelope {
+                width: 240px;
+                height: 170px;
+            }
+
+            .envelope-flap {
+                border-left: 120px solid transparent;
+                border-right: 120px solid transparent;
+                border-top: 85px solid var(--accent-red);
+            }
+
+            .envelope-prompt {
+                font-size: 1.2rem;
+            }
+
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+            .closing-content {
+                padding: 24px 18px 70px;
+                gap: 6px;
+            }
+
+            .closing-title {
+                font-size: 2.1rem;
+                margin-bottom: 20px;
+            }
+
+            .closing-text {
+                font-size: 1.1rem;
+                margin-bottom: 14px;
+            }
+
+            .closing-hearts {
+                font-size: 2.2rem;
+                margin: 22px 0;
+            }
+
+            .closing-footer {
+                font-size: 1.4rem;
+                margin-bottom: 24px;
+            }
+
+            .replay-btn {
+                padding: 12px 28px;
+                font-size: 1rem;
+            }
+
+            .closing-meta {
+                position: absolute;
+                left: 50%;
+                bottom: 8px;
+                transform: translateX(-50%);
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="heart-container" id="heartContainer"></div>
+
+    <!-- Slideshow Container -->
+    <div class="slideshow-container">
+        <!-- Slide 0: Photo Album Cover with Intro -->
+        <div class="slide album-cover active" style="position: relative;">
+            <div class="album-container">
+                <div class="album-book" onclick="openAlbum()">
+                    <div class="album-front">
+                        <div class="album-title">Our Story</div>
+                        <div class="photo-grid-mini">
+                            <div class="mini-photo">Photo 1</div>
+                            <div class="mini-photo">Photo 2</div>
+                            <div class="mini-photo">Photo 3</div>
+                            <div class="mini-photo">Photo 4</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="click-prompt">
+                    <span class="arrow-up">↑</span>
+                    <span class="prompt-text">Tap the album to begin</span>
+                    <span class="arrow-up">↑</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 1: March 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">March 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop" alt="March 2025">
+            <p class="timeline-text">Our first spark 💬</p>
+        </div>
+
+        <!-- Slide 2: April 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">April 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop" alt="April 2025">
+            <p class="timeline-text">First meet, real smiles 🤝</p>
+        </div>
+
+        <!-- Slide 3: May 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">May 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=800&h=600&fit=crop" alt="May 2025">
+            <p class="timeline-text">Hearts on the table 💌</p>
+        </div>
+
+        <!-- Slide 4: June 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">June 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop" alt="June 2025">
+            <p class="timeline-text">We made it official 💞</p>
+        </div>
+
+        <!-- Slide 5: July 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">July 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop" alt="July 2025">
+            <p class="timeline-text">First concert, first run 🎶🏃</p>
+        </div>
+
+        <!-- Slide 6: August 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">August 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&h=600&fit=crop" alt="August 2025">
+            <p class="timeline-text">Family meet, Binondo bites 🧡</p>
+        </div>
+
+        <!-- Slide 7: September 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">September 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=600&fit=crop" alt="September 2025">
+            <p class="timeline-text">More dates, more laughs 🗓️</p>
+        </div>
+
+        <!-- Slide 8: October 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">October 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&h=600&fit=crop" alt="October 2025">
+            <p class="timeline-text">Twice concert, first flight ✈️</p>
+        </div>
+
+        <!-- Slide 9: November 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">November 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&h=600&fit=crop" alt="November 2025">
+            <p class="timeline-text">Boracay waves, Blackpink lights 🏝️🎤</p>
+        </div>
+
+        <!-- Slide 10: December 2025 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">December 2025</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&h=600&fit=crop" alt="December 2025">
+            <p class="timeline-text">First intl trip, six months strong 🌍💗</p>
+        </div>
+
+        <!-- Slide 11: January 2026 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">January 2026</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&h=600&fit=crop" alt="January 2026">
+            <p class="timeline-text">First LDR, same us 💌</p>
+        </div>
+
+        <!-- Slide 12: February 2026 -->
+        <div class="slide timeline-slide">
+            <div class="timeline-month">February 2026</div>
+            <img class="timeline-photo" src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=800&h=600&fit=crop" alt="February 2026">
+            <p class="timeline-text">First Valentine’s together 💖</p>
+        </div>
+
+        <!-- Slide 13: Letter Envelope with Expandable Letter -->
+        <div class="slide envelope-slide" id="envelopeSlide">
+            <div class="envelope-container">
+                <div class="envelope" id="envelope" onclick="toggleLetter()">
+                    <div class="envelope-flap" id="envelopeFlap"></div>
+                    <div class="envelope-body">
+                        <div class="wax-seal">💌</div>
+                    </div>
+                    <div class="letter-peek"></div>
+                </div>
+                <div class="envelope-prompt" id="envelopePrompt">
+                    <p>A letter for you... ❤️</p>
+                    <p style="font-size: 1rem; margin-top: 10px;">Click to open</p>
+                </div>
+            </div>
+
+            <!-- Letter Content (Hidden Initially) -->
+            <div class="letter-overlay" id="letterOverlay">
+                <div class="letter-paper">
+                    <button class="close-letter-x" onclick="toggleLetter()">✕</button>
+                    <div class="letter-body">
+                        <h2>To My Dearest Aileen 💕</h2>
+                        <p class="letter-date">Valentine's Day 2026</p>
+                        <div class="letter-content">
+                            <p>My Babe,</p>
+                            
+                            <p>As I sit here, thousands of miles away from you, my heart feels closer to yours than ever. These past months have been a beautiful testament to what we share - a love that transcends distance, time zones, and physical space.</p>
+                            
+                            <p>Every video call, every text message, every "good morning" and "goodnight" has been a treasure. The way you smile through the screen brightens my darkest days. Your laughter, even through a phone speaker, is the most beautiful melody I've ever heard.</p>
+                            
+                            <p>Long distance isn't easy. There are nights when I long to hold you, moments when I wish I could be there to wipe away your tears or share in your joy in person. But this distance has taught me something invaluable - it has shown me the depth of my love for you, the strength of our bond, and the certainty of my feelings.</p>
+                            
+                            <p>You've become my home, no matter where in the world we are. When we talk, I'm home. When I see your face, I'm home. When I think of our future together, I'm home.</p>
+                            
+                            <p>I count down the days until we meet again. I've been planning something special, something that will show you just how serious I am about us, about our future together. Let's just say... you might want to keep your left hand free when we next see each other. 💍✨</p>
+                            
+                            <p>Until that moment comes, know that you are loved beyond measure. You are thought of constantly. You are cherished deeply. And you are missed profoundly.</p>
+                            
+                            <p>Distance is just a test of how far love can travel. And ours? It's limitless.</p>
+                            
+                            <p>Happy Valentine's Day, my beautiful Aileen. Soon, very soon, I hope to ask you to be something even more.</p>
+                        </div>
+                        <p class="letter-signature">Forever and always yours,<br>Your Babe ❤️</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Closing Page -->
+        <div class="slide closing-slide">
+            <div class="closing-content">
+                <h1 class="closing-title">Thank you for being mine ❤️</h1>
+                <p class="closing-text">Every moment with you is a gift.</p>
+                <p class="closing-text">Every day with you is an adventure.</p>
+                <p class="closing-text">Every tomorrow with you is a promise.</p>
+                <div class="closing-hearts">💕 💝 💖 💗 💓</div>
+                <p class="closing-footer">Happy Valentine's Day, my love!</p>
+                <button class="replay-btn" onclick="restartJourney()">Relive Our Journey →</button>
+                <p class="closing-footer-note">(Or you can close this page... but I hope you don't ❤️)</p>
+                <p class="closing-meta" style="font-size:0.8rem;opacity:0.7;margin-top:16px;">Built by Patrick Jove • AI assisted using GitHub Copilot</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Restart Button -->
+    <button class="restart-btn hidden" id="restartBtn" onclick="restartJourney()" title="Restart Journey">
+        <span class="restart-icon">💖</span>
+        <span class="restart-text">Restart</span>
+    </button>
+
+    <!-- Navigation Arrows -->
+    <button class="nav-arrow prev" onclick="prevSlide()">‹</button>
+    <button class="nav-arrow next" onclick="nextSlide()">›</button>
+
+    <!-- Timeline Slider at Bottom -->
+    <div class="timeline-slider">
+        <div class="slider-track" id="sliderTrack">
+            <div class="timeline-dot intro active" data-slide="0" onclick="goToSlide(event,0)">
+                <span>Start</span>
+            </div>
+            <div class="timeline-dot" data-slide="1" onclick="goToSlide(event,1)">
+                <span>Mar<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="2" onclick="goToSlide(event,2)">
+                <span>Apr<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="3" onclick="goToSlide(event,3)">
+                <span>May<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="4" onclick="goToSlide(event,4)">
+                <span>Jun<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="5" onclick="goToSlide(event,5)">
+                <span>Jul<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="6" onclick="goToSlide(event,6)">
+                <span>Aug<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="7" onclick="goToSlide(event,7)">
+                <span>Sep<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="8" onclick="goToSlide(event,8)">
+                <span>Oct<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="9" onclick="goToSlide(event,9)">
+                <span>Nov<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="10" onclick="goToSlide(event,10)">
+                <span>Dec<br>2025</span>
+            </div>
+            <div class="timeline-dot" data-slide="11" onclick="goToSlide(event,11)">
+                <span>Jan<br>2026</span>
+            </div>
+            <div class="timeline-dot" data-slide="12" onclick="goToSlide(event,12)">
+                <span>Feb<br>2026</span>
+            </div>
+            <div class="timeline-dot hidden" id="letterDot" data-slide="13" onclick="goToSlide(event,13)">
+                <span>💌<br>Letter</span>
+            </div>
+            <div class="timeline-dot hidden" id="endDot" data-slide="14" onclick="goToSlide(event,14)">
+                <span>💕<br>End</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Controls -->
+    <button class="audio-btn" id="audioToggle" onclick="toggleAudio()">
+        <span class="audio-icon">🎵</span>
+        <div class="audio-info">
+            <div class="song-info">
+                <div class="song-title">Perfect - Ed Sheeran</div>
+                <div class="play-pause">▶️</div>
+            </div>
+        </div>
+    </button>
+
+    <!-- Transition overlay used for smooth restart fade -->
+    <div id="transitionOverlay" style="position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4000;transition:opacity 0.45s ease"></div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const timelineDots = document.querySelectorAll('.timeline-dot');
+        let allowIntroReset = false;
+
+        // Create floating hearts
+        function createHeart() {
+            const heartContainer = document.getElementById('heartContainer');
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heartContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 13000);
+        }
+
+        // Generate hearts periodically
+        setInterval(createHeart, 2000);
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createHeart, i * 500);
+        }
+
+        // Show slide function
+        function showSlide(index, direction = 'none') {
+            // Prevent going back to intro page (slide 0) once timeline has started
+            if (index === 0 && currentSlide > 0 && !allowIntroReset) {
+                return;
+            }
+
+            if (index === 0) {
+                const album = document.querySelector('.album-cover');
+                if (album) {
+                    album.classList.remove('exit');
+                }
+            }
+
+            // If going to final closing slide, use fade transition
+            if (index === slides.length - 1 && direction === 'none') {
+                // default final slide transition is a fade unless explicitly overridden
+                direction = 'fade';
+            }
+            
+            if (index < 0) {
+                currentSlide = 0;
+                return;
+            } else if (index >= slides.length) {
+                currentSlide = slides.length - 1;
+                return;
+            }
+
+            const previousSlide = currentSlide;
+            currentSlide = index;
+            allowIntroReset = false;
+
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-right');
+                
+                if (i === previousSlide && direction !== 'none') {
+                    // Add exit animation to previous slide
+                    if (direction === 'next') {
+                        slide.classList.add('slide-out-left');
+                    } else if (direction === 'prev') {
+                        slide.classList.add('slide-out-right');
+                    } else if (direction === 'fade') {
+                        slide.classList.add('fade-out');
+                    }
+                    
+                    // Remove the slide animation classes after animation
+                    setTimeout(() => {
+                        slide.classList.remove('slide-out-left', 'slide-out-right', 'fade-out');
+                    }, 650);
+                }
+                
+                if (i === currentSlide) {
+                    // If we're doing a fade or endReveal, avoid the default slide-in animation
+                    if (direction === 'fade') {
+                        slide.classList.add('active', 'no-slide');
+                        slide.classList.add('fade-in');
+                        setTimeout(() => {
+                            slide.classList.remove('fade-in');
+                            slide.classList.remove('no-slide');
+                        }, 650);
+                        if (currentSlide === 1) {
+                            slide.classList.add('first-enter');
+                            setTimeout(() => slide.classList.remove('first-enter'), 1300);
+                        }
+                    } else if (direction === 'endReveal') {
+                        slide.classList.add('active');
+                        slide.classList.add('end-reveal-in');
+                        setTimeout(() => {
+                            slide.classList.remove('end-reveal-in');
+                        }, 700);
+                    } else {
+                        slide.classList.add('active', 'slide-in-right');
+                        setTimeout(() => {
+                            slide.classList.remove('slide-in-right');
+                        }, 650);
+                    }
+                }
+            });
+
+            timelineDots.forEach((dot, i) => {
+                dot.classList.remove('active');
+            });
+            
+            // Show/hide letter dot when reaching February (slide 11)
+            const letterDot = document.getElementById('letterDot');
+            if (currentSlide >= 12) {
+                letterDot.classList.remove('hidden');
+            } else {
+                letterDot.classList.add('hidden');
+            }
+            
+            // Show/hide end dot when reaching letter (slide 12)
+            const endDot = document.getElementById('endDot');
+            if (currentSlide >= 13) {
+                endDot.classList.remove('hidden');
+            } else {
+                endDot.classList.add('hidden');
+            }
+            
+            // Hide timeline slider on intro and final closing slide
+            const timelineSlider = document.querySelector('.timeline-slider');
+            const navArrows = document.querySelectorAll('.nav-arrow');
+            const restartBtn = document.getElementById('restartBtn');
+            
+            // Hide the timeline on intro (start) and final (end) slides.
+            if (currentSlide === 0 || currentSlide === slides.length - 1 || timelineSlider.classList.contains('disabled')) {
+                timelineSlider.classList.add('hidden');
+            } else {
+                timelineSlider.classList.remove('hidden');
+            }
+
+            // Keep restart button hidden on intro and final closing slide, show otherwise
+            if (currentSlide === 0 || currentSlide === slides.length - 1) {
+                restartBtn.classList.add('hidden');
+            } else {
+                restartBtn.classList.remove('hidden');
+            }
+
+            // Hide navigation arrows on the final slide
+            if (currentSlide === slides.length - 1) {
+                navArrows.forEach(arrow => arrow.classList.add('hidden'));
+            } else {
+                navArrows.forEach(arrow => arrow.classList.remove('hidden'));
+            }
+            
+            // Correctly map current slide to timeline dot using data-slide
+            const activeDot = document.querySelector(`.timeline-dot[data-slide="${currentSlide}"]`);
+            if (activeDot) {
+                activeDot.classList.add('active');
+                // Prefer precise centering inside the scrollable track so mobile shows the active month centered.
+                const sliderTrack = document.getElementById('sliderTrack');
+                if (sliderTrack && !sliderTrack.classList.contains('hidden')) {
+                    requestAnimationFrame(() => {
+                        const trackRect = sliderTrack.getBoundingClientRect();
+                        const dotRect = activeDot.getBoundingClientRect();
+                        const delta = (dotRect.left - trackRect.left) - (trackRect.width / 2 - dotRect.width / 2);
+                        sliderTrack.scrollBy({ left: delta, behavior: 'smooth' });
+                    });
+                } else {
+                    activeDot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }
+
+            // Update arrow visibility
+            const prevArrow = document.querySelector('.nav-arrow.prev');
+            const nextArrow = document.querySelector('.nav-arrow.next');
+            
+            if (currentSlide === 0) {
+                prevArrow.classList.add('hidden');
+            } else {
+                prevArrow.classList.remove('hidden');
+            }
+            
+            if (currentSlide === slides.length - 1) {
+                nextArrow.classList.add('hidden');
+            } else {
+                nextArrow.classList.remove('hidden');
+            }
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1, 'next');
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1, 'prev');
+        }
+
+        function goToSlide(e, index) {
+            // support calls without event (legacy)
+            if (typeof e === 'number') {
+                index = e;
+                e = null;
+            }
+
+            // determine direction based on pointer position if available
+            let direction = index > currentSlide ? 'next' : 'prev';
+            if (e && e.clientX !== undefined) {
+                const rect = e.currentTarget ? e.currentTarget.getBoundingClientRect() : e.target.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const clickX = e.touches ? e.touches[0].clientX : e.clientX;
+                direction = clickX > centerX ? 'next' : 'prev';
+            }
+
+            showSlide(index, direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            // Disable keyboard navigation when letter overlay is active or on final closing slide
+            const letterOverlay = document.getElementById('letterOverlay');
+            if (letterOverlay && letterOverlay.classList.contains('active')) {
+                return; // Block all keyboard interaction when letter is open
+            }
+            if (currentSlide === slides.length - 1) {
+                return; // Block all keyboard interaction on final closing slide
+            }
+            
+            // Block forward navigation (right arrow) on envelope slide (slide 13)
+            if (currentSlide === 13 && e.key === 'ArrowRight') {
+                return; // Block forward navigation on envelope slide
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'ArrowRight') {
+                nextSlide();
+            }
+        });
+
+        // Touch swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            // Disable swipe navigation when letter overlay is active or on final closing slide
+            const letterOverlay = document.getElementById('letterOverlay');
+            if (letterOverlay && letterOverlay.classList.contains('active')) {
+                return; // Block all swipe interaction when letter is open
+            }
+            if (currentSlide === slides.length - 1) {
+                return; // Block all swipe interaction on final closing slide
+            }
+            
+            // Block forward swipe (left swipe) on envelope slide (slide 13)
+            if (currentSlide === 13 && touchEndX < touchStartX - 50) {
+                return; // Block forward swipe on envelope slide
+            }
+            
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                prevSlide();
+            }
+        }
+
+        // Audio controls for Spotify
+        function toggleAudio() {
+            const playPauseIcon = document.querySelector('.play-pause');
+            if (spotifyVisible) {
+                spotifyPlayer.style.display = 'none';
+                if (playPauseIcon) playPauseIcon.textContent = '▶️';
+                spotifyVisible = false;
+            } else {
+                spotifyPlayer.style.display = 'block';
+                spotifyPlayer.style.position = 'fixed';
+                spotifyPlayer.style.top = '90px';
+                spotifyPlayer.style.right = '20px';
+                spotifyPlayer.style.width = '300px';
+                spotifyPlayer.style.height = '80px';
+                spotifyPlayer.style.zIndex = '1001';
+                spotifyPlayer.style.borderRadius = '12px';
+                if (playPauseIcon) playPauseIcon.textContent = '⏸️';
+                spotifyVisible = true;
+            }
+        }
+
+        // Create heart explosion effect
+        function createHeartExplosion() {
+            const heartContainer = document.getElementById('heartContainer');
+            const heart = document.createElement('div');
+            heart.classList.add('heart-explosion');
+            heart.innerHTML = '💖';
+            
+            // Random position across the whole page
+            const randomX = Math.random() * window.innerWidth;
+            const randomY = Math.random() * window.innerHeight;
+            
+            heart.style.left = randomX + 'px';
+            heart.style.top = randomY + 'px';
+            
+            heartContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        // Open album (go to first month slide)
+        function openAlbum() {
+            const album = document.querySelector('.album-cover');
+            if (album) {
+                album.classList.add('exit');
+            }
+
+            // Start the timeline (slow fade) after intro elements fade out
+            setTimeout(() => showSlide(1, 'fade'), 650);
+        }
+
+        // Toggle letter overlay
+        function toggleLetter() {
+            const letterOverlay = document.getElementById('letterOverlay');
+            const envelope = document.getElementById('envelope');
+            const endDot = document.getElementById('endDot');
+            const navArrows = document.querySelectorAll('.nav-arrow');
+            const timelineSlider = document.querySelector('.timeline-slider');
+            
+            if (letterOverlay.classList.contains('active')) {
+                // Close letter - show end dot and go to closing slide
+                letterOverlay.classList.remove('revealed');
+                letterOverlay.classList.remove('active');
+                envelope.classList.remove('opened');
+                endDot.classList.remove('hidden');
+                
+                // Re-enable navigation elements
+                navArrows.forEach(arrow => arrow.classList.remove('disabled'));
+                timelineSlider.classList.remove('disabled');
+                // Use a special end reveal transition instead of slide
+                setTimeout(() => showSlide(slides.length - 1, 'endReveal'), 500);
+            } else {
+                // Open letter
+                letterOverlay.classList.add('active');
+                letterOverlay.classList.remove('revealed');
+                envelope.classList.add('opened');
+                
+                // Completely hide navigation elements when letter is open
+                navArrows.forEach(arrow => arrow.classList.add('disabled'));
+                timelineSlider.classList.add('disabled');
+
+                // Reveal the letter content after the flap finishes opening
+                setTimeout(() => {
+                    letterOverlay.classList.add('revealed');
+                }, 1200);
+            }
+        }
+
+        // Restart journey (go back to album cover)
+        function restartJourney() {
+            // Fade overlay when restarting for smooth transition
+            const overlay = document.getElementById('transitionOverlay');
+            if (overlay) overlay.style.opacity = '1';
+            // Allow returning to intro and use a fade transition back to the start
+            setTimeout(() => {
+                allowIntroReset = true;
+                const album = document.querySelector('.album-cover');
+                if (album) {
+                    album.classList.remove('exit');
+                }
+                showSlide(0, 'fade');
+                if (overlay) overlay.style.opacity = '0';
+            }, 500);
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

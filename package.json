@@ -1,0 +1,23 @@
+{
+  "name": "timeline-of-us-ai",
+  "version": "1.0.0",
+  "description": "A beautifully designed interactive love timeline web app. Swipe through months of memories from March 2025 to February 2026, open a romantic letter, and relive your journey together. Built with AI-assisted development using vanilla JavaScript and CSS animations.",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'No build process defined.'"
+  },
+  "keywords": [
+    "love",
+    "timeline",
+    "presentation",
+    "slideshow",
+    "interactive"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
