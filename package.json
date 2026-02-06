@@ -5,7 +5,9 @@
   "main": "src/index.html",
   "scripts": {
     "start": "live-server src",
-    "build": "echo 'No build process defined.'"
+    "build": "echo 'No build process defined.'",
+    "audit": "npm audit --omit=dev",
+    "audit:full": "npm audit"
   },
   "keywords": [
     "love",
@@ -16,8 +18,7 @@
   ],
   "author": "Your Name",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
-    "live-server": "^1.2.1"
+    "live-server": "^1.2.0"
   }
 }

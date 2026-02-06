@@ -1,51 +1,74 @@
 <!DOCTYPE html>
+<!--
+    TIMELINE OF US - Interactive Romantic Slideshow
+    
+    This file contains ALL the code for the application:
+    - HTML: Structure and content (slides, buttons, text)
+    - CSS: Styling and animations (inside <style> tag)
+    - JavaScript: Interactivity (inside <script> tag)
+    
+    No external files or frameworks needed!
+-->
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta tags: Give browser information about the page -->
+    <meta charset="UTF-8">  <!-- Character encoding for emoji/special characters -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Makes it work on mobile -->
     <title>Our Love Timeline ❤️</title>
+    
+    <!-- CSS STYLES: Everything inside <style> controls how things look -->
     <style>
+        /* UNIVERSAL RESET: Remove default browser spacing */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0;           /* Remove default margins */
+            padding: 0;          /* Remove default padding */
+            box-sizing: border-box;  /* Include padding in element size */
         }
 
+        /* CSS VARIABLES: Define colors once, use everywhere */
+        /* Use these with var(--variable-name) throughout CSS */
         :root {
-            --primary-pink: #ff6b9d;
-            --secondary-pink: #ffc1cc;
-            --accent-red: #ff1744;
-            --soft-white: #fff5f7;
-            --text-dark: #4a4a4a;
+            --primary-pink: #ff6b9d;      /* Main pink color */
+            --secondary-pink: #ffc1cc;    /* Lighter pink for backgrounds */
+            --accent-red: #ff1744;        /* Bright red for envelope/accents */
+            --soft-white: #fff5f7;        /* Off-white with pink tint */
+            --text-dark: #4a4a4a;         /* Dark gray for readable text */
         }
 
+        /* BODY: Main container for entire page */
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, var(--soft-white) 0%, var(--secondary-pink) 100%);
-            color: var(--text-dark);
-            overflow: auto;
-            height: 100vh;
+            font-family: 'Georgia', serif;  /* Elegant serif font */
+            background: linear-gradient(135deg, var(--soft-white) 0%, var(--secondary-pink) 100%);  /* Gradient background */
+            color: var(--text-dark);  /* Default text color */
+            overflow: auto;  /* Allow scrolling if needed */
+            height: 100vh;   /* Full viewport height (100% of screen) */
         }
 
-        /* Floating hearts animation */
+        /* ============================================
+           FLOATING HEARTS BACKGROUND DECORATION
+           ============================================ */
+        
+        /* Container for all floating hearts */
         .heart-container {
-            position: fixed;
+            position: fixed;     /* Stays in place when scrolling */
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
+            width: 100%;         /* Full screen width */
+            height: 100%;        /* Full screen height */
+            pointer-events: none;  /* Clicks pass through to content below */
+            z-index: 1;          /* Layer behind content */
+            overflow: hidden;    /* Hide hearts outside container */
         }
 
+        /* Individual floating heart */
         .heart {
-            position: absolute;
+            position: absolute;  /* Can be positioned anywhere */
             font-size: 20px;
-            opacity: 0;
-            animation: float 8s infinite ease-in-out;
+            opacity: 0;          /* Starts invisible */
+            animation: float 8s infinite ease-in-out;  /* 8 second animation, repeats forever */
         }
 
+        /* Heart explosion effect (used in letter opening) */
         .heart-explosion {
             position: absolute;
             font-size: 40px;
@@ -55,20 +78,23 @@
             z-index: 100;
         }
 
+        /* KEYFRAME ANIMATIONS: Define how elements move over time */
+        
+        /* Float animation: Hearts rise from bottom to top */
         @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
+            0% {    /* Start: Bottom of screen */
+                transform: translateY(100vh) rotate(0deg);  /* Move down 100% viewport height */
+                opacity: 0;   /* Invisible */
             }
-            10% {
+            10% {   /* Fade in */
                 opacity: 1;
             }
-            90% {
+            90% {   /* Stay visible */
                 opacity: 1;
             }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
+            100% {  /* End: Top of screen, rotated */
+                transform: translateY(-100px) rotate(360deg);  /* Move up, full rotation */
+                opacity: 0;   /* Fade out */
             }
         }
 
@@ -91,28 +117,35 @@
             }
         }
 
-        /* Slideshow Container */
+        /* ============================================
+           SLIDESHOW SYSTEM
+           ============================================ */
+        
+        /* Main container holding all slides */
         .slideshow-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;  /* Reference point for absolutely positioned slides */
+            width: 100%;         /* Full width */
+            height: 100vh;       /* Full viewport height */
+            display: flex;       /* Use flexbox for centering */
+            align-items: center;     /* Center vertically */
+            justify-content: center; /* Center horizontally */
         }
 
+        /* Individual slide (default/hidden state) */
         .slide {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            position: absolute;
+            display: none;       /* Hidden by default */
+            width: 100%;         /* Full width */
+            min-height: 100vh;   /* At least full screen height */
+            position: absolute;  /* Stack slides on top of each other */
             top: 0;
             left: 0;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            opacity: 0;          /* Invisible */
+            visibility: hidden;  /* Completely hidden from screen readers too */
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;  /* Smooth changes */
+            padding-bottom: clamp(100px, 15vh, 160px);  /* Space at bottom for timeline */
         }
 
+        /* Active slide (visible state) */
         .slide.active {
             display: flex;
             flex-direction: column;
@@ -236,15 +269,15 @@
         }
 
         .intro-slide h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            margin-bottom: clamp(12px, 3vw, 25px);
             animation: fadeInDown 1s ease-out;
         }
 
         .intro-slide p {
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 2.5vw, 1.6rem);
             font-style: italic;
-            margin-bottom: 30px;
+            margin-bottom: clamp(15px, 4vw, 35px);
             animation: fadeInUp 1s ease-out 0.3s both;
         }
 
@@ -277,23 +310,23 @@
         }
 
         .timeline-month {
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 4vw, 2.8rem);
             color: white;
             font-weight: bold;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: clamp(8px, 2vw, 15px);
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
             background: rgba(255, 23, 68, 0.85);
-            padding: 15px 40px;
+            padding: clamp(10px, 2vw, 18px) clamp(20px, 5vw, 45px);
             border-radius: 50px;
             display: inline-block;
         }
 
         .timeline-photo {
-            max-width: 600px;
-            max-height: 400px;
+            max-width: clamp(300px, 90vw, 650px);
+            max-height: clamp(250px, 60vh, 420px);
             width: 90%;
-            border-radius: 20px;
+            border-radius: clamp(12px, 3vw, 22px);
             box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
             object-fit: cover;
             transition: transform 0.3s ease;
@@ -305,32 +338,32 @@
 
         .timeline-text {
             text-align: center;
-            font-size: 1.3rem;
-            max-width: 700px;
+            font-size: clamp(0.95rem, 2.5vw, 1.4rem);
+            max-width: clamp(280px, 90vw, 750px);
             color: white;
             font-style: italic;
             line-height: 1.6;
             text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
             background: rgba(255, 23, 68, 0.75);
-            padding: 20px 30px;
-            border-radius: 15px;
+            padding: clamp(15px, 3vw, 25px) clamp(20px, 4vw, 35px);
+            border-radius: clamp(10px, 2vw, 18px);
         }
 
         /* Love Letter Slide */
         .letter-slide {
-            padding: 60px 40px;
-            max-width: 900px;
+            padding: clamp(30px, 6vw, 70px) clamp(16px, 4vw, 45px);
+            max-width: clamp(280px, 90vw, 950px);
             margin: 0 auto;
             text-align: left;
             overflow-y: auto;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .letter-slide h2 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
             color: var(--accent-red);
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: clamp(20px, 4vw, 35px);
             text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
         }
 
@@ -338,18 +371,19 @@
             text-align: right;
             font-style: italic;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: clamp(12px, 2vw, 20px);
             font-weight: 500;
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
         }
 
         .letter-slide .letter-content {
-            font-size: 1.2rem;
+            font-size: clamp(0.95rem, 2.2vw, 1.3rem);
             line-height: 1.8;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: clamp(15px, 2.5vw, 25px);
             background: rgba(255, 255, 255, 0.85);
-            padding: 30px;
-            border-radius: 15px;
+            padding: clamp(15px, 4vw, 35px);
+            border-radius: clamp(10px, 2vw, 18px);
             box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
         }
 
@@ -366,7 +400,6 @@
             background: rgba(255, 255, 255, 0.85);
             padding: 20px 30px;
             border-radius: 15px;
-            display: inline-block;
             float: right;
         }
 
@@ -381,12 +414,129 @@
             }
         }
 
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
             }
             to {
                 opacity: 1;
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(255, 107, 157, 0.5), 0 0 20px rgba(255, 23, 68, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 107, 157, 0.8), 0 0 40px rgba(255, 23, 68, 0.6);
+            }
+        }
+
+        @keyframes scaleInBounce {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes floatHearts {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes heartPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOutScale {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        @keyframes scaleOutBounce {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+        }
+
+        @keyframes fadeOutUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
             }
         }
 
@@ -441,7 +591,7 @@
             left: 0;
             right: 0;
             background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
+            padding: clamp(12px, 3vw, 20px);
             z-index: 1000;
             box-shadow: 0 -4px 15px rgba(255, 107, 157, 0.2);
             transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -457,18 +607,18 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            gap: 10px;
-            max-width: 1200px;
+            gap: clamp(6px, 1.5vw, 12px);
+            max-width: 100%;
             width: 100%;
             overflow-x: auto;
-            padding: 10px 40vw;
+            padding: clamp(8px, 2vw, 16px) clamp(16px, 8vw, 100px);
             scroll-snap-type: x mandatory;
-            scroll-padding: 0 40vw;
+            scroll-padding: clamp(8px, 2vw, 16px) clamp(16px, 8vw, 100px);
             -webkit-overflow-scrolling: touch;
         }
 
         .slider-track::-webkit-scrollbar {
-            height: 8px;
+            height: clamp(6px, 1.5vw, 10px);
         }
 
         .timeline-dot {
@@ -487,21 +637,22 @@
         }
 
         .timeline-dot {
-            min-width: 80px;
+            min-width: clamp(50px, 10vw, 90px);
+            width: clamp(50px, 10vw, 90px);
+            height: clamp(50px, 10vw, 90px);
             flex: 0 0 auto;
-            height: 80px;
             border-radius: 50%;
             background: var(--secondary-pink);
-            border: 3px solid var(--primary-pink);
+            border: clamp(2px, 0.5vw, 4px) solid var(--primary-pink);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 0.8rem;
+            font-size: clamp(0.6rem, 1.5vw, 0.9rem);
             text-align: center;
-            padding: 5px;
+            padding: clamp(3px, 0.8vw, 6px);
             transform-origin: center;
         }
 
@@ -517,11 +668,39 @@
             transform: scale(1.2);
         }
 
-        .timeline-dot.intro {
-            display: none;
+        .timeline-dot.glowing {
+            animation: glow 1.5s ease-in-out infinite;
+            border-color: var(--accent-red);
+            background: var(--primary-pink);
+            color: white;
         }
 
-        .timeline-dot#endDot {
+        .timeline-dot.letter-dot {
+            background: white !important;
+            color: var(--accent-red) !important;
+            border: 3px solid var(--accent-red) !important;
+            font-size: 1rem !important;
+            padding: 8px 5px !important;
+        }
+
+        .timeline-dot.letter-dot span {
+            line-height: 1.2;
+            font-size: 0.9em;
+        }
+
+        .timeline-dot.letter-dot:hover {
+            background: var(--soft-white) !important;
+            transform: scale(1.15);
+        }
+
+        .timeline-dot.letter-dot.active {
+            background: white !important;
+            color: var(--accent-red) !important;
+            border: 3px solid var(--accent-red) !important;
+            transform: scale(1.2);
+        }
+
+        .timeline-dot.intro {
             display: none;
         }
 
@@ -550,7 +729,9 @@
             overflow: hidden;
         }
 
-        .audio-btn:hover {
+        .audio-btn:hover,
+        .audio-btn:active,
+        .audio-btn:focus {
             width: auto;
             padding: 15px 20px;
             border-radius: 30px;
@@ -561,117 +742,283 @@
         .audio-icon {
             font-size: 1.5rem;
             color: var(--primary-pink);
-            transition: all 0.3s ease;
         }
 
-        .audio-info {
+        .audio-text {
             display: none;
-            margin-left: 12px;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .audio-btn:hover .audio-info {
-            display: flex;
-        }
-
-        .song-info {
-            display: flex;
+            margin-left: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            white-space: nowrap;
             align-items: center;
             gap: 8px;
         }
 
-        .song-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            white-space: nowrap;
+        .audio-btn:hover .audio-text,
+        .audio-btn:active .audio-text,
+        .audio-btn:focus .audio-text {
+            display: flex;
         }
 
-        .play-pause {
-            font-size: 1.2rem;
+        .audio-play {
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .play-pause:hover {
+        .audio-play:hover {
             transform: scale(1.2);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .slide {
-                padding: 30px 20px 140px;
-                box-sizing: border-box;
-                overflow-y: auto;
-            }
-
-            .album-container {
-                gap: 24px;
-            }
-
-            .album-title {
-                font-size: 2rem;
-            }
-
-            .photo-grid-mini {
-                gap: 8px;
-            }
-
-            .mini-photo {
-                font-size: 0.75rem;
-            }
-
-            .intro-slide h1 {
-                font-size: 2rem;
-            }
-
-            .intro-slide p {
-                font-size: 1.1rem;
-            }
-
-            .timeline-month {
-                font-size: 1.8rem;
-            }
-
-            .timeline-photo {
-                max-height: 260px;
-            }
-
-            .timeline-text {
-                font-size: 1.05rem;
-            }
-
-            .letter-slide {
-                padding: 30px 20px;
-            }
-
-            .letter-slide h2 {
-                font-size: 1.8rem;
-            }
-
-            .letter-slide .letter-content {
-                font-size: 1rem;
+        /* Extra Large Screen (1920px+) */
+        @media (min-width: 1920px) {
+            .timeline-dot {
+                min-width: 100px;
+                width: 100px;
+                height: 100px;
+                font-size: 0.95rem;
             }
 
             .nav-arrow {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
+                width: 70px;
+                height: 70px;
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Large Screen (1280px - 1919px) */
+        @media (max-width: 1919px) and (min-width: 1280px) {
+            .nav-arrow {
+                width: 65px;
+                height: 65px;
+                font-size: 2rem;
+            }
+        }
+
+        /* Tablet (769px - 1279px) */
+        @media (max-width: 1279px) and (min-width: 769px) {
+            .slide {
+                padding: clamp(20px, 4vw, 30px) clamp(15px, 3vw, 25px);
+                padding-bottom: clamp(120px, 16vh, 150px);
             }
 
-            .nav-arrow.prev {
-                left: 10px;
+            .nav-arrow {
+                width: clamp(50px, 5vw, 62px);
+                height: clamp(50px, 5vw, 62px);
+                font-size: clamp(1.3rem, 2vw, 1.8rem);
             }
 
-            .nav-arrow.next {
-                right: 10px;
+            /* Timeline adjustments for tablet */
+            .timeline-slider {
+                padding: clamp(10px, 2vw, 14px);
+            }
+
+            .slider-track {
+                padding: 10px clamp(12px, 3vw, 30px) !important;
+                gap: clamp(8px, 2vw, 14px);
             }
 
             .timeline-dot {
-                min-width: 60px;
-                height: 60px;
-                font-size: 0.7rem;
+                min-width: 90px;
+                width: 90px;
+                height: 90px;
+                font-size: 0.8rem;
+                border: 3px solid var(--primary-pink);
+            }
+
+            .timeline-dot.letter-dot {
+                font-size: 0.9rem !important;
+                padding: 7px 4px !important;
+            }
+
+            .timeline-dot.letter-dot span {
+                font-size: 0.95em;
+            }
+        }
+
+        /* Tablet Landscape (iPad Air ~1180px width, ~820px height) */
+        @media (max-width: 1279px) and (min-width: 769px) and (orientation: landscape) {
+            .slide {
+                padding: clamp(16px, 3vw, 24px) clamp(12px, 2vw, 20px) clamp(110px, 18vh, 140px);
+            }
+
+            .timeline-slider {
+                padding: 8px;
+                height: auto;
+            }
+
+            .slider-track {
+                padding: 8px clamp(10px, 2vw, 24px) !important;
+                gap: 10px;
+            }
+
+            .timeline-dot {
+                min-width: 80px;
+                width: 80px;
+                height: 80px;
+                font-size: 0.75rem;
+            }
+
+            .timeline-month {
+                font-size: clamp(1.8rem, 3vw, 2.4rem);
+                padding: clamp(8px, 1.5vw, 14px) clamp(16px, 3vw, 32px);
+            }
+
+            .timeline-text {
+                font-size: clamp(0.9rem, 2vw, 1.2rem);
+                padding: clamp(12px, 2vw, 18px) clamp(16px, 3vw, 28px);
+            }
+
+            /* Closing overlay in landscape */
+            #closingOverlay .closing-content,
+            .closing-content {
+                padding: 16px 12px 20px !important;
+                gap: 4px !important;
+            }
+
+            .closing-title {
+                font-size: clamp(1.8rem, 3.5vw, 2.6rem) !important;
+                margin-bottom: 12px !important;
+            }
+
+            .closing-text {
+                font-size: clamp(0.9rem, 2vw, 1.1rem) !important;
+                margin-bottom: 4px !important;
+            }
+
+            .closing-hearts {
+                font-size: clamp(1.6rem, 3vw, 2.4rem) !important;
+                margin: 12px 0 !important;
+            }
+
+            .closing-footer {
+                font-size: clamp(1.1rem, 2.5vw, 1.6rem) !important;
+                margin-bottom: 12px !important;
+            }
+
+            .replay-btn {
+                padding: 10px 30px;
+                font-size: 1rem;
+            }
+
+            .closing-meta {
+                font-size: 0.6rem !important;
+                bottom: 4px !important;
+            }
+        }
+
+        /* Small Tablet (481px - 768px) */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .slide {
+                padding: clamp(24px, 4vw, 30px) clamp(16px, 3vw, 20px);
+            }
+
+            .album-container {
+                gap: clamp(20px, 4vw, 28px);
+            }
+
+            .album-title {
+                font-size: clamp(1.8rem, 4vw, 2.2rem);
+            }
+
+            .photo-grid-mini {
+                gap: clamp(6px, 1.5vw, 10px);
+            }
+
+            .mini-photo {
+                font-size: clamp(0.6rem, 1vw, 0.85rem);
+            }
+
+            .nav-arrow {
+                width: clamp(48px, 5vw, 56px);
+                height: clamp(48px, 5vw, 56px);
+                font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+                left: clamp(8px, 3vw, 12px);
+                right: clamp(8px, 3vw, 12px);
+            }
+
+            .nav-arrow.prev {
+                left: clamp(8px, 3vw, 12px);
+            }
+
+            .nav-arrow.next {
+                right: clamp(8px, 3vw, 12px);
+            }
+
+            .restart-btn {
+                width: 50px;
+                height: 50px;
+                top: 10px;
+                left: 10px;
+                padding: 12px;
+            }
+
+            .audio-btn {
+                width: 50px;
+                height: 50px;
+                top: 10px;
+                right: 10px;
+                padding: 12px;
+            }
+        }
+
+        /* Small Mobile (320px - 480px) */
+        @media (max-width: 480px) {
+            .slide {
+                padding: clamp(20px, 3vw, 24px) clamp(12px, 2vw, 16px);
+                min-height: 100vh;
+            }
+
+            .album-container {
+                gap: clamp(16px, 3vw, 20px);
+            }
+
+            .album-title {
+                font-size: clamp(1.6rem, 3.5vw, 1.9rem);
+            }
+
+            .album-book {
+                width: clamp(220px, 80vw, 280px);
+                height: clamp(300px, 110vw, 380px);
+                perspective: 1000px;
+            }
+
+            .photo-grid-mini {
+                gap: clamp(5px, 1vw, 8px);
+            }
+
+            .mini-photo {
+                font-size: clamp(0.5rem, 0.9vw, 0.7rem);
+            }
+
+            .timeline-photo {
+                max-height: clamp(180px, 50vh, 240px);
+            }
+
+            .envelope {
+                width: clamp(200px, 85vw, 260px);
+                height: clamp(140px, 50vw, 180px);
+            }
+
+            .envelope-flap {
+                border-left: clamp(100px, 42.5vw, 130px) solid transparent;
+                border-right: clamp(100px, 42.5vw, 130px) solid transparent;
+                border-top: clamp(70px, 35vw, 90px) solid var(--accent-red);
+            }
+
+            .nav-arrow {
+                width: clamp(44px, 4vw, 50px);
+                height: clamp(44px, 4vw, 50px);
+                font-size: clamp(1rem, 2vw, 1.4rem);
+                left: clamp(6px, 2vw, 10px);
+                right: clamp(6px, 2vw, 10px);
+            }
+
+            .restart-btn {
+                width: 50px;
+                height: 50px;
+                top: 10px;
+                left: 10px;
+                padding: 12px;
             }
 
             .audio-btn {
@@ -682,19 +1029,247 @@
                 padding: 12px;
             }
 
-            .audio-btn:hover {
-                padding: 12px 16px;
+            .audio-icon {
+                font-size: clamp(1.2rem, 2.5vw, 1.6rem);
             }
         }
 
-        /* Album Cover Slide */
-        .album-cover {
-            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-red) 100%);
-            cursor: pointer;
+        /* Mobile Landscape (phones like iPhone 14 Pro Max) */
+        @media (max-height: 600px) and (orientation: landscape) {
+            /* HIDE timeline for landscape */
+            .timeline-slider {
+                display: none !important;
+            }
+
+            .slide {
+                padding: 10px 10px 16px !important;
+            }
+
+            .timeline-slide {
+                gap: 10px;
+            }
+
+            .timeline-month {
+                font-size: clamp(1.3rem, 3vw, 1.7rem) !important;
+                padding: 6px 14px !important;
+                margin-bottom: 4px !important;
+            }
+
+            .timeline-photo {
+                max-height: clamp(120px, 42vh, 180px) !important;
+            }
+
+            .timeline-text {
+                font-size: clamp(0.8rem, 1.8vw, 0.95rem) !important;
+                padding: 8px 12px !important;
+            }
+
+            /* Intro overlay compact splash */
+            .album-container {
+                width: 100%;
+                padding: 0 16px;
+                gap: 10px;
+            }
+
+            .album-book,
+            .click-prompt {
+                display: none;
+            }
+
+            .intro-compact {
+                display: flex;
+                margin-top: 10px;
+            }
+
+            /* Enhanced envelope for mobile landscape */
+            .envelope-container {
+                gap: 16px;
+                padding-top: 6px;
+            }
+
+            .envelope {
+                width: clamp(200px, 60vw, 280px);
+                height: clamp(140px, 45vw, 200px);
+            }
+
+            .envelope.active {
+                animation: envelopeBounceIntense 0.6s ease-in-out infinite;
+            }
+
+            .envelope-body {
+                box-shadow: 0 10px 35px rgba(255, 107, 157, 0.5);
+            }
+
+            .envelope-prompt {
+                font-size: clamp(1rem, 2.8vw, 1.4rem) !important;
+                margin-top: 0;
+            }
+
+            .envelope-prompt p {
+                font-size: clamp(0.95rem, 2.6vw, 1.2rem) !important;
+            }
+
+            /* Instruction text for mobile landscape */
+            .envelope-instruction {
+                display: block !important;
+                text-align: center;
+                color: var(--primary-pink);
+                font-style: italic;
+                font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+                margin-top: 8px;
+                animation: fadeInUp 0.6s ease-out 0.3s both;
+            }
+
+            .nav-arrow {
+                width: 42px;
+                height: 42px;
+                font-size: 0.95rem;
+            }
+
+            .restart-btn {
+                width: 40px;
+                height: 40px;
+                top: 10px;
+                left: 8px;
+                padding: 10px;
+            }
+
+            .audio-btn {
+                width: 40px;
+                height: 40px;
+                top: 10px;
+                right: 8px;
+                padding: 10px;
+            }
+
+            .audio-icon {
+                font-size: 1.1rem;
+            }
         }
 
-        .album-cover.exit {
+        /* Extra Small Mobile (< 320px) */
+        @media (max-width: 319px) {
+            .slide {
+                padding: 16px 10px;
+            }
+
+            .timeline-dot {
+                min-width: 45px;
+                width: 45px;
+                height: 45px;
+                font-size: 0.55rem;
+            }
+
+            .nav-arrow {
+                width: 42px;
+                height: 42px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Legacy Responsive Design (for compatibility) */
+        @media (max-width: 768px) {
+            /* Handled above in range-based queries */
+        }
+
+        /* Valentine's Day Lock Overlay */
+        .lock-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-red) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .lock-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
             pointer-events: none;
+        }
+
+        .lock-content {
+            text-align: center;
+            color: white;
+            padding: clamp(20px, 4vw, 50px) clamp(16px, 3vw, 30px);
+            max-width: clamp(280px, 90vw, 600px);
+            animation: scaleInBounce 0.8s cubic-bezier(.22,.9,.37,1) ease-out;
+        }
+
+        .lock-icon {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: clamp(12px, 3vw, 25px);
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        .lock-content h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: clamp(12px, 3vw, 25px);
+            animation: fadeInDown 1s ease-out 0.2s both;
+        }
+
+        .lock-content p {
+            font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+            margin: clamp(8px, 1.5vw, 18px) 0;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .countdown-text {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-weight: bold;
+            margin-top: clamp(15px, 4vw, 35px) !important;
+        }
+
+        /* Album Cover (Intro Page) */
+        #introOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-red) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            cursor: pointer;
+            transition: opacity 0.65s ease, visibility 0.65s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        #introOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #introOverlay.exit {
+            animation: fadeOutScale 0.65s ease forwards;
+            pointer-events: none !important;
+        }
+
+        #introOverlay.exit .album-container {
+            animation: scaleOutBounce 0.65s cubic-bezier(.22,.9,.37,1) ease-out forwards;
+        }
+
+        #introOverlay.exit .album-title {
+            animation: fadeOutUp 0.4s ease-out forwards;
+        }
+
+        #introOverlay.exit .album-book {
+            animation: fadeOutScale 0.5s ease-out 0.1s forwards;
+        }
+
+        #introOverlay.exit .click-prompt {
+            animation: fadeOut 0.3s ease-out forwards;
         }
 
         .album-container {
@@ -702,12 +1277,58 @@
             flex-direction: column;
             align-items: center;
             gap: 40px;
-            animation: fadeInUp 1s ease-out;
+            animation: scaleInBounce 1s cubic-bezier(.22,.9,.37,1) ease-out;
+        }
+
+        .intro-compact {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        body.landscape-compact .album-book,
+        body.landscape-compact .click-prompt {
+            display: none;
+        }
+
+        body.landscape-compact .intro-compact {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .intro-compact-title {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .intro-compact-heart {
+            font-size: clamp(1.6rem, 4vw, 2.4rem);
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        .intro-compact-text {
+            font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .album-container .album-book {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .album-container .click-prompt {
+            animation: fadeInUp 0.8s ease-out 0.5s both, pulse 2s ease-in-out 1.3s infinite;
         }
 
         .album-book {
-            width: 360px;
-            height: 480px;
+            width: clamp(240px, 85vw, 400px);
+            height: clamp(320px, 110vw, 540px);
             perspective: 1000px;
             transition: transform 0.3s ease;
         }
@@ -720,34 +1341,36 @@
             width: 100%;
             height: 100%;
             background: white;
-            border-radius: 10px;
+            border-radius: clamp(8px, 2vw, 14px);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 30px;
+            padding: clamp(16px, 3vw, 35px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: clamp(16px, 3vw, 35px);
         }
 
         .album-title {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
             color: var(--accent-red);
             font-weight: bold;
             font-family: 'Georgia', serif;
+            opacity: 0;
+            animation: fadeInScale 0.6s ease-out 0.35s forwards;
         }
 
         .photo-grid-mini {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: clamp(6px, 1.5vw, 12px);
             width: 100%;
         }
 
         .mini-photo {
             aspect-ratio: 1;
             background: linear-gradient(135deg, var(--secondary-pink), var(--primary-pink));
-            border-radius: 8px;
+            border-radius: clamp(6px, 1.5vw, 10px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -756,6 +1379,24 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            opacity: 0;
+            animation: fadeInScale 0.6s ease-out forwards;
+        }
+
+        .mini-photo:nth-child(1) { animation-delay: 0.4s; }
+        .mini-photo:nth-child(2) { animation-delay: 0.5s; }
+        .mini-photo:nth-child(3) { animation-delay: 0.6s; }
+        .mini-photo:nth-child(4) { animation-delay: 0.7s; }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .click-prompt {
@@ -800,8 +1441,8 @@
         }
 
         .envelope {
-            width: 350px;
-            height: 250px;
+            width: clamp(220px, 80vw, 380px);
+            height: clamp(160px, 50vw, 270px);
             position: relative;
             cursor: pointer;
             transition: transform 0.3s ease;
@@ -811,11 +1452,35 @@
             transform: scale(1.05);
         }
 
+        .envelope.active {
+            animation: envelopeBounce 0.8s ease-in-out infinite;
+        }
+
+        @keyframes envelopeBounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-15px) scale(1.05);
+            }
+        }
+
+        @keyframes envelopeBounceIntense {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.08);
+                box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+            }
+        }
+
         .envelope-body {
             width: 100%;
             height: 100%;
             background: white;
-            border: 3px solid var(--primary-pink);
+            border: clamp(2px, 0.5vw, 4px) solid var(--primary-pink);
             position: relative;
             display: flex;
             align-items: center;
@@ -826,9 +1491,9 @@
         .envelope-flap {
             width: 0;
             height: 0;
-            border-left: 175px solid transparent;
-            border-right: 175px solid transparent;
-            border-top: 125px solid var(--accent-red);
+            border-left: clamp(110px, 40vw, 190px) solid transparent;
+            border-right: clamp(110px, 40vw, 190px) solid transparent;
+            border-top: clamp(80px, 35vw, 140px) solid var(--accent-red);
             position: absolute;
             top: 0;
             left: 0;
@@ -842,7 +1507,7 @@
         }
 
         .wax-seal {
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             animation: heartbeat 1.5s infinite;
         }
 
@@ -853,22 +1518,32 @@
         }
 
         .letter-peek {
-            width: 280px;
-            height: 180px;
+            width: clamp(180px, 75vw, 310px);
+            height: clamp(120px, 45vw, 200px);
             background: var(--soft-white);
             position: absolute;
-            top: 20px;
+            top: clamp(8px, 2vw, 22px);
             left: 50%;
             transform: translateX(-50%);
-            border-radius: 5px;
+            border-radius: clamp(4px, 1vw, 8px);
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
         .envelope-prompt {
             text-align: center;
             color: var(--accent-red);
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 2.5vw, 1.7rem);
             font-style: italic;
+        }
+
+        .envelope-instruction {
+            display: none;
+            text-align: center;
+            color: var(--primary-pink);
+            font-style: italic;
+            font-size: 1rem;
+            margin-top: 8px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
         }
 
         /* Letter Overlay Styles */
@@ -882,7 +1557,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 3000;
+            z-index: 3100;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.8s ease, visibility 0.8s ease;
@@ -992,6 +1667,44 @@
             transform: rotateX(-180deg);
         }
 
+        /* Closing Overlay (Outside Slideshow) */
+        #closingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-red) 0%, var(--primary-pink) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3050;
+            color: white;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.65s ease, visibility 0.65s ease;
+            pointer-events: none;
+            overflow-y: auto;
+        }
+
+        #closingOverlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        #closingOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #closingOverlay .closing-content {
+            min-height: auto !important;
+            position: relative;
+        }
+
         /* Closing Slide */
         .closing-slide {
             background: linear-gradient(135deg, var(--accent-red) 0%, var(--primary-pink) 100%);
@@ -1001,59 +1714,72 @@
         }
 
         .closing-content {
-            max-width: 800px;
+            max-width: clamp(280px, 90vw, 850px);
             width: 100%;
-            min-height: 100vh;
-            padding: 40px 24px 80px;
+            padding: clamp(30px, 5vw, 50px) clamp(16px, 3vw, 28px) clamp(60px, 12vh, 100px);
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            animation: fadeInUp 1s ease-out;
+            gap: clamp(6px, 1.5vw, 12px);
+        }
+
+        #closingOverlay.active .closing-content {
+            animation: scaleInBounce 0.8s cubic-bezier(.22,.9,.37,1) ease-out;
         }
 
         .closing-meta {
-            position: absolute;
+            position: fixed;
             left: 50%;
-            bottom: 8px;
+            bottom: clamp(6px, 1.5vw, 10px);
             transform: translateX(-50%);
             opacity: 0.55;
-            font-size: 0.75rem;
+            font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+            margin-top: 0;
+            z-index: 3060;
         }
 
         .closing-title {
-            font-size: 3rem;
-            margin-bottom: 40px;
-            animation: fadeInDown 1s ease-out;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: clamp(24px, 5vw, 45px);
+            opacity: 0;
+        }
+
+        #closingOverlay.active .closing-title {
+            animation: fadeInDown 1s ease-out 0.2s both;
         }
 
         .closing-text {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            font-size: clamp(1rem, 2.5vw, 1.6rem);
+            margin-bottom: clamp(12px, 2vw, 22px);
             font-style: italic;
             opacity: 0;
-            animation: fadeInUp 1s ease-out forwards;
         }
 
-        .closing-text:nth-child(2) { animation-delay: 0.3s; }
-        .closing-text:nth-child(3) { animation-delay: 0.6s; }
-        .closing-text:nth-child(4) { animation-delay: 0.9s; }
+        #closingOverlay.active .closing-text:nth-child(2) { animation: fadeInUp 0.8s ease-out 0.5s both; }
+        #closingOverlay.active .closing-text:nth-child(3) { animation: fadeInUp 0.8s ease-out 0.8s both; }
+        #closingOverlay.active .closing-text:nth-child(4) { animation: fadeInUp 0.8s ease-out 1.1s both; }
 
         .closing-hearts {
-            font-size: 3rem;
-            margin: 40px 0;
-            animation: fadeIn 1s ease-out 1.2s forwards;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin: clamp(24px, 4vw, 45px) 0;
             opacity: 0;
+        }
+
+        #closingOverlay.active .closing-hearts {
+            animation: fadeIn 1s ease-out 1.4s both;
         }
 
         .closing-footer {
-            font-size: 1.8rem;
-            margin-bottom: 40px;
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            margin-bottom: clamp(24px, 4vw, 45px);
             font-weight: bold;
-            animation: fadeIn 1s ease-out 1.5s forwards;
             opacity: 0;
+        }
+
+        #closingOverlay.active .closing-footer {
+            animation: fadeIn 1s ease-out 1.7s both;
         }
 
         .replay-btn {
@@ -1066,13 +1792,17 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            animation: fadeIn 1s ease-out 1.8s forwards;
             opacity: 0;
+        }
+
+        #closingOverlay.active .replay-btn {
+            animation: fadeIn 1s ease-out 2s both;
         }
 
         .replay-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            animation: heartPulse 0.6s ease-in-out;
         }
 
         .timeline-slider.hidden {
@@ -1135,12 +1865,20 @@
         .closing-footer-note {
             font-size: 0.9rem;
             margin-top: 20px;
-            opacity: 0.5;
+            opacity: 0;
             font-weight: normal;
             font-style: italic;
-            animation: fadeIn 1s ease-out 2s forwards;
-            opacity: 0;
-        }            @media (max-width: 768px) {
+        }
+
+        #closingOverlay.active .closing-footer-note {
+            animation: fadeIn 1s ease-out 2.3s both;
+        }
+
+        @media (max-width: 768px) {
+            #introOverlay {
+                z-index: 3000;
+            }
+
             .restart-btn {
                 width: 50px;
                 height: 50px;
@@ -1150,6 +1888,20 @@
             }
 
             .restart-btn:hover {
+                padding: 12px 16px;
+            }
+
+            .audio-btn {
+                width: 50px;
+                height: 50px;
+                top: 10px;
+                right: 10px;
+                padding: 12px;
+            }
+
+            .audio-btn:hover,
+            .audio-btn:active,
+            .audio-btn:focus {
                 padding: 12px 16px;
             }
 
@@ -1239,15 +1991,6 @@
                 font-size: 1.2rem;
             }
 
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
             .closing-content {
                 padding: 24px 18px 70px;
                 gap: 6px;
@@ -1286,44 +2029,83 @@
                 margin-top: 0;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- ========================================
+         BACKGROUND DECORATIONS
+         ======================================== -->
+    
     <!-- Floating Hearts Background -->
+    <!-- Hearts are added dynamically by JavaScript -->
     <div class="heart-container" id="heartContainer"></div>
 
-    <!-- Slideshow Container -->
-    <div class="slideshow-container">
-        <!-- Slide 0: Photo Album Cover with Intro -->
-        <div class="slide album-cover active" style="position: relative;">
-            <div class="album-container">
-                <div class="album-book" onclick="openAlbum()">
-                    <div class="album-front">
-                        <div class="album-title">Our Story</div>
-                        <div class="photo-grid-mini">
-                            <div class="mini-photo">Photo 1</div>
-                            <div class="mini-photo">Photo 2</div>
-                            <div class="mini-photo">Photo 3</div>
-                            <div class="mini-photo">Photo 4</div>
-                        </div>
+    <!-- Valentine's Day Lock Overlay -->
+    <div id="lockOverlay" class="lock-overlay hidden">
+        <div class="lock-content">
+            <div class="lock-icon">🔒</div>
+            <h1>Coming on Valentine's Day</h1>
+            <p>This special surprise unlocks on February 14, 2026</p>
+            <p class="countdown-text" id="countdownText">Get ready to celebrate our love! 💕</p>
+        </div>
+    </div>
+
+    <!-- ========================================
+         INTRO OVERLAY (Album Cover)
+         First screen user sees - clickable to start
+         ======================================== -->
+    
+    <!-- Intro Page (Outside Slides) -->
+    <div id="introOverlay" onclick="openAlbum()">
+        <div class="album-container">
+            <div class="intro-compact" onclick="openAlbum()">
+                <div class="intro-compact-title">Our Story</div>
+                <div class="intro-compact-heart">💖</div>
+                <div class="intro-compact-text">Tap to begin</div>
+            </div>
+            <div class="album-book" onclick="openAlbum()">
+                <div class="album-front">
+                    <div class="album-title">Our Story</div>
+                    <div class="photo-grid-mini">
+                        <div class="mini-photo">Photo 1</div>
+                        <div class="mini-photo">Photo 2</div>
+                        <div class="mini-photo">Photo 3</div>
+                        <div class="mini-photo">Photo 4</div>
                     </div>
                 </div>
-                <div class="click-prompt">
-                    <span class="arrow-up">↑</span>
-                    <span class="prompt-text">Tap the album to begin</span>
-                    <span class="arrow-up">↑</span>
-                </div>
+            </div>
+            <div class="click-prompt">
+                <span class="arrow-up">↑</span>
+                <span class="prompt-text">Tap the album to begin</span>
+                <span class="arrow-up">↑</span>
             </div>
         </div>
+    </div>
 
-        <!-- Slide 1: March 2025 -->
-        <div class="slide timeline-slide">
+    <!-- ========================================
+         MAIN SLIDESHOW
+         Contains all 14 slides (March 2025 - February 2026)
+         ======================================== -->
+    
+    <!-- Slideshow Container -->
+    <div class="slideshow-container">
+        <!-- Slide 0: March 2025 -->
+        <div class="slide timeline-slide active">
             <div class="timeline-month">March 2025</div>
             <img class="timeline-photo" src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop" alt="March 2025">
             <p class="timeline-text">Our first spark 💬</p>
         </div>
 
-        <!-- Slide 2: April 2025 -->
+        <!-- Slide 1: April 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">April 2025</div>
             <img class="timeline-photo" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop" alt="April 2025">
@@ -1400,7 +2182,7 @@
             <p class="timeline-text">First Valentine’s together 💖</p>
         </div>
 
-        <!-- Slide 13: Letter Envelope with Expandable Letter -->
+        <!-- Slide 12: Letter Envelope with Expandable Letter -->
         <div class="slide envelope-slide" id="envelopeSlide">
             <div class="envelope-container">
                 <div class="envelope" id="envelope" onclick="toggleLetter()">
@@ -1414,195 +2196,236 @@
                     <p>A letter for you... ❤️</p>
                     <p style="font-size: 1rem; margin-top: 10px;">Click to open</p>
                 </div>
-            </div>
-
-            <!-- Letter Content (Hidden Initially) -->
-            <div class="letter-overlay" id="letterOverlay">
-                <div class="letter-paper">
-                    <button class="close-letter-x" onclick="toggleLetter()">✕</button>
-                    <div class="letter-body">
-                        <h2>To My Dearest Aileen 💕</h2>
-                        <p class="letter-date">Valentine's Day 2026</p>
-                        <div class="letter-content">
-                            <p>My Babe,</p>
-                            
-                            <p>As I sit here, thousands of miles away from you, my heart feels closer to yours than ever. These past months have been a beautiful testament to what we share - a love that transcends distance, time zones, and physical space.</p>
-                            
-                            <p>Every video call, every text message, every "good morning" and "goodnight" has been a treasure. The way you smile through the screen brightens my darkest days. Your laughter, even through a phone speaker, is the most beautiful melody I've ever heard.</p>
-                            
-                            <p>Long distance isn't easy. There are nights when I long to hold you, moments when I wish I could be there to wipe away your tears or share in your joy in person. But this distance has taught me something invaluable - it has shown me the depth of my love for you, the strength of our bond, and the certainty of my feelings.</p>
-                            
-                            <p>You've become my home, no matter where in the world we are. When we talk, I'm home. When I see your face, I'm home. When I think of our future together, I'm home.</p>
-                            
-                            <p>I count down the days until we meet again. I've been planning something special, something that will show you just how serious I am about us, about our future together. Let's just say... you might want to keep your left hand free when we next see each other. 💍✨</p>
-                            
-                            <p>Until that moment comes, know that you are loved beyond measure. You are thought of constantly. You are cherished deeply. And you are missed profoundly.</p>
-                            
-                            <p>Distance is just a test of how far love can travel. And ours? It's limitless.</p>
-                            
-                            <p>Happy Valentine's Day, my beautiful Aileen. Soon, very soon, I hope to ask you to be something even more.</p>
-                        </div>
-                        <p class="letter-signature">Forever and always yours,<br>Your Babe ❤️</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 14: Closing Page -->
-        <div class="slide closing-slide">
-            <div class="closing-content">
-                <h1 class="closing-title">Thank you for being mine ❤️</h1>
-                <p class="closing-text">Every moment with you is a gift.</p>
-                <p class="closing-text">Every day with you is an adventure.</p>
-                <p class="closing-text">Every tomorrow with you is a promise.</p>
-                <div class="closing-hearts">💕 💝 💖 💗 💓</div>
-                <p class="closing-footer">Happy Valentine's Day, my love!</p>
-                <button class="replay-btn" onclick="restartJourney()">Relive Our Journey →</button>
-                <p class="closing-footer-note">(Or you can close this page... but I hope you don't ❤️)</p>
-                <p class="closing-meta" style="font-size:0.8rem;opacity:0.7;margin-top:16px;">Built by Patrick Jove • AI assisted using GitHub Copilot</p>
+                <div class="envelope-instruction">Tap the envelope to open 💌</div>
             </div>
         </div>
     </div>
 
-    <!-- Restart Button -->
+    <!-- Letter Overlay (Outside Slideshow) -->
+    <div class="letter-overlay" id="letterOverlay">
+        <div class="letter-paper">
+            <button class="close-letter-x" onclick="toggleLetter()">✕</button>
+            <div class="letter-body">
+                <h2>To My Dearest Aileen 💕</h2>
+                <p class="letter-date">Valentine's Day 2026</p>
+                <div class="letter-content">
+                    <p>My Babe,</p>
+                    
+                    <p>As I sit here, thousands of miles away from you, my heart feels closer to yours than ever. These past months have been a beautiful testament to what we share - a love that transcends distance, time zones, and physical space.</p>
+                    
+                    <p>Every video call, every text message, every "good morning" and "goodnight" has been a treasure. The way you smile through the screen brightens my darkest days. Your laughter, even through a phone speaker, is the most beautiful melody I've ever heard.</p>
+                    
+                    <p>Long distance isn't easy. There are nights when I long to hold you, moments when I wish I could be there to wipe away your tears or share in your joy in person. But this distance has taught me something invaluable - it has shown me the depth of my love for you, the strength of our bond, and the certainty of my feelings.</p>
+                    
+                    <p>You've become my home, no matter where in the world we are. When we talk, I'm home. When I see your face, I'm home. When I think of our future together, I'm home.</p>
+                    
+                    <p>I count down the days until we meet again. I've been planning something special, something that will show you just how serious I am about us, about our future together. Let's just say... you might want to keep your left hand free when we next see each other. 💍✨</p>
+                    
+                    <p>Until that moment comes, know that you are loved beyond measure. You are thought of constantly. You are cherished deeply. And you are missed profoundly.</p>
+                    
+                    <p>Distance is just a test of how far love can travel. And ours? It's limitless.</p>
+                    
+                    <p>Happy Valentine's Day, my beautiful Aileen. Soon, very soon, I hope to ask you to be something even more.</p>
+                </div>
+                <p class="letter-signature">Forever and always yours,<br>Your Babe ❤️</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         CLOSING OVERLAY (Final Screen)
+         Shown after letter is closed
+         ======================================== -->
+    
+    <!-- Closing Page (Outside Slideshow) -->
+    <div id="closingOverlay">
+        <div class="closing-content">
+            <h1 class="closing-title">Thank you for being mine ❤️</h1>
+            <p class="closing-text">Every moment with you is a gift.</p>
+            <p class="closing-text">Every day with you is an adventure.</p>
+            <p class="closing-text">Every tomorrow with you is a promise.</p>
+            <div class="closing-hearts">💕 💝 💖 💗 💓</div>
+            <p class="closing-footer">Happy Valentine's Day, my love!</p>
+            <button class="replay-btn" onclick="restartJourney()">Relive Our Journey →</button>
+            <p class="closing-footer-note">(Or you can close this page... but I hope you don't ❤️)</p>
+            <p class="closing-meta" style="font-size:0.8rem;opacity:0.7;margin-top:16px;">Built by Patrick Jove • AI assisted using GitHub Copilot</p>
+        </div>
+    </div>
+
+    <!-- ========================================
+         NAVIGATION CONTROLS
+         Buttons that control slideshow navigation
+         ======================================== -->
+    
+    <!-- Restart Button (Top-Left) -->
     <button class="restart-btn hidden" id="restartBtn" onclick="restartJourney()" title="Restart Journey">
         <span class="restart-icon">💖</span>
         <span class="restart-text">Restart</span>
     </button>
 
-    <!-- Navigation Arrows -->
-    <button class="nav-arrow prev" onclick="prevSlide()">‹</button>
-    <button class="nav-arrow next" onclick="nextSlide()">›</button>
+    <!-- Navigation Arrows (Left/Right sides) -->
+    <button class="nav-arrow prev" onclick="prevSlide()">‹</button>  <!-- Left arrow -->
+    <button class="nav-arrow next" onclick="nextSlide()">›</button>  <!-- Right arrow -->
 
+    <!-- ========================================
+         TIMELINE SLIDER (Bottom of screen)
+         Dots representing each month - click to jump
+         ======================================== -->
+    
     <!-- Timeline Slider at Bottom -->
     <div class="timeline-slider">
         <div class="slider-track" id="sliderTrack">
-            <div class="timeline-dot intro active" data-slide="0" onclick="goToSlide(event,0)">
+            <div class="timeline-dot intro" data-slide="-1" onclick="goToIntro()">
                 <span>Start</span>
             </div>
-            <div class="timeline-dot" data-slide="1" onclick="goToSlide(event,1)">
+            <div class="timeline-dot" data-slide="0" onclick="goToSlide(event,0)">
                 <span>Mar<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="2" onclick="goToSlide(event,2)">
+            <div class="timeline-dot" data-slide="1" onclick="goToSlide(event,1)">
                 <span>Apr<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="3" onclick="goToSlide(event,3)">
+            <div class="timeline-dot" data-slide="2" onclick="goToSlide(event,2)">
                 <span>May<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="4" onclick="goToSlide(event,4)">
+            <div class="timeline-dot" data-slide="3" onclick="goToSlide(event,3)">
                 <span>Jun<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="5" onclick="goToSlide(event,5)">
+            <div class="timeline-dot" data-slide="4" onclick="goToSlide(event,4)">
                 <span>Jul<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="6" onclick="goToSlide(event,6)">
+            <div class="timeline-dot" data-slide="5" onclick="goToSlide(event,5)">
                 <span>Aug<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="7" onclick="goToSlide(event,7)">
+            <div class="timeline-dot" data-slide="6" onclick="goToSlide(event,6)">
                 <span>Sep<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="8" onclick="goToSlide(event,8)">
+            <div class="timeline-dot" data-slide="7" onclick="goToSlide(event,7)">
                 <span>Oct<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="9" onclick="goToSlide(event,9)">
+            <div class="timeline-dot" data-slide="8" onclick="goToSlide(event,8)">
                 <span>Nov<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="10" onclick="goToSlide(event,10)">
+            <div class="timeline-dot" data-slide="9" onclick="goToSlide(event,9)">
                 <span>Dec<br>2025</span>
             </div>
-            <div class="timeline-dot" data-slide="11" onclick="goToSlide(event,11)">
+            <div class="timeline-dot" data-slide="10" onclick="goToSlide(event,10)">
                 <span>Jan<br>2026</span>
             </div>
-            <div class="timeline-dot" data-slide="12" onclick="goToSlide(event,12)">
+            <div class="timeline-dot" data-slide="11" onclick="goToSlide(event,11)">
                 <span>Feb<br>2026</span>
             </div>
-            <div class="timeline-dot hidden" id="letterDot" data-slide="13" onclick="goToSlide(event,13)">
+            <div class="timeline-dot letter-dot hidden" id="letterDot" data-slide="12" onclick="goToSlide(event,12)">
                 <span>💌<br>Letter</span>
-            </div>
-            <div class="timeline-dot hidden" id="endDot" data-slide="14" onclick="goToSlide(event,14)">
-                <span>💕<br>End</span>
             </div>
         </div>
     </div>
 
+    <!-- ========================================
+         AUDIO CONTROLS (Top-Right)
+         Music button with play/pause
+         ======================================== -->
+    
     <!-- Audio Controls -->
     <button class="audio-btn" id="audioToggle" onclick="toggleAudio()">
         <span class="audio-icon">🎵</span>
-        <div class="audio-info">
-            <div class="song-info">
-                <div class="song-title">Perfect - Ed Sheeran</div>
-                <div class="play-pause">▶️</div>
-            </div>
-        </div>
+        <span class="audio-text">
+            <span class="audio-song">Perfect - Ed Sheeran</span>
+            <span class="audio-play">▶️</span>
+        </span>
     </button>
 
     <!-- Transition overlay used for smooth restart fade -->
     <div id="transitionOverlay" style="position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4000;transition:opacity 0.45s ease"></div>
 
+    <!-- ============================================
+         JAVASCRIPT CODE - Makes the page interactive
+         ============================================ -->
     <script>
-        // Simple password protection for testing
-        (function() {
-            const correctPassword = 'OurTimeline2025'; // Change this to your desired password
-            const hasAccess = sessionStorage.getItem('timeline_access');
-            
-            if (!hasAccess) {
-                const enteredPassword = prompt('🔒 Enter password to view Our Love Timeline:');
-                if (enteredPassword === correctPassword) {
-                    sessionStorage.setItem('timeline_access', 'true');
-                } else {
-                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg, #ff6b9d 0%, #ffc1cc 100%);color:white;font-family:Georgia,serif;text-align:center;"><div><h1 style="font-size:3rem;margin-bottom:1rem;">❌ Access Denied</h1><p style="font-size:1.2rem;opacity:0.9;">Invalid password. Please try again.</p></div></div>';
-                    throw new Error('Access denied');
-                }
-            }
-        })();
+        /* ========================================
+           GLOBAL VARIABLES (STATE)
+           These track the current state of the app
+           ======================================== */
+        
+        let currentSlide = 0;           // Which slide is currently showing (0-13)
+        const slides = document.querySelectorAll('.slide');           // Get all slide elements from HTML
+        const timelineDots = document.querySelectorAll('.timeline-dot');  // Get all timeline dot elements
+        let showingIntro = true;        // Is the intro overlay visible? (true at start)
+        let spotifyVisible = false;     // Legacy variable (Spotify player not implemented)
+        const spotifyPlayer = document.getElementById('spotifyPlayer');  // Get Spotify element (null - doesn't exist)
+        let isAudioPlaying = false;     // Is the mock audio playing? (for play/pause icon)
 
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const timelineDots = document.querySelectorAll('.timeline-dot');
-        let allowIntroReset = false;
-
-        // Create floating hearts
+        /* ========================================
+           FLOATING HEARTS BACKGROUND
+           Creates decorative hearts that float up
+           ======================================== */
+        
+        /**
+         * Creates a single floating heart element
+         * - Adds a heart emoji to the heart container
+         * - Gives it random position and animation timing
+         * - Auto-removes after 13 seconds to prevent memory leaks
+         */
+        /**
+         * Creates a single floating heart element
+         * - Adds a heart emoji to the heart container
+         * - Gives it random position and animation timing
+         * - Auto-removes after 13 seconds to prevent memory leaks
+         */
         function createHeart() {
-            const heartContainer = document.getElementById('heartContainer');
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
+            const heartContainer = document.getElementById('heartContainer');  // Get the heart container element
+            const heart = document.createElement('div');  // Create a new <div> element
+            heart.classList.add('heart');  // Add 'heart' class for CSS styling/animation
+            heart.innerHTML = '❤️';  // Heart emoji
+            
+            // Random horizontal position (0-100% of screen width)
             heart.style.left = Math.random() * 100 + '%';
+            
+            // Random animation duration (5-10 seconds)
             heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            
+            // Random start delay (0-5 seconds)
             heart.style.animationDelay = Math.random() * 5 + 's';
-            heartContainer.appendChild(heart);
+            
+            heartContainer.appendChild(heart);  // Add heart to the page
 
+            // Remove heart after animation completes (13 seconds max)
             setTimeout(() => {
-                heart.remove();
+                heart.remove();  // Cleanup: Remove from DOM to prevent memory leak
             }, 13000);
         }
 
-        // Generate hearts periodically
+        // Start creating hearts: 1 heart every 2 seconds
         setInterval(createHeart, 2000);
+        
+        // Create 5 initial hearts immediately (staggered by 0.5s each)
         for (let i = 0; i < 5; i++) {
-            setTimeout(createHeart, i * 500);
+            setTimeout(createHeart, i * 500);  // 0ms, 500ms, 1000ms, 1500ms, 2000ms
         }
 
-        // Show slide function
+        /* ========================================
+           NAVIGATION SYSTEM
+           Core function that switches between slides
+           ======================================== */
+        
+        /**
+         * Shows a specific slide with animation
+         * This is the MAIN navigation function called by all other navigation methods
+         * 
+         * @param {number} index - Which slide to show (0-13)
+         * @param {string} direction - Animation type:
+         *   - 'next'  = sliding left (going forward)
+         *   - 'prev'  = sliding right (going backward)
+         *   - 'fade'  = fade in/out (used for final slide and timeline jumps)
+         *   - 'endReveal' = special animation for letter closing
+         *   - 'none'  = no animation
+         */
         function showSlide(index, direction = 'none') {
-            // Prevent going back to intro page (slide 0) once timeline has started
-            if (index === 0 && currentSlide > 0 && !allowIntroReset) {
-                return;
-            }
-
-            if (index === 0) {
-                const album = document.querySelector('.album-cover');
-                if (album) {
-                    album.classList.remove('exit');
-                }
-            }
-
-            // If going to final closing slide, use fade transition
+            // Special case: Final slide defaults to fade animation
             if (index === slides.length - 1 && direction === 'none') {
-                // default final slide transition is a fade unless explicitly overridden
                 direction = 'fade';
             }
             
+            // Boundary checks: Don't go below 0 or above max
             if (index < 0) {
                 currentSlide = 0;
                 return;
@@ -1611,29 +2434,38 @@
                 return;
             }
 
+            // Store which slide we're leaving
             const previousSlide = currentSlide;
+            
+            // Update current slide index
             currentSlide = index;
-            allowIntroReset = false;
+            
+            // We're no longer showing the intro
+            showingIntro = false;
 
+            // Loop through ALL slides to update their states
             slides.forEach((slide, i) => {
+                // First, remove all animation classes from every slide (clean slate)
                 slide.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-right');
                 
+                // If this is the slide we're LEAVING, animate it out
                 if (i === previousSlide && direction !== 'none') {
-                    // Add exit animation to previous slide
+                    // Choose exit animation based on direction
                     if (direction === 'next') {
-                        slide.classList.add('slide-out-left');
+                        slide.classList.add('slide-out-left');  // Slide out to the left
                     } else if (direction === 'prev') {
-                        slide.classList.add('slide-out-right');
+                        slide.classList.add('slide-out-right');  // Slide out to the right
                     } else if (direction === 'fade') {
-                        slide.classList.add('fade-out');
+                        slide.classList.add('fade-out');  // Fade out
                     }
                     
-                    // Remove the slide animation classes after animation
+                    // Clean up animation classes after animation completes (650ms)
                     setTimeout(() => {
                         slide.classList.remove('slide-out-left', 'slide-out-right', 'fade-out');
-                    }, 650);
+                    }, 650);  // Must match CSS animation duration
                 }
                 
+                // If this is the slide we're ENTERING, make it active and animate it in
                 if (i === currentSlide) {
                     // If we're doing a fade or endReveal, avoid the default slide-in animation
                     if (direction === 'fade') {
@@ -1643,7 +2475,7 @@
                             slide.classList.remove('fade-in');
                             slide.classList.remove('no-slide');
                         }, 650);
-                        if (currentSlide === 1) {
+                        if (currentSlide === 0) {
                             slide.classList.add('first-enter');
                             setTimeout(() => slide.classList.remove('first-enter'), 1300);
                         }
@@ -1668,44 +2500,48 @@
             
             // Show/hide letter dot when reaching February (slide 11)
             const letterDot = document.getElementById('letterDot');
-            if (currentSlide >= 12) {
+            if (currentSlide >= 11) {
                 letterDot.classList.remove('hidden');
+                // Add glowing effect to letter dot when on February (slide 11)
+                if (currentSlide === 11) {
+                    letterDot.classList.add('glowing');
+                } else {
+                    letterDot.classList.remove('glowing');
+                }
             } else {
                 letterDot.classList.add('hidden');
+                letterDot.classList.remove('glowing');
             }
             
-            // Show/hide end dot when reaching letter (slide 12)
-            const endDot = document.getElementById('endDot');
-            if (currentSlide >= 13) {
-                endDot.classList.remove('hidden');
-            } else {
-                endDot.classList.add('hidden');
-            }
-            
-            // Hide timeline slider on intro and final closing slide
+            // Timeline slider and buttons visibility
             const timelineSlider = document.querySelector('.timeline-slider');
             const navArrows = document.querySelectorAll('.nav-arrow');
             const restartBtn = document.getElementById('restartBtn');
             
-            // Hide the timeline on intro (start) and final (end) slides.
-            if (currentSlide === 0 || currentSlide === slides.length - 1 || timelineSlider.classList.contains('disabled')) {
+            // Hide timeline and buttons only on envelope slide
+            if (currentSlide === 12 || timelineSlider.classList.contains('disabled')) {
                 timelineSlider.classList.add('hidden');
-            } else {
-                timelineSlider.classList.remove('hidden');
-            }
-
-            // Keep restart button hidden on intro and final closing slide, show otherwise
-            if (currentSlide === 0 || currentSlide === slides.length - 1) {
                 restartBtn.classList.add('hidden');
             } else {
+                timelineSlider.classList.remove('hidden');
                 restartBtn.classList.remove('hidden');
             }
 
-            // Hide navigation arrows on the final slide
-            if (currentSlide === slides.length - 1) {
+            // Hide navigation arrows on the envelope slide
+            if (currentSlide === 12) {
                 navArrows.forEach(arrow => arrow.classList.add('hidden'));
+                // Add animation to envelope when it's the active slide
+                const envelope = document.getElementById('envelope');
+                if (envelope) {
+                    envelope.classList.add('active');
+                }
             } else {
                 navArrows.forEach(arrow => arrow.classList.remove('hidden'));
+                // Remove animation from envelope when not on letter slide
+                const envelope = document.getElementById('envelope');
+                if (envelope) {
+                    envelope.classList.remove('active');
+                }
             }
             
             // Correctly map current slide to timeline dot using data-slide
@@ -1726,31 +2562,49 @@
                 }
             }
 
-            // Update arrow visibility
+            // Update arrow visibility (hide prev on first slide, hide next on last)
             const prevArrow = document.querySelector('.nav-arrow.prev');
             const nextArrow = document.querySelector('.nav-arrow.next');
             
+            // Hide left arrow on first slide (can't go back further)
             if (currentSlide === 0) {
                 prevArrow.classList.add('hidden');
             } else {
                 prevArrow.classList.remove('hidden');
             }
             
+            // Hide right arrow on last slide (end of slideshow)
             if (currentSlide === slides.length - 1) {
                 nextArrow.classList.add('hidden');
             } else {
                 nextArrow.classList.remove('hidden');
             }
-        }
+        }  // End of showSlide function
 
+        /* ========================================
+           NAVIGATION HELPER FUNCTIONS
+           Simple wrappers that call showSlide()
+           ======================================== */
+        
+        /**
+         * Go to next slide (called by right arrow, right swipe, right keyboard arrow)
+         */
         function nextSlide() {
-            showSlide(currentSlide + 1, 'next');
+            showSlide(currentSlide + 1, 'next');  // Increment index, animate left
         }
 
+        /**
+         * Go to previous slide (called by left arrow, left swipe, left keyboard arrow)
+         */
         function prevSlide() {
-            showSlide(currentSlide - 1, 'prev');
+            showSlide(currentSlide - 1, 'prev');  // Decrement index, animate right
         }
 
+        /**
+         * Jump directly to a specific slide (called by timeline dots)
+         * @param {Event|number} e - Event object or slide index
+         * @param {number} index - Slide index (if e is an event)
+         */
         function goToSlide(e, index) {
             // support calls without event (legacy)
             if (typeof e === 'number') {
@@ -1767,10 +2621,15 @@
                 direction = clickX > centerX ? 'next' : 'prev';
             }
 
-            showSlide(index, direction);
+            showSlide(index, direction);  // Jump to the selected slide
         }
 
-        // Keyboard navigation
+        /* ========================================
+           KEYBOARD NAVIGATION
+           Arrow keys for desktop users
+           ======================================== */
+        
+        // Listen for keyboard arrow presses
         document.addEventListener('keydown', (e) => {
             // Disable keyboard navigation when letter overlay is active or on final closing slide
             const letterOverlay = document.getElementById('letterOverlay');
@@ -1781,31 +2640,42 @@
                 return; // Block all keyboard interaction on final closing slide
             }
             
-            // Block forward navigation (right arrow) on envelope slide (slide 13)
-            if (currentSlide === 13 && e.key === 'ArrowRight') {
+            // Block forward navigation (right arrow) on envelope slide (slide 12)
+            if (currentSlide === 12 && e.key === 'ArrowRight') {
                 return; // Block forward navigation on envelope slide
             }
             
+            // Check which arrow key was pressed
             if (e.key === 'ArrowLeft') {
-                prevSlide();
+                prevSlide();  // Left arrow = previous slide
             } else if (e.key === 'ArrowRight') {
-                nextSlide();
+                nextSlide();  // Right arrow = next slide
             }
         });
 
-        // Touch swipe support for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
+        /* ========================================
+           TOUCH SWIPE NAVIGATION
+           Swipe left/right for mobile users
+           ======================================== */
+        
+        let touchStartX = 0;  // Where finger started
+        let touchEndX = 0;    // Where finger ended
 
+        // Record where the touch started
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
         });
 
+        // When touch ends, check if it was a swipe
         document.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
+            handleSwipe();  // Process the swipe
         });
 
+        /**
+         * Determines if touch was a swipe and which direction
+         * Requires minimum 50px movement to count as a swipe
+         */
         function handleSwipe() {
             // Disable swipe navigation when letter overlay is active or on final closing slide
             const letterOverlay = document.getElementById('letterOverlay');
@@ -1816,41 +2686,50 @@
                 return; // Block all swipe interaction on final closing slide
             }
             
-            // Block forward swipe (left swipe) on envelope slide (slide 13)
-            if (currentSlide === 13 && touchEndX < touchStartX - 50) {
+            // Block forward swipe (left swipe) on envelope slide (slide 12)
+            if (currentSlide === 12 && touchEndX < touchStartX - 50) {
                 return; // Block forward swipe on envelope slide
             }
             
-            if (touchEndX < touchStartX - 50) {
+            // Calculate swipe distance
+            if (touchEndX < touchStartX - 50) {      // Swiped left (move forward)
                 nextSlide();
             }
-            if (touchEndX > touchStartX + 50) {
+            if (touchEndX > touchStartX + 50) {      // Swiped right (move backward)
                 prevSlide();
             }
         }
 
-        // Audio controls for Spotify
+        /* ========================================
+           AUDIO CONTROLS
+           Mock play/pause interaction
+           ======================================== */
+        
+        /**
+         * Toggles the play/pause icon in the music button
+         * Note: This is mock functionality - no actual audio playback
+         */
+        /**
+         * Toggles the play/pause icon in the music button
+         * Note: This is mock functionality - no actual audio playback
+         */
         function toggleAudio() {
-            const playPauseIcon = document.querySelector('.play-pause');
-            if (spotifyVisible) {
-                spotifyPlayer.style.display = 'none';
-                if (playPauseIcon) playPauseIcon.textContent = '▶️';
-                spotifyVisible = false;
-            } else {
-                spotifyPlayer.style.display = 'block';
-                spotifyPlayer.style.position = 'fixed';
-                spotifyPlayer.style.top = '90px';
-                spotifyPlayer.style.right = '20px';
-                spotifyPlayer.style.width = '300px';
-                spotifyPlayer.style.height = '80px';
-                spotifyPlayer.style.zIndex = '1001';
-                spotifyPlayer.style.borderRadius = '12px';
-                if (playPauseIcon) playPauseIcon.textContent = '⏸️';
-                spotifyVisible = true;
-            }
+            const playPauseIcon = document.querySelector('.audio-play');  // Get the play/pause element
+            if (!playPauseIcon) return;  // Exit if element not found
+            
+            isAudioPlaying = !isAudioPlaying;  // Toggle the state (true ⇔ false)
+            // Update icon: if playing show pause (⏸️), if paused show play (▶️)
+            playPauseIcon.textContent = isAudioPlaying ? '⏸️' : '▶️';
         }
 
-        // Create heart explosion effect
+        /* ========================================
+           SPECIAL EFFECTS
+           ======================================== */
+        
+        /**
+         * Creates a heart explosion at a random position (currently unused)
+         * Originally intended for letter opening animation
+         */
         function createHeartExplosion() {
             const heartContainer = document.getElementById('heartContainer');
             const heart = document.createElement('div');
@@ -1864,80 +2743,264 @@
             heart.style.left = randomX + 'px';
             heart.style.top = randomY + 'px';
             
-            heartContainer.appendChild(heart);
+            heartContainer.appendChild(heart);  // Add to page
 
+            // Remove after 5 seconds to prevent memory leak
             setTimeout(() => {
                 heart.remove();
             }, 5000);
         }
 
-        // Open album (go to first month slide)
+        /* ========================================
+           INTRO/OUTRO CONTROLS
+           Show/hide the album cover intro screen
+           ======================================== */
+        
+        /**
+         * Hides the intro overlay and shows the first slide
+         * Called when user clicks the album cover
+         */
         function openAlbum() {
-            const album = document.querySelector('.album-cover');
-            if (album) {
-                album.classList.add('exit');
+            const introOverlay = document.getElementById('introOverlay');
+            
+            // Prevent multiple clicks
+            if (introOverlay.classList.contains('exit') || introOverlay.classList.contains('hidden')) {
+                return;  // Already closing or closed
             }
-
-            // Start the timeline (slow fade) after intro elements fade out
-            setTimeout(() => showSlide(1, 'fade'), 650);
+            
+            introOverlay.classList.add('exit');  // Trigger fade-out animation
+            showingIntro = false;  // Update state
+            
+            // Wait for intro to fade out (650ms), then show first slide
+            setTimeout(() => showSlide(0, 'fade'), 650);
         }
 
-        // Toggle letter overlay
+        /**
+         * Checks if device is in landscape mode on a small screen
+         * Adds 'landscape-compact' class to body for special layout
+         * Called on page load and whenever window is resized
+         */
+        /**
+         * Checks if device is in landscape mode on a small screen
+         * Adds 'landscape-compact' class to body for special layout
+         * Called on page load and whenever window is resized
+         */
+        function updateIntroCompactMode() {
+            // matchMedia checks if screen matches the condition (like CSS media query)
+            const compactQuery = window.matchMedia('(orientation: landscape) and (max-height: 700px)');
+            
+            // If matches, add class; if not, remove it
+            document.body.classList.toggle('landscape-compact', compactQuery.matches);
+        }
+
+        /* ========================================
+           INITIALIZATION
+           Code that runs when page first loads
+           ======================================== */
+        
+        // Wait for HTML to fully load before running JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const introOverlay = document.getElementById('introOverlay');
+            if (introOverlay) {
+                // Prevent double-tap zoom on intro
+                let lastTouchEnd = 0;
+                introOverlay.addEventListener('touchend', function(e) {
+                    const now = Date.now();
+                    if (now - lastTouchEnd <= 300) {
+                        e.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+            }
+            updateIntroCompactMode();  // Check if we need compact mode
+        });
+
+        // Re-check compact mode whenever window is resized (rotation, browser resize)
+        window.addEventListener('resize', updateIntroCompactMode);
+
+        /**
+         * Returns to the intro screen
+         * Called by the restart button
+         */
+        /**
+         * Returns to the intro screen
+         * Called by the restart button
+         */
+        function goToIntro() {
+            const introOverlay = document.getElementById('introOverlay');
+            introOverlay.classList.remove('exit', 'hidden');  // Show intro again
+            showingIntro = true;  // Update state
+            
+            // Hide all slides and remove all animation classes
+            slides.forEach((slide) => {
+                slide.classList.remove('active', 'slide-in-right', 'slide-out-left', 'slide-out-right', 'fade-in', 'fade-out');
+            });
+        }
+
+        /* ========================================
+           LETTER INTERACTION
+           Opens/closes the envelope and letter
+           ======================================== */
+        
+        /**
+         * Toggles the letter overlay open/closed
+         * When opened: Shows letter, blocks navigation
+         * When closed: Hides letter, advances to final slide
+         */
         function toggleLetter() {
+            // Get all the elements we need to manipulate
             const letterOverlay = document.getElementById('letterOverlay');
             const envelope = document.getElementById('envelope');
-            const endDot = document.getElementById('endDot');
+            const closingOverlay = document.getElementById('closingOverlay');
             const navArrows = document.querySelectorAll('.nav-arrow');
             const timelineSlider = document.querySelector('.timeline-slider');
             
+            // Check if letter is currently open
             if (letterOverlay.classList.contains('active')) {
-                // Close letter - show end dot and go to closing slide
-                letterOverlay.classList.remove('revealed');
-                letterOverlay.classList.remove('active');
-                envelope.classList.remove('opened');
-                endDot.classList.remove('hidden');
+                // === CLOSING THE LETTER ===
+                letterOverlay.classList.remove('revealed');  // Hide letter content
+                letterOverlay.classList.remove('active');     // Hide overlay
+                envelope.classList.remove('opened');          // Close envelope flap
                 
-                // Re-enable navigation elements
+                // After letter closes (500ms), show the final closing slide
+                setTimeout(() => {
+                    closingOverlay.classList.remove('hidden');
+                    closingOverlay.classList.add('active');
+                }, 500);
+                
+                // Re-enable navigation (letter no longer blocking)
                 navArrows.forEach(arrow => arrow.classList.remove('disabled'));
                 timelineSlider.classList.remove('disabled');
-                // Use a special end reveal transition instead of slide
-                setTimeout(() => showSlide(slides.length - 1, 'endReveal'), 500);
             } else {
-                // Open letter
-                letterOverlay.classList.add('active');
-                letterOverlay.classList.remove('revealed');
-                envelope.classList.add('opened');
+                // === OPENING THE LETTER ===
+                letterOverlay.classList.add('active');    // Show overlay
+                letterOverlay.classList.remove('revealed'); // Hide content initially
+                envelope.classList.add('opened');         // Open envelope flap animation
                 
-                // Completely hide navigation elements when letter is open
+                // Disable all navigation while letter is open
                 navArrows.forEach(arrow => arrow.classList.add('disabled'));
                 timelineSlider.classList.add('disabled');
 
-                // Reveal the letter content after the flap finishes opening
+                // Wait for envelope flap to finish opening (1200ms), then reveal letter content
                 setTimeout(() => {
-                    letterOverlay.classList.add('revealed');
-                }, 1200);
+                    letterOverlay.classList.add('revealed');  // Fade in the letter text
+                }, 1200);  // Must match envelope flap animation duration
             }
         }
 
-        // Restart journey (go back to album cover)
+        /**
+         * Restarts the entire journey
+         * Returns to the intro screen with a smooth fade transition
+         * Called by restart button and replay button on final screen
+         */
         function restartJourney() {
             // Fade overlay when restarting for smooth transition
             const overlay = document.getElementById('transitionOverlay');
             if (overlay) overlay.style.opacity = '1';
-            // Allow returning to intro and use a fade transition back to the start
+            // Return to intro
             setTimeout(() => {
-                allowIntroReset = true;
-                const album = document.querySelector('.album-cover');
-                if (album) {
-                    album.classList.remove('exit');
-                }
-                showSlide(0, 'fade');
+                const introOverlay = document.getElementById('introOverlay');
+                const closingOverlay = document.getElementById('closingOverlay');
+                const letterOverlay = document.getElementById('letterOverlay');
+                
+                introOverlay.classList.remove('exit', 'hidden');
+                closingOverlay.classList.remove('active');
+                letterOverlay.classList.remove('active', 'revealed');
+                showingIntro = true;
+                
+                // Hide all slides
+                slides.forEach((slide) => {
+                    slide.classList.remove('active', 'slide-in-right', 'slide-out-left', 'slide-out-right', 'fade-in', 'fade-out');
+                });
+                
                 if (overlay) overlay.style.opacity = '0';
             }, 500);
         }
 
-        // Initialize
-        showSlide(0);
+        /* ========================================
+           INITIALIZATION ON PAGE LOAD
+           Set up initial state of the page
+           ======================================== */
+        
+        // Get references to main overlays
+        const introOverlay = document.getElementById('introOverlay');
+        const closingOverlay = document.getElementById('closingOverlay');
+        const letterOverlay = document.getElementById('letterOverlay');
+        
+        // Set initial visibility: Show intro, hide everything else
+        if (introOverlay) {
+            introOverlay.classList.remove('hidden');  // Show intro
+        }
+        if (closingOverlay) {
+            closingOverlay.classList.add('hidden');   // Hide closing page
+        }
+        if (letterOverlay) {
+            letterOverlay.classList.remove('active', 'revealed');  // Hide letter
+        }
+        currentSlide = -1;  // Not on any slide yet (intro is showing)
+
+        /* ========================================
+           VALENTINE'S DAY LOCK FEATURE
+           Prevents access until February 14, 2026
+           ======================================== */
+        
+        // Valentine's Day Lock Feature
+        const VALENTINE_LOCK_ENABLED = false; // Set to false to disable the lock (TESTING MODE)
+        const VALENTINE_DATE = new Date(2026, 1, 14); // February 14, 2026 (month is 0-indexed)
+
+        /**
+         * Checks if the Valentine lock should be active
+         * If before Feb 14, 2026, shows lock screen instead of content
+         * @returns {boolean} true if locked, false if unlocked
+         */
+        function checkValentineLock() {
+            const now = new Date();
+            const lockOverlay = document.getElementById('lockOverlay');
+            
+            // Allow disabling via window variable
+            if (window.BYPASS_VALENTINE_LOCK) {
+                if (lockOverlay) lockOverlay.classList.add('hidden');
+                if (introOverlay) introOverlay.classList.remove('hidden');
+                return false;
+            }
+
+            if (VALENTINE_LOCK_ENABLED && now < VALENTINE_DATE) {
+                if (lockOverlay) {
+                    lockOverlay.classList.remove('hidden');
+                    // Hide all slides and intro
+                    if (introOverlay) introOverlay.classList.add('hidden');
+                    slides.forEach(slide => slide.classList.remove('active'));
+                }
+                return true;
+            } else {
+                if (lockOverlay) lockOverlay.classList.add('hidden');
+                return false;
+            }
+        }
+
+        // Unlock function for console
+        // Developer tool: Run window.unlockApp() in browser console to bypass lock
+        window.unlockApp = function() {
+            window.BYPASS_VALENTINE_LOCK = true; 
+            checkValentineLock();
+            console.log('✅ App unlocked! The Valentine lock has been disabled.');
+        };
+
+        // Check lock on page load
+        checkValentineLock();
+
+        // Debug information for developers
+        console.log('🔒 Valentine Lock Debug:');
+        console.log('Current date:', new Date().toLocaleDateString());
+        console.log('Unlock date:', VALENTINE_DATE.toLocaleDateString());
+        console.log('Lock enabled:', VALENTINE_LOCK_ENABLED);
+        console.log('To unlock the app, run: window.unlockApp()');
+        console.log('Or set: window.BYPASS_VALENTINE_LOCK = true; window.unlockApp();');
+        
+        /* ========================================
+           END OF JAVASCRIPT
+           All interactive functionality complete!
+           ======================================== */
     </script>
 </body>
 </html>
