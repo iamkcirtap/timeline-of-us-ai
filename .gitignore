@@ -105,3 +105,6 @@ archive/
 
 # Optional REPL history
 .node_repl_history
+
+# Exclude security documentation
+SECURITY.md
