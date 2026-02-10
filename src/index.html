@@ -336,6 +336,25 @@
             transform: scale(1.05);
         }
 
+        .timeline-photo-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 107, 157, 0.25));
+            border: 2px dashed rgba(255, 255, 255, 0.6);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .timeline-photo-placeholder::after {
+            content: attr(data-alt);
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            font-style: italic;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        }
+
         .timeline-text {
             text-align: center;
             font-size: clamp(0.95rem, 2.5vw, 1.4rem);
@@ -1374,13 +1393,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            position: relative;
             color: white;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             opacity: 0;
             animation: fadeInScale 0.6s ease-out forwards;
+        }
+
+        .mini-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .mini-photo.placeholder::after {
+            content: attr(data-alt);
+            padding: 6px;
+            text-align: center;
         }
 
         .mini-photo:nth-child(1) { animation-delay: 0.4s; }
@@ -2076,10 +2110,18 @@
                 <div class="album-front">
                     <div class="album-title">Our Story</div>
                     <div class="photo-grid-mini">
-                        <div class="mini-photo">Photo 1</div>
-                        <div class="mini-photo">Photo 2</div>
-                        <div class="mini-photo">Photo 3</div>
-                        <div class="mini-photo">Photo 4</div>
+                        <div class="mini-photo">
+                            <img src="assets/images/album-01.jpg" alt="Album photo 1">
+                        </div>
+                        <div class="mini-photo">
+                            <img src="assets/images/album-02.jpg" alt="Album photo 2">
+                        </div>
+                        <div class="mini-photo">
+                            <img src="assets/images/album-03.jpg" alt="Album photo 3">
+                        </div>
+                        <div class="mini-photo">
+                            <img src="assets/images/album-04.jpg" alt="Album photo 4">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2101,84 +2143,84 @@
         <!-- Slide 0: March 2025 -->
         <div class="slide timeline-slide active">
             <div class="timeline-month">March 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop" alt="March 2025">
+            <img class="timeline-photo" src="assets/images/month-01.jpg" alt="March 2025">
             <p class="timeline-text">Our first spark 💬</p>
         </div>
 
         <!-- Slide 1: April 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">April 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop" alt="April 2025">
+            <img class="timeline-photo" src="assets/images/month-02.jpg" alt="April 2025">
             <p class="timeline-text">First meet, real smiles 🤝</p>
         </div>
 
         <!-- Slide 3: May 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">May 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=800&h=600&fit=crop" alt="May 2025">
+            <img class="timeline-photo" src="assets/images/month-03.jpg" alt="May 2025">
             <p class="timeline-text">Hearts on the table 💌</p>
         </div>
 
         <!-- Slide 4: June 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">June 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop" alt="June 2025">
+            <img class="timeline-photo" src="assets/images/month-04.jpg" alt="June 2025">
             <p class="timeline-text">We made it official 💞</p>
         </div>
 
         <!-- Slide 5: July 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">July 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop" alt="July 2025">
+            <img class="timeline-photo" src="assets/images/month-05.jpg" alt="July 2025">
             <p class="timeline-text">First concert, first run 🎶🏃</p>
         </div>
 
         <!-- Slide 6: August 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">August 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&h=600&fit=crop" alt="August 2025">
+            <img class="timeline-photo" src="assets/images/month-06.jpg" alt="August 2025">
             <p class="timeline-text">Family meet, Binondo bites 🧡</p>
         </div>
 
         <!-- Slide 7: September 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">September 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=600&fit=crop" alt="September 2025">
+            <img class="timeline-photo" src="assets/images/month-07.jpg" alt="September 2025">
             <p class="timeline-text">More dates, more laughs 🗓️</p>
         </div>
 
         <!-- Slide 8: October 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">October 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&h=600&fit=crop" alt="October 2025">
+            <img class="timeline-photo" src="assets/images/month-08.jpg" alt="October 2025">
             <p class="timeline-text">Twice concert, first flight ✈️</p>
         </div>
 
         <!-- Slide 9: November 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">November 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&h=600&fit=crop" alt="November 2025">
+            <img class="timeline-photo" src="assets/images/month-09.jpg" alt="November 2025">
             <p class="timeline-text">Boracay waves, Blackpink lights 🏝️🎤</p>
         </div>
 
         <!-- Slide 10: December 2025 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">December 2025</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&h=600&fit=crop" alt="December 2025">
+            <img class="timeline-photo" src="assets/images/month-10.jpg" alt="December 2025">
             <p class="timeline-text">First intl trip, six months strong 🌍💗</p>
         </div>
 
         <!-- Slide 11: January 2026 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">January 2026</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&h=600&fit=crop" alt="January 2026">
+            <img class="timeline-photo" src="assets/images/month-11.jpg" alt="January 2026">
             <p class="timeline-text">First LDR, same us 💌</p>
         </div>
 
         <!-- Slide 12: February 2026 -->
         <div class="slide timeline-slide">
             <div class="timeline-month">February 2026</div>
-            <img class="timeline-photo" src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=800&h=600&fit=crop" alt="February 2026">
+            <img class="timeline-photo" src="assets/images/month-12.jpg" alt="February 2026">
             <p class="timeline-text">First Valentine’s together 💖</p>
         </div>
 
@@ -2329,10 +2371,11 @@
     <button class="audio-btn" id="audioToggle" onclick="toggleAudio()">
         <span class="audio-icon">🎵</span>
         <span class="audio-text">
-            <span class="audio-song">Perfect - Ed Sheeran</span>
+            <span class="audio-song">Enchanted (Taylor Swift cover)</span>
             <span class="audio-play">▶️</span>
         </span>
     </button>
+    <audio id="audioPlayer" src="assets/audio/enchanted.mp3" preload="metadata"></audio>
 
     <!-- Transition overlay used for smooth restart fade -->
     <div id="transitionOverlay" style="position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4000;transition:opacity 0.45s ease"></div>
@@ -2715,9 +2758,22 @@
          */
         function toggleAudio() {
             const playPauseIcon = document.querySelector('.audio-play');  // Get the play/pause element
+            const audioPlayer = document.getElementById('audioPlayer');
             if (!playPauseIcon) return;  // Exit if element not found
-            
-            isAudioPlaying = !isAudioPlaying;  // Toggle the state (true ⇔ false)
+
+            if (audioPlayer) {
+                if (audioPlayer.paused) {
+                    audioPlayer.play().catch(() => {
+                        // Playback can fail without user interaction or missing file.
+                    });
+                } else {
+                    audioPlayer.pause();
+                }
+                isAudioPlaying = !audioPlayer.paused;
+            } else {
+                isAudioPlaying = !isAudioPlaying;  // Fallback toggle (no audio element)
+            }
+
             // Update icon: if playing show pause (⏸️), if paused show play (▶️)
             playPauseIcon.textContent = isAudioPlaying ? '⏸️' : '▶️';
         }
@@ -2771,6 +2827,17 @@
             introOverlay.classList.add('exit');  // Trigger fade-out animation
             showingIntro = false;  // Update state
             
+            // Auto-play audio when user opens the album
+            const audioPlayer = document.getElementById('audioPlayer');
+            const playPauseIcon = document.querySelector('.audio-play');
+            if (audioPlayer) {
+                audioPlayer.play().catch(() => {
+                    // Playback may fail if browser requires user interaction or file is missing
+                });
+                isAudioPlaying = true;
+                if (playPauseIcon) playPauseIcon.textContent = '⏸️';
+            }
+            
             // Wait for intro to fade out (650ms), then show first slide
             setTimeout(() => showSlide(0, 'fade'), 650);
         }
@@ -2812,6 +2879,8 @@
                     lastTouchEnd = now;
                 }, false);
             }
+            setupImageFallbacks();
+            startAlbumShuffle();
             updateIntroCompactMode();  // Check if we need compact mode
         });
 
@@ -2835,6 +2904,80 @@
             slides.forEach((slide) => {
                 slide.classList.remove('active', 'slide-in-right', 'slide-out-left', 'slide-out-right', 'fade-in', 'fade-out');
             });
+        }
+
+        function setupImageFallbacks() {
+            const images = document.querySelectorAll('.timeline-photo');
+            images.forEach((img) => {
+                img.addEventListener('error', () => {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'timeline-photo timeline-photo-placeholder';
+                    placeholder.setAttribute('data-alt', img.alt || 'Photo coming soon');
+                    img.replaceWith(placeholder);
+                });
+            });
+
+            const miniImages = document.querySelectorAll('.mini-photo img');
+            miniImages.forEach((img) => {
+                img.addEventListener('load', () => {
+                    const wrapper = img.parentElement;
+                    if (!wrapper) return;
+                    wrapper.classList.remove('placeholder');
+                    img.style.display = 'block';
+                });
+                img.addEventListener('error', () => {
+                    const wrapper = img.parentElement;
+                    if (!wrapper) return;
+                    wrapper.classList.add('placeholder');
+                    wrapper.setAttribute('data-alt', img.alt || 'Photo coming soon');
+                    img.style.display = 'none';
+                });
+            });
+        }
+
+        function startAlbumShuffle() {
+            const miniImages = Array.from(document.querySelectorAll('.mini-photo img'));
+            if (miniImages.length === 0) return;
+
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (prefersReducedMotion.matches) return;
+
+            const pool = [
+                'assets/images/month-01.jpg',
+                'assets/images/month-02.jpg',
+                'assets/images/month-03.jpg',
+                'assets/images/month-04.jpg',
+                'assets/images/month-05.jpg',
+                'assets/images/month-06.jpg',
+                'assets/images/month-07.jpg',
+                'assets/images/month-08.jpg',
+                'assets/images/month-09.jpg',
+                'assets/images/month-10.jpg',
+                'assets/images/month-11.jpg',
+                'assets/images/month-12.jpg'
+            ];
+
+            const shuffle = (list) => {
+                const copy = list.slice();
+                for (let i = copy.length - 1; i > 0; i -= 1) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [copy[i], copy[j]] = [copy[j], copy[i]];
+                }
+                return copy;
+            };
+
+            const updateMiniPhotos = () => {
+                const picks = shuffle(pool).slice(0, miniImages.length);
+                miniImages.forEach((img, index) => {
+                    img.src = picks[index];
+                    img.style.display = 'block';
+                    const wrapper = img.parentElement;
+                    if (wrapper) wrapper.classList.remove('placeholder');
+                });
+            };
+
+            updateMiniPhotos();
+            setInterval(updateMiniPhotos, 4000);
         }
 
         /* ========================================
