@@ -142,7 +142,7 @@
             opacity: 0;          /* Invisible */
             visibility: hidden;  /* Completely hidden from screen readers too */
             transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;  /* Smooth changes */
-            padding-bottom: clamp(100px, 15vh, 160px);  /* Space at bottom for timeline */
+            padding-bottom: clamp(160px, 22vh, 220px);  /* Space at bottom for timeline */
         }
 
         /* Active slide (visible state) */
@@ -301,12 +301,12 @@
 
         /* Timeline Slides */
         .timeline-slide {
-            padding: 60px 40px;
+            padding: clamp(32px, 6vh, 60px) clamp(16px, 5vw, 40px) clamp(200px, 26vh, 260px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: clamp(16px, 3.5vh, 30px);
         }
 
         .timeline-month {
@@ -314,12 +314,13 @@
             color: white;
             font-weight: bold;
             text-align: center;
-            margin-bottom: clamp(8px, 2vw, 15px);
+            margin: 0 auto clamp(8px, 2vw, 15px);
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
             background: rgba(255, 23, 68, 0.85);
             padding: clamp(10px, 2vw, 18px) clamp(20px, 5vw, 45px);
             border-radius: 50px;
-            display: inline-block;
+            display: block;
+            width: fit-content;
         }
 
         .timeline-photo {
@@ -334,6 +335,92 @@
 
         .timeline-photo:hover {
             transform: scale(1.05);
+        }
+
+        .message-bubble-stack {
+            width: 90%;
+            max-width: clamp(300px, 90vw, 650px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .message-bubble-card {
+            width: 90%;
+            max-width: clamp(300px, 90vw, 650px);
+            background: #fff;
+            border-radius: 22px;
+            padding: 18px 20px 22px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .message-bubble-header {
+            font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+            font-weight: 700;
+            color: #1f1f1f;
+            text-align: center;
+            margin-bottom: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        .message-bubble {
+            max-width: 72%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: clamp(1rem, 2.6vw, 1.3rem);
+            font-weight: 600;
+            color: #2b2b2b;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+            animation: bubblePop 0.6s ease-out forwards;
+        }
+
+        .message-bubble.incoming {
+            background: #f7d24b;
+            align-self: flex-start;
+        }
+
+        .message-bubble.outgoing {
+            background: #fff;
+            align-self: flex-end;
+        }
+
+        .message-bubble.incoming::after {
+            content: '';
+            position: absolute;
+            left: 10px;
+            bottom: -6px;
+            width: 14px;
+            height: 14px;
+            background: #f7d24b;
+            transform: rotate(45deg);
+            border-radius: 2px;
+        }
+
+        .message-bubble.outgoing::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            bottom: -6px;
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            transform: rotate(45deg);
+            border-radius: 2px;
+        }
+
+        .message-bubble:nth-child(1) { animation-delay: 0.1s; }
+        .message-bubble:nth-child(2) { animation-delay: 0.45s; }
+
+        @keyframes bubblePop {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .timeline-photo-placeholder {
@@ -355,6 +442,344 @@
             text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
         }
 
+        /* Scrapbook Photo Gallery */
+        .photo-gallery {
+            width: min(92vw, 900px);
+            max-width: 900px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(16px, 3.5vw, 34px);
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0 auto clamp(30px, 8vh, 90px);
+        }
+
+        .scrapbook-photo {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fff;
+            padding: 14px 14px 46px;
+            border-radius: 6px;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32), 0 6px 14px rgba(0, 0, 0, 0.18);
+            overflow: visible;
+        }
+
+        .scrapbook-photo::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            right: 14px;
+            bottom: 46px;
+            background-image: var(--photo-src);
+            background-size: cover;
+            background-position: center;
+            filter: blur(6px);
+            opacity: 0.18;
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        .scrapbook-photo::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 6px;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+            pointer-events: none;
+        }
+
+        .scrapbook-photo:hover {
+            transform: scale(1.07) !important;
+            z-index: 10;
+            box-shadow: 0 20px 44px rgba(0, 0, 0, 0.42), 0 8px 18px rgba(0, 0, 0, 0.24);
+        }
+
+        .scrapbook-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 4px;
+            background: #f7f7f7;
+            position: relative;
+            z-index: 1;
+        }
+
+        .polaroid-caption {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 12px;
+            font-family: 'Segoe Script', 'Bradley Hand', 'Comic Sans MS', cursive;
+            font-size: clamp(0.7rem, 1.8vw, 0.95rem);
+            color: #3b2f2f;
+            text-align: center;
+            letter-spacing: 0.3px;
+            transform: rotate(-1deg);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .polaroid-tape {
+            position: absolute;
+            width: clamp(36px, 9vw, 60px);
+            height: clamp(16px, 3vw, 22px);
+            background: rgba(255, 242, 198, 0.7);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+            border: 1px solid rgba(232, 208, 150, 0.8);
+            z-index: 3;
+        }
+
+        .polaroid-tape.left {
+            top: -10px;
+            left: 8px;
+            transform: rotate(-12deg);
+        }
+
+        .polaroid-tape.right {
+            top: -12px;
+            right: 6px;
+            transform: rotate(10deg);
+        }
+
+        .photo-gallery .scrapbook-photo:nth-child(1) {
+            width: clamp(160px, 38vw, 240px);
+            height: clamp(180px, 42vw, 280px);
+            transform: rotate(-6deg);
+        }
+
+        .photo-gallery .scrapbook-photo:nth-child(2) {
+            width: clamp(145px, 34vw, 220px);
+            height: clamp(165px, 38vw, 260px);
+            transform: rotate(5deg);
+        }
+
+        .photo-gallery .scrapbook-photo:nth-child(3) {
+            width: clamp(150px, 36vw, 230px);
+            height: clamp(170px, 40vw, 270px);
+            transform: rotate(-4deg);
+        }
+
+        .photo-gallery .scrapbook-photo:nth-child(4) {
+            width: clamp(148px, 35vw, 225px);
+            height: clamp(168px, 39vw, 265px);
+            transform: rotate(7deg);
+        }
+
+        .photo-gallery .scrapbook-photo:nth-child(5) {
+            width: clamp(152px, 36vw, 228px);
+            height: clamp(172px, 40vw, 268px);
+            transform: rotate(-5deg);
+        }
+
+        .photo-gallery .scrapbook-photo:nth-child(6) {
+            width: clamp(146px, 34vw, 222px);
+            height: clamp(166px, 38vw, 262px);
+            transform: rotate(6deg);
+        }
+
+        .photo-gallery .scrapbook-photo:nth-child(7) {
+            width: clamp(150px, 35vw, 226px);
+            height: clamp(170px, 39vw, 266px);
+            transform: rotate(-7deg);
+        }
+
+        .photo-gallery.single-photo .scrapbook-photo {
+            width: clamp(260px, 75vw, 480px);
+            height: clamp(300px, 82vw, 560px);
+            transform: rotate(-2deg);
+        }
+
+        /* Many photos (5+) - smaller sizes to fit more */
+        .photo-gallery.many-photos {
+            gap: clamp(12px, 2.5vw, 25px);
+        }
+
+        .photo-gallery.many-photos .scrapbook-photo:nth-child(1) {
+            width: clamp(130px, 30vw, 200px);
+            height: clamp(150px, 34vw, 230px);
+        }
+
+        .photo-gallery.many-photos .scrapbook-photo:nth-child(2) {
+            width: clamp(120px, 28vw, 185px);
+            height: clamp(140px, 32vw, 215px);
+        }
+
+        .photo-gallery.many-photos .scrapbook-photo:nth-child(3) {
+            width: clamp(125px, 29vw, 190px);
+            height: clamp(145px, 33vw, 220px);
+        }
+
+        .photo-gallery.many-photos .scrapbook-photo:nth-child(4) {
+            width: clamp(122px, 28vw, 188px);
+            height: clamp(142px, 32vw, 218px);
+        }
+
+        .photo-gallery.many-photos .scrapbook-photo:nth-child(5) {
+            width: clamp(128px, 29vw, 192px);
+            height: clamp(148px, 33vw, 222px);
+        }
+
+        .photo-gallery.many-photos .scrapbook-photo:nth-child(6) {
+            width: clamp(118px, 27vw, 182px);
+            height: clamp(138px, 31vw, 212px);
+        }
+
+        .photo-gallery.many-photos .scrapbook-photo:nth-child(7) {
+            width: clamp(124px, 28vw, 186px);
+            height: clamp(144px, 32vw, 216px);
+        }
+
+        /* Photo Lightbox */
+        .photo-lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 4000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .photo-lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            background: white;
+            color: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        .lightbox-photo-container {
+            max-width: 90vw;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lightbox-photo {
+            max-width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-caption {
+            color: white;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+            padding: 0 20px;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid white;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lightbox-nav:hover {
+            background: white;
+            color: var(--accent-red);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-nav.prev { left: 20px; }
+        .lightbox-nav.next { right: 20px; }
+        .lightbox-nav.hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .lightbox-nav {
+                width: 44px;
+                height: 44px;
+                font-size: 1.5rem;
+            }
+            .lightbox-close {
+                width: 42px;
+                height: 42px;
+                top: 15px;
+                right: 15px;
+            }
+
+            /* Adjust many-photos gallery for mobile */
+            .photo-gallery.many-photos {
+                gap: clamp(10px, 2vw, 18px);
+            }
+
+            .photo-gallery.many-photos .scrapbook-photo {
+                width: clamp(110px, 26vw, 160px) !important;
+                height: clamp(130px, 30vw, 190px) !important;
+            }
+        }
+
+        @media (max-height: 720px) {
+            .timeline-slide {
+                padding: clamp(24px, 4vh, 40px) clamp(14px, 4vw, 28px);
+                gap: clamp(12px, 2.8vh, 22px);
+            }
+
+            .photo-gallery {
+                gap: clamp(12px, 2.5vw, 24px);
+            }
+
+            .photo-gallery .scrapbook-photo {
+                width: clamp(120px, 30vw, 200px) !important;
+                height: clamp(140px, 34vw, 230px) !important;
+            }
+
+            .photo-gallery.single-photo .scrapbook-photo {
+                width: clamp(220px, 70vw, 420px) !important;
+                height: clamp(260px, 78vw, 500px) !important;
+            }
+        }
+
         .timeline-text {
             text-align: center;
             font-size: clamp(0.95rem, 2.5vw, 1.4rem);
@@ -366,6 +791,7 @@
             background: rgba(255, 23, 68, 0.75);
             padding: clamp(15px, 3vw, 25px) clamp(20px, 4vw, 35px);
             border-radius: clamp(10px, 2vw, 18px);
+            margin: 0 auto;
         }
 
         /* Love Letter Slide */
@@ -625,14 +1051,14 @@
         .slider-track {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             gap: clamp(6px, 1.5vw, 12px);
             max-width: 100%;
-            width: 100%;
+            width: auto;
             overflow-x: auto;
-            padding: clamp(8px, 2vw, 16px) clamp(16px, 8vw, 100px);
+            padding: clamp(8px, 2vw, 16px) clamp(16px, 4vw, 40px);
             scroll-snap-type: x mandatory;
-            scroll-padding: clamp(8px, 2vw, 16px) clamp(16px, 8vw, 100px);
+            scroll-padding: clamp(8px, 2vw, 16px) clamp(16px, 4vw, 40px);
             -webkit-overflow-scrolling: touch;
         }
 
@@ -816,8 +1242,7 @@
         /* Tablet (769px - 1279px) */
         @media (max-width: 1279px) and (min-width: 769px) {
             .slide {
-                padding: clamp(20px, 4vw, 30px) clamp(15px, 3vw, 25px);
-                padding-bottom: clamp(120px, 16vh, 150px);
+                padding: clamp(20px, 4vw, 30px) clamp(15px, 3vw, 25px) clamp(160px, 22vh, 210px);
             }
 
             .nav-arrow {
@@ -857,7 +1282,7 @@
         /* Tablet Landscape (iPad Air ~1180px width, ~820px height) */
         @media (max-width: 1279px) and (min-width: 769px) and (orientation: landscape) {
             .slide {
-                padding: clamp(16px, 3vw, 24px) clamp(12px, 2vw, 20px) clamp(110px, 18vh, 140px);
+                padding: clamp(16px, 3vw, 24px) clamp(12px, 2vw, 20px) clamp(150px, 22vh, 200px);
             }
 
             .timeline-slider {
@@ -928,7 +1353,7 @@
         /* Small Tablet (481px - 768px) */
         @media (max-width: 768px) and (min-width: 481px) {
             .slide {
-                padding: clamp(24px, 4vw, 30px) clamp(16px, 3vw, 20px);
+                padding: clamp(24px, 4vw, 30px) clamp(16px, 3vw, 20px) clamp(150px, 22vh, 200px);
             }
 
             .album-container {
@@ -983,7 +1408,7 @@
         /* Small Mobile (320px - 480px) */
         @media (max-width: 480px) {
             .slide {
-                padding: clamp(20px, 3vw, 24px) clamp(12px, 2vw, 16px);
+                padding: clamp(20px, 3vw, 24px) clamp(12px, 2vw, 16px) clamp(150px, 24vh, 210px);
                 min-height: 100vh;
             }
 
@@ -1169,7 +1594,7 @@
         /* Extra Small Mobile (< 320px) */
         @media (max-width: 319px) {
             .slide {
-                padding: 16px 10px;
+                padding: 16px 10px 150px;
             }
 
             .timeline-dot {
@@ -1409,6 +1834,10 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            opacity: 1;
+            transition: opacity 0.45s ease;
+            filter: blur(6px);
+            transform: scale(1.05);
         }
 
         .mini-photo.placeholder::after {
@@ -1483,19 +1912,33 @@
         }
 
         .envelope:hover {
+            animation: none;
             transform: scale(1.05);
         }
 
-        .envelope.active {
-            animation: envelopeBounce 0.8s ease-in-out infinite;
+        .envelope:active {
+            animation: none;
         }
 
-        @keyframes envelopeBounce {
+        .envelope.active {
+            animation: envelopeBeat 1.4s ease-in-out infinite;
+        }
+
+        @keyframes envelopeBeat {
             0%, 100% {
                 transform: translateY(0) scale(1);
             }
-            50% {
-                transform: translateY(-15px) scale(1.05);
+            20% {
+                transform: translateY(-6px) scale(1.03);
+            }
+            40% {
+                transform: translateY(0) scale(1);
+            }
+            60% {
+                transform: translateY(-10px) scale(1.06);
+            }
+            80% {
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -1537,7 +1980,8 @@
         }
 
         .envelope:hover .envelope-flap {
-            transform: rotateX(-20deg);
+            transform: rotateX(-10deg);
+            transition-duration: 0.4s;
         }
 
         .wax-seal {
@@ -1699,6 +2143,11 @@
 
         .envelope.opened .envelope-flap {
             transform: rotateX(-180deg);
+            transition-duration: 1.6s;
+        }
+
+        .envelope.opened {
+            animation: none;
         }
 
         /* Closing Overlay (Outside Slideshow) */
@@ -1734,6 +2183,70 @@
             pointer-events: none;
         }
 
+        #closingOverlay .closing-carousel {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #closingOverlay.active .closing-carousel {
+            opacity: 0.35;
+        }
+
+        .closing-carousel-row {
+            position: absolute;
+            left: 0;
+            right: 0;
+            overflow: hidden;
+            height: 22%;
+        }
+
+        .closing-carousel-row:nth-child(1) { top: 6%; }
+        .closing-carousel-row:nth-child(2) { top: 30%; }
+        .closing-carousel-row:nth-child(3) { top: 54%; }
+        .closing-carousel-row:nth-child(4) { top: 78%; }
+
+        .closing-carousel-track {
+            display: flex;
+            gap: 18px;
+            width: max-content;
+            align-items: center;
+            animation: carousel-left 38s linear infinite;
+        }
+
+        .closing-carousel-row.right .closing-carousel-track {
+            animation: carousel-right 44s linear infinite;
+        }
+
+        .closing-carousel-item {
+            width: clamp(120px, 18vw, 240px);
+            aspect-ratio: 4 / 3;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .closing-carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes carousel-left {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @keyframes carousel-right {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
+        }
+
         #closingOverlay .closing-content {
             min-height: auto !important;
             position: relative;
@@ -1757,6 +2270,8 @@
             align-items: center;
             justify-content: center;
             gap: clamp(6px, 1.5vw, 12px);
+            position: relative;
+            z-index: 2;
         }
 
         #closingOverlay.active .closing-content {
@@ -2111,16 +2626,16 @@
                     <div class="album-title">Our Story</div>
                     <div class="photo-grid-mini">
                         <div class="mini-photo">
-                            <img src="assets/images/album-01.jpg" alt="Album photo 1">
+                            <img alt="Album photo 1">
                         </div>
                         <div class="mini-photo">
-                            <img src="assets/images/album-02.jpg" alt="Album photo 2">
+                            <img alt="Album photo 2">
                         </div>
                         <div class="mini-photo">
-                            <img src="assets/images/album-03.jpg" alt="Album photo 3">
+                            <img alt="Album photo 3">
                         </div>
                         <div class="mini-photo">
-                            <img src="assets/images/album-04.jpg" alt="Album photo 4">
+                            <img alt="Album photo 4">
                         </div>
                     </div>
                 </div>
@@ -2134,6 +2649,21 @@
     </div>
 
     <!-- ========================================
+         PHOTO LIGHTBOX
+         Full-screen photo viewer with caption
+         ======================================== -->
+    
+    <div class="photo-lightbox" id="photoLightbox">
+        <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close photo viewer">×</button>
+        <button class="lightbox-nav prev hidden" onclick="navigateLightbox(-1)" aria-label="Previous photo">‹</button>
+        <button class="lightbox-nav next hidden" onclick="navigateLightbox(1)" aria-label="Next photo">›</button>
+        <div class="lightbox-photo-container">
+            <img class="lightbox-photo" src="" alt="Photo">
+            <div class="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- ========================================
          MAIN SLIDESHOW
          Contains all 14 slides (March 2025 - February 2026)
          ======================================== -->
@@ -2143,88 +2673,19 @@
         <!-- Slide 0: March 2025 -->
         <div class="slide timeline-slide active">
             <div class="timeline-month">March 2025</div>
-            <img class="timeline-photo" src="assets/images/month-01.jpg" alt="March 2025">
-            <p class="timeline-text">Our first spark 💬</p>
+            <div class="message-bubble-card" aria-label="First messages">
+                <div class="message-bubble-header">Aileen</div>
+                <div class="message-bubble-stack">
+                    <div class="message-bubble incoming">Hi</div>
+                    <div class="message-bubble outgoing">Hello</div>
+                </div>
+            </div>
+            <p class="timeline-text">It's a match! Remember our first chat? It was on your birthday 💬</p>
         </div>
 
-        <!-- Slide 1: April 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">April 2025</div>
-            <img class="timeline-photo" src="assets/images/month-02.jpg" alt="April 2025">
-            <p class="timeline-text">First meet, real smiles 🤝</p>
-        </div>
+        <!-- Photo slides (April 2025 - January 2026) are generated dynamically from images.json -->
 
-        <!-- Slide 3: May 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">May 2025</div>
-            <img class="timeline-photo" src="assets/images/month-03.jpg" alt="May 2025">
-            <p class="timeline-text">Hearts on the table 💌</p>
-        </div>
-
-        <!-- Slide 4: June 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">June 2025</div>
-            <img class="timeline-photo" src="assets/images/month-04.jpg" alt="June 2025">
-            <p class="timeline-text">We made it official 💞</p>
-        </div>
-
-        <!-- Slide 5: July 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">July 2025</div>
-            <img class="timeline-photo" src="assets/images/month-05.jpg" alt="July 2025">
-            <p class="timeline-text">First concert, first run 🎶🏃</p>
-        </div>
-
-        <!-- Slide 6: August 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">August 2025</div>
-            <img class="timeline-photo" src="assets/images/month-06.jpg" alt="August 2025">
-            <p class="timeline-text">Family meet, Binondo bites 🧡</p>
-        </div>
-
-        <!-- Slide 7: September 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">September 2025</div>
-            <img class="timeline-photo" src="assets/images/month-07.jpg" alt="September 2025">
-            <p class="timeline-text">More dates, more laughs 🗓️</p>
-        </div>
-
-        <!-- Slide 8: October 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">October 2025</div>
-            <img class="timeline-photo" src="assets/images/month-08.jpg" alt="October 2025">
-            <p class="timeline-text">Twice concert, first flight ✈️</p>
-        </div>
-
-        <!-- Slide 9: November 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">November 2025</div>
-            <img class="timeline-photo" src="assets/images/month-09.jpg" alt="November 2025">
-            <p class="timeline-text">Boracay waves, Blackpink lights 🏝️🎤</p>
-        </div>
-
-        <!-- Slide 10: December 2025 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">December 2025</div>
-            <img class="timeline-photo" src="assets/images/month-10.jpg" alt="December 2025">
-            <p class="timeline-text">First intl trip, six months strong 🌍💗</p>
-        </div>
-
-        <!-- Slide 11: January 2026 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">January 2026</div>
-            <img class="timeline-photo" src="assets/images/month-11.jpg" alt="January 2026">
-            <p class="timeline-text">First LDR, same us 💌</p>
-        </div>
-
-        <!-- Slide 12: February 2026 -->
-        <div class="slide timeline-slide">
-            <div class="timeline-month">February 2026</div>
-            <img class="timeline-photo" src="assets/images/month-12.jpg" alt="February 2026">
-            <p class="timeline-text">First Valentine’s together 💖</p>
-        </div>
-
-        <!-- Slide 12: Letter Envelope with Expandable Letter -->
+        <!-- Slide 11: February 2026 - Letter Envelope -->
         <div class="slide envelope-slide" id="envelopeSlide">
             <div class="envelope-container">
                 <div class="envelope" id="envelope" onclick="toggleLetter()">
@@ -2251,7 +2712,7 @@
                 <h2>To My Dearest Aileen 💕</h2>
                 <p class="letter-date">Valentine's Day 2026</p>
                 <div class="letter-content">
-                    <p>My Babe,</p>
+                    <p>Hi Babe,</p>
                     
                     <p>As I sit here, thousands of miles away from you, my heart feels closer to yours than ever. These past months have been a beautiful testament to what we share - a love that transcends distance, time zones, and physical space.</p>
                     
@@ -2267,9 +2728,9 @@
                     
                     <p>Distance is just a test of how far love can travel. And ours? It's limitless.</p>
                     
-                    <p>Happy Valentine's Day, my beautiful Aileen. Soon, very soon, I hope to ask you to be something even more.</p>
+                    <p>Happy Valentine's Day, Babe. Soon, very soon, I hope to ask you to be something even more.</p>
                 </div>
-                <p class="letter-signature">Forever and always yours,<br>Your Babe ❤️</p>
+                <p class="letter-signature">Forever and always yours,<br>Patrick ❤️</p>
             </div>
         </div>
     </div>
@@ -2281,6 +2742,7 @@
     
     <!-- Closing Page (Outside Slideshow) -->
     <div id="closingOverlay">
+        <div class="closing-carousel" aria-hidden="true"></div>
         <div class="closing-content">
             <h1 class="closing-title">Thank you for being mine ❤️</h1>
             <p class="closing-text">Every moment with you is a gift.</p>
@@ -2353,11 +2815,8 @@
             <div class="timeline-dot" data-slide="10" onclick="goToSlide(event,10)">
                 <span>Jan<br>2026</span>
             </div>
-            <div class="timeline-dot" data-slide="11" onclick="goToSlide(event,11)">
-                <span>Feb<br>2026</span>
-            </div>
-            <div class="timeline-dot letter-dot hidden" id="letterDot" data-slide="12" onclick="goToSlide(event,12)">
-                <span>💌<br>Letter</span>
+            <div class="timeline-dot letter-dot hidden" id="letterDot" data-slide="11" onclick="goToSlide(event,11)">
+                <span>Feb<br>2026<br>💌</span>
             </div>
         </div>
     </div>
@@ -2390,12 +2849,18 @@
            ======================================== */
         
         let currentSlide = 0;           // Which slide is currently showing (0-13)
-        const slides = document.querySelectorAll('.slide');           // Get all slide elements from HTML
+        let slides = document.querySelectorAll('.slide');           // Get all slide elements from HTML
         const timelineDots = document.querySelectorAll('.timeline-dot');  // Get all timeline dot elements
         let showingIntro = true;        // Is the intro overlay visible? (true at start)
         let spotifyVisible = false;     // Legacy variable (Spotify player not implemented)
         const spotifyPlayer = document.getElementById('spotifyPlayer');  // Get Spotify element (null - doesn't exist)
         let isAudioPlaying = false;     // Is the mock audio playing? (for play/pause icon)
+        
+        // Photo lightbox state
+        let lightboxOpen = false;       // Is the photo lightbox currently open?
+        let currentLightboxSlideIndex = 0;  // Which slide's photos are being viewed
+        let currentPhotoIndex = 0;      // Which photo within the slide is being viewed
+        let slidePhotoData = {};        // Stores loaded photo data from JSON {slideIndex: [{src, caption}, ...]}
 
         /* ========================================
            FLOATING HEARTS BACKGROUND
@@ -2541,11 +3006,11 @@
                 dot.classList.remove('active');
             });
             
-            // Show/hide letter dot when reaching February (slide 11)
+            // Show/hide letter dot (Feb 2026) when reaching January (slide 10)
             const letterDot = document.getElementById('letterDot');
-            if (currentSlide >= 11) {
+            if (currentSlide >= 10) {
                 letterDot.classList.remove('hidden');
-                // Add glowing effect to letter dot when on February (slide 11)
+                // Add glowing effect to letter dot when on February envelope (slide 11)
                 if (currentSlide === 11) {
                     letterDot.classList.add('glowing');
                 } else {
@@ -2561,8 +3026,8 @@
             const navArrows = document.querySelectorAll('.nav-arrow');
             const restartBtn = document.getElementById('restartBtn');
             
-            // Hide timeline and buttons only on envelope slide
-            if (currentSlide === 12 || timelineSlider.classList.contains('disabled')) {
+            // Hide timeline and buttons on envelope slide (slide 11)
+            if (currentSlide === 11 || timelineSlider.classList.contains('disabled')) {
                 timelineSlider.classList.add('hidden');
                 restartBtn.classList.add('hidden');
             } else {
@@ -2571,7 +3036,7 @@
             }
 
             // Hide navigation arrows on the envelope slide
-            if (currentSlide === 12) {
+            if (currentSlide === 11) {
                 navArrows.forEach(arrow => arrow.classList.add('hidden'));
                 // Add animation to envelope when it's the active slide
                 const envelope = document.getElementById('envelope');
@@ -2674,19 +3139,28 @@
         
         // Listen for keyboard arrow presses
         document.addEventListener('keydown', (e) => {
-            // Disable keyboard navigation when letter overlay is active or on final closing slide
+            // Block navigation when lightbox is open
+            if (lightboxOpen) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === 'ArrowLeft') {
+                    navigateLightbox(-1);
+                } else if (e.key === 'ArrowRight') {
+                    navigateLightbox(1);
+                }
+                return;
+            }
+            
+            // Disable keyboard navigation when letter overlay is active or on envelope slide (last slide)
             const letterOverlay = document.getElementById('letterOverlay');
             if (letterOverlay && letterOverlay.classList.contains('active')) {
                 return; // Block all keyboard interaction when letter is open
             }
-            if (currentSlide === slides.length - 1) {
-                return; // Block all keyboard interaction on final closing slide
+            if (currentSlide === 11) {
+                return; // Block all keyboard interaction on final envelope slide
             }
             
-            // Block forward navigation (right arrow) on envelope slide (slide 12)
-            if (currentSlide === 12 && e.key === 'ArrowRight') {
-                return; // Block forward navigation on envelope slide
-            }
+            // Block forward navigation is not needed since envelope is last slide
             
             // Check which arrow key was pressed
             if (e.key === 'ArrowLeft') {
@@ -2695,6 +3169,69 @@
                 nextSlide();  // Right arrow = next slide
             }
         });
+
+        /* ========================================
+           PHOTO LIGHTBOX FUNCTIONS
+           Handle full-screen photo viewer
+           ======================================== */
+        
+        /**
+         * Opens the lightbox with a specific photo
+         * @param {number} slideIndex - Which slide (1-11) the photo belongs to
+         * @param {number} photoIndex - Which photo within that slide (0-based)
+         */
+        function openLightbox(slideIndex, photoIndex) {
+            const photos = slidePhotoData[slideIndex];
+            if (!photos || !photos[photoIndex]) return;
+            
+            lightboxOpen = true;
+            currentLightboxSlideIndex = slideIndex;
+            currentPhotoIndex = photoIndex;
+            
+            const lightbox = document.getElementById('photoLightbox');
+            const photo = lightbox.querySelector('.lightbox-photo');
+            const caption = lightbox.querySelector('.lightbox-caption');
+            const prevBtn = lightbox.querySelector('.lightbox-nav.prev');
+            const nextBtn = lightbox.querySelector('.lightbox-nav.next');
+            
+            // Load photo and caption
+            photo.src = normalizeImagePath(photos[photoIndex].src);
+            caption.textContent = photos[photoIndex].caption || '';
+            
+            // Show/hide navigation arrows
+            if (photos.length > 1) {
+                prevBtn.classList.toggle('hidden', photoIndex === 0);
+                nextBtn.classList.toggle('hidden', photoIndex === photos.length - 1);
+            } else {
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+            }
+            
+            lightbox.classList.add('active');
+        }
+        
+        /**
+         * Closes the lightbox
+         */
+        function closeLightbox() {
+            lightboxOpen = false;
+            const lightbox = document.getElementById('photoLightbox');
+            lightbox.classList.remove('active');
+        }
+        
+        /**
+         * Navigate between photos in the lightbox
+         * @param {number} direction - -1 for previous, 1 for next
+         */
+        function navigateLightbox(direction) {
+            const photos = slidePhotoData[currentLightboxSlideIndex];
+            if (!photos) return;
+            
+            const newIndex = currentPhotoIndex + direction;
+            if (newIndex >= 0 && newIndex < photos.length) {
+                openLightbox(currentLightboxSlideIndex, newIndex);
+            }
+        }
 
         /* ========================================
            TOUCH SWIPE NAVIGATION
@@ -2720,19 +3257,27 @@
          * Requires minimum 50px movement to count as a swipe
          */
         function handleSwipe() {
-            // Disable swipe navigation when letter overlay is active or on final closing slide
+            // Block swipe navigation when lightbox is open
+            if (lightboxOpen) {
+                // Allow horizontal swipe in lightbox for photo navigation
+                if (touchEndX < touchStartX - 50) {
+                    navigateLightbox(1); // Swipe left = next photo
+                } else if (touchEndX > touchStartX + 50) {
+                    navigateLightbox(-1); // Swipe right = previous photo
+                }
+                return;
+            }
+            
+            // Disable swipe navigation when letter overlay is active or on envelope slide (last slide)
             const letterOverlay = document.getElementById('letterOverlay');
             if (letterOverlay && letterOverlay.classList.contains('active')) {
                 return; // Block all swipe interaction when letter is open
             }
-            if (currentSlide === slides.length - 1) {
-                return; // Block all swipe interaction on final closing slide
+            if (currentSlide === 11) {
+                return; // Block all swipe interaction on final envelope slide
             }
             
-            // Block forward swipe (left swipe) on envelope slide (slide 12)
-            if (currentSlide === 12 && touchEndX < touchStartX - 50) {
-                return; // Block forward swipe on envelope slide
-            }
+            // Block forward swipe is not needed since envelope is last slide
             
             // Calculate swipe distance
             if (touchEndX < touchStartX - 50) {      // Swiped left (move forward)
@@ -2866,6 +3411,95 @@
            ======================================== */
         
         // Wait for HTML to fully load before running JavaScript
+        /* ========================================
+           DYNAMIC SLIDE GENERATION
+           Generates photo slides from JSON data
+           ======================================== */
+        
+        /**
+         * Generates scrapbook photo galleries for photo slides (1-11)
+         * Skips slide 0 (March message bubbles) which is manually defined
+         */
+        function generatePhotoSlides() {
+            const slideshowContainer = document.querySelector('.slideshow-container');
+            if (!slideshowContainer) return;
+            
+            // Map slide indices to months (0 = March, 1 = April, etc.)
+            const months = [
+                'March 2025',   // 0 - manually defined (message bubbles)
+                'April 2025',   // 1
+                'May 2025',     // 2
+                'June 2025',    // 3
+                'July 2025',    // 4
+                'August 2025',  // 5
+                'September 2025', // 6
+                'October 2025', // 7
+                'November 2025', // 8
+                'December 2025', // 9
+                'January 2026', // 10
+                'February 2026' // 11
+            ];
+            
+            // Get all existing slides and keep track of non-photo slides
+            const existingSlides = Array.from(slideshowContainer.querySelectorAll('.slide'));
+            const marchSlide = existingSlides[0]; // Keep March message bubble slide
+            
+            // Clear container and re-add March slide first (keeping it active)
+            slideshowContainer.innerHTML = '';
+            if (marchSlide) {
+                marchSlide.classList.add('active'); // Ensure March is active by default
+                slideshowContainer.appendChild(marchSlide);
+            }
+            
+            // Generate photo slides (indices 1-11)
+            for (let i = 1; i <= 11; i++) {
+                const photos = slidePhotoData[i];
+                if (!photos || photos.length === 0) continue;
+                
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slide timeline-slide';
+                // Don't add active class - March should be the active slide
+                
+                // Month header
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'timeline-month';
+                monthDiv.textContent = months[i];
+                slideDiv.appendChild(monthDiv);
+                
+                // Photo gallery container
+                const galleryDiv = document.createElement('div');
+                galleryDiv.className = photos.length === 1 ? 'photo-gallery single-photo' : 'photo-gallery';
+                
+                // Create photo elements
+                photos.forEach((photoData, photoIndex) => {
+                    const photoWrapper = document.createElement('div');
+                    photoWrapper.className = 'scrapbook-photo';
+                    photoWrapper.onclick = () => openLightbox(i, photoIndex);
+                    
+                    const img = document.createElement('img');
+                    img.src = normalizeImagePath(photoData.src);
+                    img.alt = photoData.caption || `Photo ${photoIndex + 1}`;
+                    img.loading = 'lazy';
+                    
+                    photoWrapper.appendChild(img);
+                    galleryDiv.appendChild(photoWrapper);
+                });
+                
+                slideDiv.appendChild(galleryDiv);
+                slideshowContainer.appendChild(slideDiv);
+            }
+            
+            // Re-append envelope and closing slides (if they exist)
+            const envelopeSlide = existingSlides.find(s => s.querySelector('.envelope-container'));
+            const closingSlide = existingSlides.find(s => s.id === 'closingOverlay');
+            
+            if (envelopeSlide) slideshowContainer.appendChild(envelopeSlide);
+            if (closingSlide) slideshowContainer.appendChild(closingSlide);
+            
+            // Refresh slides query to include newly generated slides
+            slides = document.querySelectorAll('.slide');
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const introOverlay = document.getElementById('introOverlay');
             if (introOverlay) {
@@ -2880,7 +3514,11 @@
                 }, false);
             }
             setupImageFallbacks();
-            startAlbumShuffle();
+            loadImagePool().then((pool) => {
+                startAlbumShuffle(pool);
+                startClosingCarousel(pool);
+                generatePhotoSlides(); // Generate dynamic photo slides after JSON loaded
+            });
             updateIntroCompactMode();  // Check if we need compact mode
         });
 
@@ -2924,38 +3562,104 @@
                     if (!wrapper) return;
                     wrapper.classList.remove('placeholder');
                     img.style.display = 'block';
+                    img.style.opacity = '1';
                 });
                 img.addEventListener('error', () => {
                     const wrapper = img.parentElement;
                     if (!wrapper) return;
-                    wrapper.classList.add('placeholder');
-                    wrapper.setAttribute('data-alt', img.alt || 'Photo coming soon');
                     img.style.display = 'none';
                 });
             });
         }
 
-        function startAlbumShuffle() {
+        function getDefaultImagePool() {
+            return [
+                'assets/images/month-03-1.jpg',
+                'assets/images/month-04-1.jpg',
+                'assets/images/month-05-1.png',
+                'assets/images/month-06-1.png',
+                'assets/images/month-07-1.png',
+                'assets/images/month-08-1.png',
+                'assets/images/month-09-1.png',
+                'assets/images/month-10-1.jpg',
+                'assets/images/month-11-1.png'
+            ];
+        }
+
+        function normalizeImagePath(path) {
+            if (typeof path !== 'string') return '';
+            if (path.includes('/')) return path;
+            return `assets/images/${path}`;
+        }
+
+        function normalizeImagePool(pool) {
+            if (!Array.isArray(pool) || pool.length === 0) {
+                return getDefaultImagePool();
+            }
+
+            return pool.map((item) => {
+                if (typeof item !== 'string') return null;
+                return normalizeImagePath(item);
+            }).filter(Boolean);
+        }
+
+        function buildPoolFromSlides(slidesData) {
+            if (!slidesData || typeof slidesData !== 'object') return [];
+            const pool = [];
+            Object.values(slidesData).forEach((photos) => {
+                if (!Array.isArray(photos)) return;
+                photos.forEach((photo) => {
+                    if (photo && typeof photo.src === 'string') {
+                        pool.push(normalizeImagePath(photo.src));
+                    }
+                });
+            });
+            return pool.filter(Boolean);
+        }
+
+        function loadImagePool() {
+            return fetch('assets/images.json', { cache: 'no-store' })
+                .then((response) => {
+                    if (!response.ok) throw new Error('Failed to load images.json');
+                    return response.json();
+                })
+                .then((data) => {
+                    // Handle new JSON structure with 'slides' and 'carousel' keys
+                    if (data && typeof data === 'object') {
+                        // Store slide photo data globally
+                        if (data.slides) {
+                            slidePhotoData = data.slides;
+                        }
+                        
+                        // Return carousel images for album shuffle
+                        if (Array.isArray(data.carousel)) {
+                            return normalizeImagePool(data.carousel);
+                        }
+
+                        // Fallback: build a pool from slide photos
+                        if (data.slides) {
+                            const slidePool = buildPoolFromSlides(data.slides);
+                            if (slidePool.length > 0) return slidePool;
+                        }
+                        
+                        // Fallback: if it's still the old array format
+                        if (Array.isArray(data)) {
+                            return normalizeImagePool(data);
+                        }
+                    }
+                    return getDefaultImagePool();
+                })
+                .catch(() => getDefaultImagePool());
+        }
+
+        function startAlbumShuffle(imagePool) {
             const miniImages = Array.from(document.querySelectorAll('.mini-photo img'));
             if (miniImages.length === 0) return;
 
             const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
             if (prefersReducedMotion.matches) return;
 
-            const pool = [
-                'assets/images/month-01.jpg',
-                'assets/images/month-02.jpg',
-                'assets/images/month-03.jpg',
-                'assets/images/month-04.jpg',
-                'assets/images/month-05.jpg',
-                'assets/images/month-06.jpg',
-                'assets/images/month-07.jpg',
-                'assets/images/month-08.jpg',
-                'assets/images/month-09.jpg',
-                'assets/images/month-10.jpg',
-                'assets/images/month-11.jpg',
-                'assets/images/month-12.jpg'
-            ];
+            const pool = normalizeImagePool(imagePool);
 
             const shuffle = (list) => {
                 const copy = list.slice();
@@ -2967,17 +3671,199 @@
             };
 
             const updateMiniPhotos = () => {
-                const picks = shuffle(pool).slice(0, miniImages.length);
+                let picks = shuffle(pool);
+                while (picks.length < miniImages.length) {
+                    picks = picks.concat(shuffle(pool));
+                }
+                picks = picks.slice(0, miniImages.length);
                 miniImages.forEach((img, index) => {
-                    img.src = picks[index];
-                    img.style.display = 'block';
                     const wrapper = img.parentElement;
-                    if (wrapper) wrapper.classList.remove('placeholder');
+                    img.style.opacity = '0';
+                    setTimeout(() => {
+                        img.src = picks[index];
+                        img.style.display = 'block';
+                        if (wrapper) wrapper.classList.remove('placeholder');
+                        if (img.complete) {
+                            requestAnimationFrame(() => {
+                                img.style.opacity = '1';
+                            });
+                        }
+                    }, 180);
                 });
             };
 
             updateMiniPhotos();
             setInterval(updateMiniPhotos, 4000);
+        }
+
+        /* ========================================
+           GENERATE PHOTO SLIDES FROM JSON
+           Creates dynamic slides with scrapbook galleries
+           ======================================== */
+        
+        function generatePhotoSlides() {
+            const slideshowContainer = document.querySelector('.slideshow-container');
+            if (!slideshowContainer) return;
+            
+            // Month names for slide titles
+            const monthNames = [
+                'March 2025',  // 0
+                'April 2025',  // 1
+                'May 2025',    // 2
+                'June 2025',   // 3
+                'July 2025',   // 4
+                'August 2025', // 5
+                'September 2025', // 6
+                'October 2025',   // 7
+                'November 2025',  // 8
+                'December 2025',  // 9
+                'January 2026',   // 10
+                'February 2026'   // 11
+            ];
+            
+            // Get all existing slides and keep track of special slides
+            const existingSlides = Array.from(slideshowContainer.querySelectorAll('.slide'));
+            const marchSlide = existingSlides[0]; // Keep March message bubble slide
+            const envelopeSlide = slideshowContainer.querySelector('.envelope-slide');
+            
+            // Clear container and re-add March slide first (keeping it active)
+            slideshowContainer.innerHTML = '';
+            if (marchSlide) {
+                marchSlide.classList.add('active'); // Ensure March is active by default
+                slideshowContainer.appendChild(marchSlide);
+            }
+            
+            // Slide 1: April 2025 (chat bubbles)
+            const aprilSlide = document.createElement('div');
+            aprilSlide.className = 'slide timeline-slide';
+            aprilSlide.innerHTML = `
+                <div class="timeline-month">${monthNames[1]}</div>
+                <div class="message-bubble-card" aria-label="First meeting">
+                    <div class="message-bubble-header">Aileen</div>
+                    <div class="message-bubble-stack">
+                        <div class="message-bubble outgoing">tara let's meet?</div>
+                        <div class="message-bubble incoming">sure</div>
+                        <div class="message-bubble outgoing">see you!</div>
+                    </div>
+                </div>
+                <p class="timeline-text">Our first meeting. Kaba at saya naramdaman ko dahil di ko alam ang susunod na pangyayari... 🫣</p>
+            `;
+            slideshowContainer.appendChild(aprilSlide);
+            
+            // Generate photo slides (indices 2-10: May 2025 - January 2026)
+            for (let i = 2; i <= 10; i++) {
+                const photos = slidePhotoData[i];
+                if (!photos || photos.length === 0) continue;
+                
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slide timeline-slide';
+                // Don't add active class - March should be the active slide
+                
+                // Create month title
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'timeline-month';
+                monthDiv.textContent = monthNames[i];
+                slideDiv.appendChild(monthDiv);
+                
+                // Create photo gallery
+                const galleryDiv = document.createElement('div');
+                galleryDiv.className = 'photo-gallery';
+                if (photos.length === 1) {
+                    galleryDiv.classList.add('single-photo');
+                } else if (photos.length >= 5) {
+                    galleryDiv.classList.add('many-photos');
+                }
+                
+                // Add photos to gallery
+                photos.forEach((photoData, photoIndex) => {
+                    const photoWrapper = document.createElement('div');
+                    photoWrapper.className = 'scrapbook-photo';
+                    const normalizedSrc = normalizeImagePath(photoData.src);
+                    photoWrapper.style.setProperty('--photo-src', `url('${normalizedSrc}')`);
+
+                    const tapeLeft = document.createElement('span');
+                    tapeLeft.className = 'polaroid-tape left';
+
+                    const tapeRight = document.createElement('span');
+                    tapeRight.className = 'polaroid-tape right';
+                    
+                    const img = document.createElement('img');
+                    img.src = normalizedSrc;
+                    img.alt = monthNames[i];
+                    img.loading = 'lazy';
+
+                    const caption = document.createElement('div');
+                    caption.className = 'polaroid-caption';
+                    caption.textContent = monthNames[i];
+                    
+                    // Add click handler to open lightbox
+                    photoWrapper.addEventListener('click', () => {
+                        openLightbox(i, photoIndex);
+                    });
+                    
+                    photoWrapper.appendChild(tapeLeft);
+                    photoWrapper.appendChild(tapeRight);
+                    photoWrapper.appendChild(img);
+                    photoWrapper.appendChild(caption);
+                    galleryDiv.appendChild(photoWrapper);
+                });
+                
+                slideDiv.appendChild(galleryDiv);
+                slideshowContainer.appendChild(slideDiv);
+            }
+            
+            // Re-add envelope slide (February 2026 - now slide 11)
+            if (envelopeSlide) slideshowContainer.appendChild(envelopeSlide);
+            
+            // Refresh slides query to include newly generated slides
+            slides = document.querySelectorAll('.slide');
+        }
+
+        function startClosingCarousel(imagePool) {
+            const carousel = document.querySelector('.closing-carousel');
+            if (!carousel) return;
+
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (prefersReducedMotion.matches) return;
+
+            const pool = normalizeImagePool(imagePool);
+
+            const shuffle = (list) => {
+                const copy = list.slice();
+                for (let i = copy.length - 1; i > 0; i -= 1) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [copy[i], copy[j]] = [copy[j], copy[i]];
+                }
+                return copy;
+            };
+
+            const buildRow = (direction) => {
+                const row = document.createElement('div');
+                row.className = `closing-carousel-row ${direction}`.trim();
+
+                const track = document.createElement('div');
+                track.className = 'closing-carousel-track';
+
+                const picks = shuffle(pool);
+                const images = picks.concat(picks);
+                images.forEach((src) => {
+                    const item = document.createElement('div');
+                    item.className = 'closing-carousel-item';
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = 'Memory photo';
+                    item.appendChild(img);
+                    track.appendChild(item);
+                });
+
+                row.appendChild(track);
+                return row;
+            };
+
+            carousel.appendChild(buildRow('left'));
+            carousel.appendChild(buildRow('right'));
+            carousel.appendChild(buildRow('left'));
+            carousel.appendChild(buildRow('right'));
         }
 
         /* ========================================
@@ -3005,7 +3891,7 @@
                 letterOverlay.classList.remove('active');     // Hide overlay
                 envelope.classList.remove('opened');          // Close envelope flap
                 
-                // After letter closes (500ms), show the final closing slide
+                // After letter closes (500ms), show the final closing overlay
                 setTimeout(() => {
                     closingOverlay.classList.remove('hidden');
                     closingOverlay.classList.add('active');
