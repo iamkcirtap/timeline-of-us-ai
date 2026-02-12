@@ -15,12 +15,16 @@
 This is a **single-page web application** that creates an interactive romantic timeline slideshow. It's built with pure HTML, CSS, and JavaScript (no frameworks or libraries needed).
 
 **What it does:**
-- Shows an intro screen with an album cover
+- Shows an intro screen with an album cover and emoji favicon
 - Displays 14 slides representing months from March 2025 to February 2026
-- Includes an interactive envelope that opens to reveal a letter
+- Features staggered photo animations (multiple photos fade in progressively)
+- Includes an interactive envelope that opens to reveal a Taglish love letter
 - Has navigation controls (keyboard arrows, touch swipe, timeline dots)
 - Features floating heart animations in the background
-- Includes music controls with play/pause functionality
+- Includes music controls with seamless looping audio
+- Implements internet-based Valentine's Day timelock (unlocks Feb 14, 2026 midnight)
+- Shows 28-photo carousel on closing page
+- Validates server time and user location before unlocking
 
 ---
 
@@ -29,16 +33,27 @@ This is a **single-page web application** that creates an interactive romantic t
 ```
 timeline-of-us-ai/
 ├── src/
-│   └── index.html          # Single file containing ALL code (HTML + CSS + JavaScript)
+│   ├── index.html          # Single file (~4260 lines: HTML + CSS + JavaScript)
+│   └── assets/
+│       ├── images.json      # Photo metadata (slides object + 28-photo carousel)
+│       ├── audio/
+│       │   └── enchanted.mp3 # Background music (looping)
+│       └── images/           # Monthly photo gallery (JPG/PNG)
 ├── package.json            # Project configuration
 ├── README.md              # Project readme
+├── SECURITY.md            # Security considerations
 └── DOCUMENTATION.md       # This file - explains how everything works
 ```
 
-**Important:** Everything lives in ONE file (`src/index.html`). This includes:
+**Important:** The core functionality lives in ONE file (`src/index.html`). This includes:
 - HTML structure (the content)
 - CSS styling (the appearance)
 - JavaScript code (the interactivity)
+
+**External Assets:**
+- `images.json`: Photo configuration with slides object and carousel array
+- `enchanted.mp3`: Audio file for background music
+- Image files: Monthly photos referenced in images.json
 
 ---
 
@@ -81,18 +96,64 @@ HTML is the **skeleton** of the webpage - it defines what elements exist.
    - Left/right arrows for navigation
    - Hidden on intro and final slides
 
-5. **Envelope** (`.envelope-container`)
+5. **Valentine's Day Timelock** (`#lockOverlay`)
+   - Validates server time before allowing access
+   - Shows lock screen if before Feb 14, 2026 midnight (user's timezone)
+   - Checks location (browser geolocation → IP fallback)
+   - Requires internet connection (offline = locked)
+   - Bypassable via console: `window.bypassTimelock()`
+
+6. **Envelope** (`.envelope-container`)
    - Interactive envelope on slide 12
    - Opens to reveal a letter
    - Blocks navigation until opened
 
-6. **Control Buttons**
+7. **Control Buttons**
    - Restart button (top-left)
-   - Music button (top-right)
+   - Music button (top-right) with audio loop
 
-7. **Floating Hearts** (`#heartContainer`)
+8. **Floating Hearts** (`#heartContainer`)
    - Background decoration
    - Animated hearts floating up
+
+9. **Photo Carousel** (`.closing-carousel`)
+   - 28 photos in rotating rows on final slide
+   - Slower speed (60s/70s) to prevent dizziness
+
+---
+
+## 🔒 Valentine's Day Timelock
+
+The timelock is a **security feature** that prevents premature access to the gift.
+
+### How It Works:
+
+1. **On Page Load**: Calls `initializeTimelock()`
+2. **Fetch Server Time**: Uses multiple APIs for redundancy
+   - `timeapi.io` (CORS-friendly)
+   - GitHub API (time from headers)
+   - `ipapi.co` (includes timezone)
+3. **Location Validation**: Optional extra security
+   - Browser geolocation (asks permission)
+   - Falls back to IP lookup if denied
+4. **Compare Times**: 
+   - Unlock date: Feb 14, 2026 at midnight (user's timezone)
+   - If current time >= unlock time → **unlocked**
+   - If before unlock time → **locked** (shows countdown)
+   - If offline → **locked** (shows internet required)
+
+### Why Internet-Based?
+
+- **System clock** can be changed by user
+- **Server time** is tamper-proof (fetched from internet)
+- **Offline denied** forces honest time validation
+
+### Bypass for Development:
+
+```javascript
+// In browser console (F12)
+window.bypassTimelock();
+```
 
 ---
 
@@ -209,15 +270,34 @@ button.addEventListener('click', function() {
 
 ### Core Functions in Our Code:
 
-#### 1. **Navigation System**
+#### 1. **Security & Validation**
+
+**`initializeTimelock()`**
+- Validates server time and location before unlocking
+- Fetches time from multiple APIs
+- Compares against Feb 14, 2026 midnight (user's timezone)
+- Shows lock overlay if before unlock date or offline
+
+**`fetchServerTime()`**
+- Fetches official time from CORS-friendly APIs
+- Uses multiple endpoints for redundancy
+- Returns Date object or null if all fail
+
+**`getLocationWithFallback()`**
+- Gets user location for validation
+- First tries browser geolocation API
+- Falls back to IP-based lookup if denied
+- Returns location object with source, lat, lon, country
+
+#### 2. **Navigation System**
 
 **`showSlide(index, direction)`**
 - Shows a specific slide
 - Handles animation direction
-- Updates timeline dots
+- Updates timeline dots with auto-centering
 - Parameters:
   - `index` - which slide to show (0-13)
-  - `direction` - animation type ('next', 'prev', 'none', 'fade')
+  - `direction` - animation type ('next', 'prev', 'none', 'fade', 'endReveal')
 
 **`nextSlide()` / `prevSlide()`**
 - Move forward/backward one slide
@@ -229,32 +309,51 @@ button.addEventListener('click', function() {
 - Used by timeline dots
 - Adds fade animation
 
-#### 2. **Intro/Outro Controls**
+#### 3. **Intro/Outro Controls**
 
 **`openAlbum()`**
 - Hides intro overlay
-- Shows first slide
+- Shows first slide (March 2025)
 - Initializes the experience
 
 **`goToIntro()`**
 - Returns to intro screen
 - Triggered by restart button
 
-#### 3. **Letter Interaction**
+#### 4. **Letter Interaction**
 
 **`toggleLetter()`**
 - Opens/closes the envelope letter
 - Blocks navigation when open
 - Auto-advances to final slide when closed
+- Animations: flap (1.2s) + content reveal (1.2s)
 
-#### 4. **Audio Controls**
+#### 5. **Audio Controls**
 
 **`toggleAudio()`**
-- Toggles play/pause icon
-- Mock implementation (no actual audio)
-- Uses `isAudioPlaying` state variable
+- Toggles play/pause for background music
+- Uses HTML5 audio element with loop attribute
+- Updates play/pause icon in button
+- Audio: "Enchanted (Taylor Swift cover)"
 
-#### 5. **Swipe Detection**
+#### 6. **Photo Gallery System**
+
+**`loadImagePool()`**
+- Loads photo metadata from `images.json`
+- Parses slides object and carousel array
+- Returns 28-photo array for carousel
+
+**`startAlbumShuffle(pool)`**
+- Animates album cover photos (intro screen)
+- Shuffles and rotates through image pool
+- Updates every 4 seconds
+
+**`startClosingCarousel(pool)`**
+- Builds 4-row photo carousel for final slide
+- Alternating directions (left/right)
+- Speed: 60s/70s to prevent dizziness
+
+#### 7. **Swipe Detection**
 
 **`handleSwipe()`**
 - Detects left/right swipes on touch devices

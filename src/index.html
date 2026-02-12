@@ -15,6 +15,7 @@
     <meta charset="UTF-8">  <!-- Character encoding for emoji/special characters -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Makes it work on mobile -->
     <title>Our Love Timeline ❤️</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💕</text></svg>">
     
     <!-- CSS STYLES: Everything inside <style> controls how things look -->
     <style>
@@ -66,16 +67,6 @@
             font-size: 20px;
             opacity: 0;          /* Starts invisible */
             animation: float 8s infinite ease-in-out;  /* 8 second animation, repeats forever */
-        }
-
-        /* Heart explosion effect (used in letter opening) */
-        .heart-explosion {
-            position: absolute;
-            font-size: 40px;
-            opacity: 1;
-            animation: heartFloatUp 5s ease-out forwards;
-            pointer-events: none;
-            z-index: 100;
         }
 
         /* KEYFRAME ANIMATIONS: Define how elements move over time */
@@ -246,6 +237,22 @@
         .timeline-slide.first-enter .timeline-month { animation-delay: 0.15s; }
         .timeline-slide.first-enter .timeline-photo { animation-delay: 0.35s; }
         .timeline-slide.first-enter .timeline-text { animation-delay: 0.55s; }
+
+        /* Stagger multiple photos in gallery (Option C enhancement) */
+        .timeline-slide.first-enter .photo-gallery .scrapbook-photo {
+            opacity: 0;
+            animation: introFadeIn 0.8s ease forwards;
+        }
+        /* Single photo: standard delay */
+        .timeline-slide.first-enter .photo-gallery.single-photo .scrapbook-photo { animation-delay: 0.35s; }
+        /* Multiple photos: progressive stagger (150ms between each) */
+        .timeline-slide.first-enter .photo-gallery:not(.single-photo) .scrapbook-photo:nth-child(1) { animation-delay: 0.35s; }
+        .timeline-slide.first-enter .photo-gallery:not(.single-photo) .scrapbook-photo:nth-child(2) { animation-delay: 0.5s; }
+        .timeline-slide.first-enter .photo-gallery:not(.single-photo) .scrapbook-photo:nth-child(3) { animation-delay: 0.65s; }
+        .timeline-slide.first-enter .photo-gallery:not(.single-photo) .scrapbook-photo:nth-child(4) { animation-delay: 0.8s; }
+        .timeline-slide.first-enter .photo-gallery:not(.single-photo) .scrapbook-photo:nth-child(5) { animation-delay: 0.95s; }
+        .timeline-slide.first-enter .photo-gallery:not(.single-photo) .scrapbook-photo:nth-child(6) { animation-delay: 1.1s; }
+        .timeline-slide.first-enter .photo-gallery:not(.single-photo) .scrapbook-photo:nth-child(7) { animation-delay: 1.25s; }
 
         @keyframes introFadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -2215,11 +2222,11 @@
             gap: 18px;
             width: max-content;
             align-items: center;
-            animation: carousel-left 38s linear infinite;
+            animation: carousel-left 60s linear infinite;
         }
 
         .closing-carousel-row.right .closing-carousel-track {
-            animation: carousel-right 44s linear infinite;
+            animation: carousel-right 70s linear infinite;
         }
 
         .closing-carousel-item {
@@ -2587,6 +2594,110 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        /* ============================================
+           TIMELOCK OVERLAY (Valentine's Day Lock)
+           ============================================ */
+        .lock-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1744 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            font-family: 'Georgia', serif;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .lock-overlay.hidden {
+            display: none !important;
+        }
+
+        .lock-content {
+            text-align: center;
+            color: white;
+            padding: 40px 30px;
+            max-width: 500px;
+        }
+
+        .lock-icon {
+            font-size: 100px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .lock-content h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin: 0 0 15px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        .lock-content p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            margin: 10px 0;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .countdown-text {
+            font-size: clamp(0.95rem, 2.3vw, 1.15rem) !important;
+            font-style: italic;
+            margin-top: 20px !important;
+            font-weight: normal;
+        }
+
+        .lock-status {
+            margin-top: 20px;
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+
+        .timelock-retry-btn {
+            margin-top: 30px;
+            padding: 14px 40px;
+            font-size: 1.05rem;
+            background: white;
+            color: #ff6b9d;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Georgia', serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .timelock-retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            background: #fff9fb;
+        }
+
+        .timelock-retry-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .lock-content {
+                padding: 30px 20px;
+            }
+
+            .lock-icon {
+                font-size: 80px;
+                margin-bottom: 20px;
+            }
+
+            .lock-content h1 {
+                font-size: 2rem;
+            }
+
+            .timelock-retry-btn {
+                padding: 12px 35px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2599,12 +2710,13 @@
     <div class="heart-container" id="heartContainer"></div>
 
     <!-- Valentine's Day Lock Overlay -->
-    <div id="lockOverlay" class="lock-overlay hidden">
+    <div id="lockOverlay" class="lock-overlay">
         <div class="lock-content">
-            <div class="lock-icon">🔒</div>
-            <h1>Coming on Valentine's Day</h1>
-            <p>This special surprise unlocks on February 14, 2026</p>
-            <p class="countdown-text" id="countdownText">Get ready to celebrate our love! 💕</p>
+            <div class="lock-icon">💝</div>
+            <h1>This is a Valentine's Day Gift</h1>
+            <p>Come back on <strong>February 14</strong> to open our love timeline.</p>
+            <div class="lock-status" id="lockStatus">Validating access...</div>
+            <button class="timelock-retry-btn" onclick="initializeTimelock()">Check Again</button>
         </div>
     </div>
 
@@ -2714,21 +2826,20 @@
                 <div class="letter-content">
                     <p>Hi Babe,</p>
                     
-                    <p>As I sit here, thousands of miles away from you, my heart feels closer to yours than ever. These past months have been a beautiful testament to what we share - a love that transcends distance, time zones, and physical space.</p>
+                    <p>Habang nandito ako ngayon at malayo ka man, pakiramdam ko mas malapit ka sa'kin kaysa dati.</p>
                     
-                    <p>Every video call, every text message, every "good morning" and "goodnight" has been a treasure. The way you smile through the screen brightens my darkest days. Your laughter, even through a phone speaker, is the most beautiful melody I've ever heard.</p>
+                    <p>These past months proved kung gaano katatag yung meron tayo. Kahit distance, time zones, at screen lang pagitan ramdam kita palagi. Every call, every text, bawat good morning at good night… importante lahat sa akin yun.</p>
                     
-                    <p>Long distance isn't easy. There are nights when I long to hold you, moments when I wish I could be there to wipe away your tears or share in your joy in person. But this distance has taught me something invaluable - it has shown me the depth of my love for you, the strength of our bond, and the certainty of my feelings.</p>
+                    <p>Hindi madali ang LDR. May mga gabing gusto lang kitang yakapin at makasama in person. Pero dahil dito, mas lalo kong narealize kung gaano kita kamahal at kung gaano ako kasigurado sa iyo.</p>
                     
-                    <p>You've become my home, no matter where in the world we are. When we talk, I'm home. When I see your face, I'm home. When I think of our future together, I'm home.</p>
+                    <p>Ikaw yung naging home ko, pag kausap kita, pag nakikita kita, pag iniisip ko future natin.</p>
                     
-                    <p>I count down the days until we meet again. I've been planning something special, something that will show you just how serious I am about us, about our future together. Let's just say... you might want to keep your left hand free when we next see each other. 💍✨</p>
+                    <p>Binibilang ko na lang araw hanggang magkita tayo ulit.</p>
                     
-                    <p>Until that moment comes, know that you are loved beyond measure. You are thought of constantly. You are cherished deeply. And you are missed profoundly.</p>
+                    <p>Sana it will be sooner than later babe, so we can go back and feel each other's warmth again.</p>
                     
-                    <p>Distance is just a test of how far love can travel. And ours? It's limitless.</p>
-                    
-                    <p>Happy Valentine's Day, Babe. Soon, very soon, I hope to ask you to be something even more.</p>
+                    <p>Happy Valentine's Day, Babe.<br>
+                    Miss na miss na kita. Mahal na mahal kita.</p>
                 </div>
                 <p class="letter-signature">Forever and always yours,<br>Patrick ❤️</p>
             </div>
@@ -2749,7 +2860,7 @@
             <p class="closing-text">Every day with you is an adventure.</p>
             <p class="closing-text">Every tomorrow with you is a promise.</p>
             <div class="closing-hearts">💕 💝 💖 💗 💓</div>
-            <p class="closing-footer">Happy Valentine's Day, my love!</p>
+            <p class="closing-footer">Happy Valentine's Day, babe!</p>
             <button class="replay-btn" onclick="restartJourney()">Relive Our Journey →</button>
             <p class="closing-footer-note">(Or you can close this page... but I hope you don't ❤️)</p>
             <p class="closing-meta" style="font-size:0.8rem;opacity:0.7;margin-top:16px;">Built by Patrick Jove • AI assisted using GitHub Copilot</p>
@@ -2834,7 +2945,7 @@
             <span class="audio-play">▶️</span>
         </span>
     </button>
-    <audio id="audioPlayer" src="assets/audio/enchanted.mp3" preload="metadata"></audio>
+    <audio id="audioPlayer" src="assets/audio/enchanted.mp3" preload="metadata" loop></audio>
 
     <!-- Transition overlay used for smooth restart fade -->
     <div id="transitionOverlay" style="position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4000;transition:opacity 0.45s ease"></div>
@@ -2844,6 +2955,184 @@
          ============================================ -->
     <script>
         /* ========================================
+           VALENTINE'S DAY TIMELOCK (Security)
+           Validates internet time & location before unlocking
+           ======================================== */
+
+        /**
+         * Main timelock initialization function
+         * Validates time and location, then unlocks or locks the app
+         */
+        async function initializeTimelock() {
+            const lockOverlay = document.getElementById('lockOverlay');
+            const lockStatus = document.getElementById('lockStatus');
+            
+            if (!lockOverlay) return;
+
+            try {
+                lockStatus.textContent = 'Validating access...';
+                
+                // Fetch official server time (tamper-proof)
+                let serverTime = await fetchServerTime();
+                if (!serverTime) {
+                    showLocked('No internet connection detected. Please connect to the internet.', lockOverlay, lockStatus);
+                    return;
+                }
+
+                // Get user's timezone from browser
+                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                // Try to validate location (optional)
+                try {
+                    const location = await getLocationWithFallback();
+                    console.log('📍 User Location:', {
+                        source: location.source,
+                        latitude: location.lat,
+                        longitude: location.lon,
+                        country: location.country || 'N/A',
+                        timezone: location.timezone || userTimezone
+                    });
+                } catch (e) {
+                    console.log('Location validation skipped:', e.message);
+                    // Continue without location - time validation is the main check
+                }
+
+                // Get and log timezone
+                console.log('🌍 User Timezone:', userTimezone);
+
+                // Check if current time >= Feb 14, 2026 midnight in user's timezone
+                const unlockDateTime = new Date('2026-02-14T00:00:00');
+                
+                // Convert server time to user's timezone
+                const userTime = new Date(serverTime.toLocaleString('en-US', { timeZone: userTimezone }));
+
+                if (userTime >= unlockDateTime) {
+                    // UNLOCKED! Hide lock overlay and show app
+                    lockOverlay.classList.add('hidden');
+                    lockStatus.textContent = 'Access granted! ✨';
+                    return true;
+                } else {
+                    // Still locked
+                    const daysLeft = Math.ceil((unlockDateTime - userTime) / (1000 * 60 * 60 * 24));
+                    const message = `Get ready to celebrate! ${daysLeft} days to go 💕`;
+                    showLocked(message, lockOverlay, lockStatus);
+                    return false;
+                }
+
+            } catch (error) {
+                console.error('Timelock error:', error);
+                showLocked('Unable to validate. Please check your internet connection.', lockOverlay, lockStatus);
+                return false;
+            }
+        }
+
+        /**
+         * Fetch server time from multiple APIs for redundancy
+         * Returns Date object or null if all fail
+         */
+        async function fetchServerTime() {
+            const apis = [
+                // timeapi.io - CORS-friendly
+                { url: 'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC', parser: (data) => new Date(data.dateTime) },
+                // GitHub API - includes server time in headers
+                { url: 'https://api.github.com', parser: (data, headers) => new Date(headers.get('date')) },
+                // Alternative: ipapi.co includes time
+                { url: 'https://ipapi.co/json/', parser: (data) => data.datetime ? new Date(data.datetime) : null }
+            ];
+
+            for (const api of apis) {
+                try {
+                    const response = await fetch(api.url, { 
+                        method: 'GET',
+                        cache: 'no-store',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    
+                    if (!response.ok) continue;
+
+                    let time;
+                    if (api.url.includes('github')) {
+                        // GitHub returns time in headers
+                        time = api.parser(null, response.headers);
+                    } else {
+                        const data = await response.json();
+                        time = api.parser(data);
+                    }
+                    
+                    if (time && time instanceof Date && !isNaN(time)) {
+                        console.log('✓ Server time fetched successfully from:', api.url);
+                        return time;
+                    }
+                } catch (e) {
+                    console.log(`Failed to fetch from ${api.url}:`, e.message);
+                    continue;
+                }
+            }
+
+            console.warn('⚠️ All time APIs failed. Please check your internet connection.');
+            return null; // All APIs failed
+        }
+
+        /**
+         * Get user location via browser geolocation or IP fallback
+         * Used for extra security (optional, not blocking)
+         */
+        async function getLocationWithFallback() {
+            return new Promise((resolve, reject) => {
+                // Try browser geolocation first (no permission = deny access to IP lookup)
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            console.log('Browser location obtained');
+                            resolve({
+                                source: 'browser',
+                                lat: position.coords.latitude,
+                                lon: position.coords.longitude
+                            });
+                        },
+                        async (error) => {
+                            console.log('Geolocation denied, trying IP lookup...');
+                            
+                            // Fallback to IP-based geolocation
+                            try {
+                                const response = await fetch('https://ipapi.co/json/', {
+                                    cache: 'no-store'
+                                });
+                                const data = await response.json();
+                                
+                                console.log('IP location obtained:', data.country_name);
+                                resolve({
+                                    source: 'ip',
+                                    lat: data.latitude,
+                                    lon: data.longitude,
+                                    country: data.country_name,
+                                    timezone: data.timezone
+                                });
+                            } catch (e) {
+                                console.log('IP lookup failed:', e.message);
+                                reject(e);
+                            }
+                        },
+                        {
+                            timeout: 5000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    reject(new Error('Geolocation not supported'));
+                }
+            });
+        }
+
+        /**
+         * Show locked overlay with message
+         */
+        function showLocked(message, lockOverlay, lockStatus) {
+            lockOverlay.classList.remove('hidden');
+            lockStatus.textContent = message;
+        }
+
+        /* ========================================
            GLOBAL VARIABLES (STATE)
            These track the current state of the app
            ======================================== */
@@ -2852,9 +3141,7 @@
         let slides = document.querySelectorAll('.slide');           // Get all slide elements from HTML
         const timelineDots = document.querySelectorAll('.timeline-dot');  // Get all timeline dot elements
         let showingIntro = true;        // Is the intro overlay visible? (true at start)
-        let spotifyVisible = false;     // Legacy variable (Spotify player not implemented)
-        const spotifyPlayer = document.getElementById('spotifyPlayer');  // Get Spotify element (null - doesn't exist)
-        let isAudioPlaying = false;     // Is the mock audio playing? (for play/pause icon)
+        let isAudioPlaying = false;     // Is the audio playing? (for play/pause icon)
         
         // Photo lightbox state
         let lightboxOpen = false;       // Is the photo lightbox currently open?
@@ -3326,31 +3613,6 @@
         /* ========================================
            SPECIAL EFFECTS
            ======================================== */
-        
-        /**
-         * Creates a heart explosion at a random position (currently unused)
-         * Originally intended for letter opening animation
-         */
-        function createHeartExplosion() {
-            const heartContainer = document.getElementById('heartContainer');
-            const heart = document.createElement('div');
-            heart.classList.add('heart-explosion');
-            heart.innerHTML = '💖';
-            
-            // Random position across the whole page
-            const randomX = Math.random() * window.innerWidth;
-            const randomY = Math.random() * window.innerHeight;
-            
-            heart.style.left = randomX + 'px';
-            heart.style.top = randomY + 'px';
-            
-            heartContainer.appendChild(heart);  // Add to page
-
-            // Remove after 5 seconds to prevent memory leak
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
 
         /* ========================================
            INTRO/OUTRO CONTROLS
@@ -3969,62 +4231,30 @@
         currentSlide = -1;  // Not on any slide yet (intro is showing)
 
         /* ========================================
-           VALENTINE'S DAY LOCK FEATURE
-           Prevents access until February 14, 2026
+           VALENTINE'S DAY TIMELOCK INITIALIZATION
+           Validates internet time before allowing access
            ======================================== */
         
-        // Valentine's Day Lock Feature
-        const VALENTINE_LOCK_ENABLED = true; // Set to false to disable the lock
-        const VALENTINE_DATE = new Date(2026, 1, 14); // February 14, 2026 (month is 0-indexed)
-
-        /**
-         * Checks if the Valentine lock should be active
-         * If before Feb 14, 2026, shows lock screen instead of content
-         * @returns {boolean} true if locked, false if unlocked
-         */
-        function checkValentineLock() {
-            const now = new Date();
+        // Initialize timelock on page load
+        // This validates server time and location before unlocking the app
+        window.addEventListener('load', function() {
+            console.log('🔒 Initializing Valentine\'s Day timelock...');
+            initializeTimelock();
+        });
+        
+        // Unlock function for development (console only)
+        // Use: window.bypassTimelock() in browser console to skip validation
+        window.bypassTimelock = function() {
             const lockOverlay = document.getElementById('lockOverlay');
-            
-            // Allow disabling via window variable
-            if (window.BYPASS_VALENTINE_LOCK) {
-                if (lockOverlay) lockOverlay.classList.add('hidden');
-                if (introOverlay) introOverlay.classList.remove('hidden');
-                return false;
+            if (lockOverlay) {
+                lockOverlay.classList.add('hidden');
+                console.log('✅ Timelock bypassed for development.');
             }
-
-            if (VALENTINE_LOCK_ENABLED && now < VALENTINE_DATE) {
-                if (lockOverlay) {
-                    lockOverlay.classList.remove('hidden');
-                    // Hide all slides and intro
-                    if (introOverlay) introOverlay.classList.add('hidden');
-                    slides.forEach(slide => slide.classList.remove('active'));
-                }
-                return true;
-            } else {
-                if (lockOverlay) lockOverlay.classList.add('hidden');
-                return false;
-            }
-        }
-
-        // Unlock function for console
-        // Developer tool: Run window.unlockApp() in browser console to bypass lock
-        window.unlockApp = function() {
-            window.BYPASS_VALENTINE_LOCK = true; 
-            checkValentineLock();
-            console.log('✅ App unlocked! The Valentine lock has been disabled.');
         };
 
-        // Check lock on page load
-        checkValentineLock();
-
-        // Debug information for developers
-        console.log('🔒 Valentine Lock Debug:');
-        console.log('Current date:', new Date().toLocaleDateString());
-        console.log('Unlock date:', VALENTINE_DATE.toLocaleDateString());
-        console.log('Lock enabled:', VALENTINE_LOCK_ENABLED);
-        console.log('To unlock the app, run: window.unlockApp()');
-        console.log('Or set: window.BYPASS_VALENTINE_LOCK = true; window.unlockApp();');
+        console.log('🔒 Valentine\'s Day Timelock Active');
+        console.log('Validating internet time and location...');
+        console.log('To bypass for development, run: window.bypassTimelock()');
         
         /* ========================================
            END OF JAVASCRIPT

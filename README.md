@@ -4,12 +4,15 @@
 An interactive, single-file romantic timeline web application featuring a 14-slide journey through a year of love (March 2025–February 2026). Built as a Valentine's Day gift with pure HTML, CSS, and JavaScript—no frameworks, no dependencies, no build process.
 
 **Key Highlights:**
-- 🎨 Single HTML file (~3000 lines) with embedded CSS and JavaScript
+- 🎨 Single HTML file (~4260 lines) with embedded CSS and JavaScript
 - 📱 Fully responsive across all devices (desktop, tablet, mobile, landscape)
-- 🎭 Rich animations and transitions throughout
+- 🎭 Rich animations with staggered photo reveals
 - ♿ Accessibility-first design (prefers-reduced-motion support)
 - 📚 Heavily commented code + comprehensive documentation for learners
-- 🔒 Optional Valentine's Day lock feature (unlocks Feb 14, 2026)
+- 🔒 Internet-based Valentine's Day timelock with location validation
+- 🖼️ Dynamic photo gallery (28 photos in carousel)
+- 🎵 Looping audio support
+- 💕 Emoji favicon
 
 **Status**: ✅ Production-ready with full documentation
 
@@ -32,9 +35,10 @@ The code itself is also heavily commented to help you understand each section!
   - Intro overlay (album cover)
   - 12 monthly timeline slides (March 2025 – February 2026)
   - Interactive envelope slide with dramatic letter reveal
-  - Closing celebration page
-- **💌 Interactive Letter**: Envelope opens with flap animation (1.2s) + content reveal (1.2s)
+  - Closing celebration page with photo carousel (28 photos)
+- **💌 Interactive Letter**: Envelope opens with flap animation (1.2s) + Taglish love letter
 - **💝 Floating Hearts**: Continuous background animation (8s float cycle, auto-cleanup)
+- **🖼️ Photo Animations**: Staggered fade-in for multiple photos (150ms delay between each)
 
 ### Navigation
 - **⌨️ Keyboard**: Arrow keys (← →) with smart blocking
@@ -47,8 +51,8 @@ The code itself is also heavily commented to help you understand each section!
   - Final slide hides all navigation (restart only)
 
 ### Audio Controls
-- **🎵 Music Button**: Top-right corner with expandable content
-- **▶️ Play/Pause**: Mock interaction showing "Perfect - Ed Sheeran"
+- **🎵 Music Button**: Top-right corner with play/pause toggle
+- **▶️ Audio Playback**: "Enchanted (Taylor Swift cover)" with seamless looping
 - **🎨 Matching Design**: Identical size/behavior to restart button across all breakpoints
 
 ### Responsive Design
@@ -60,11 +64,16 @@ The code itself is also heavily commented to help you understand each section!
 - **📱 Landscape**: Special compact intro for phones in landscape (max-height: 600px)
 - **🔄 Dynamic**: JavaScript fallback for landscape detection via `matchMedia` API
 
-### Accessibility & Polish
+### Security & Accessibility
+- **🔒 Internet-Based Timelock**: Validates server time + location before unlocking (Feb 14, 2026 midnight)
+  - Uses multiple CORS-friendly APIs for time validation
+  - Browser geolocation with IP lookup fallback
+  - Offline access denied (forces internet connection)
+  - Bypass available via console: `window.bypassTimelock()`
 - **♿ Reduced Motion**: Respects `prefers-reduced-motion` system preference
 - **🎨 CSS Variables**: Centralized color scheme for easy theming
 - **⚡ Performance**: Efficient animations with automatic cleanup
-- **🔒 Valentine Lock**: Optional feature to unlock app on Feb 14, 2026 (bypassable via console)
+- **💕 Favicon**: Emoji favicon (no external file required)
 
 ## 💻 Technologies
 
@@ -101,11 +110,15 @@ This project intentionally uses **zero frameworks** to demonstrate:
 ```
 timeline-of-us-ai/
 ├── .github/
-│   ├── copilot-instructions.md
 │   └── workflows/
 │       └── deploy.yml
 ├── src/
-│   └── index.html (~3000 lines - all code in single file)
+│   ├── index.html (~4260 lines - all code in single file)
+│   └── assets/
+│       ├── images.json (Photo metadata: slides + 28-photo carousel)
+│       ├── audio/
+│       │   └── enchanted.mp3
+│       └── images/ (Monthly photo gallery)
 ├── DOCUMENTATION.md (Comprehensive beginner's guide)
 ├── package.json
 └── README.md
@@ -147,21 +160,24 @@ Simply open `src/index.html` in any modern browser. No build process required!
 - **Slide 13 (Final)**: Only restart button available
 
 ### Music Button
-- **Hover/Tap**: Expands to show song info "Perfect - Ed Sheeran ▶️"
-- **Click Play**: Toggles between play (▶️) and pause (⏸️) icons
-- **Note**: Mock functionality—no actual audio playback implemented
+- **Hover/Tap**: Expands to show song info "Enchanted (Taylor Swift cover) ▶️"
+- **Click Play**: Toggles between play (▶️) and pause icons
+- **Audio**: Actual audio playback with seamless looping
 
 ### Developer Tools
 
-#### Bypass Valentine Lock
-If the Valentine lock is active (before Feb 14, 2026), bypass it:
+#### Bypass Valentine Timelock
+If the timelock is active (before Feb 14, 2026 midnight in your timezone), bypass it:
 ```javascript
 // In browser console (F12)
-window.unlockApp();
-// or
-window.BYPASS_VALENTINE_LOCK = true;
-window.unlockApp();
+window.bypassTimelock();
 ```
+
+**Note**: The timelock validates:
+- Server time from multiple APIs (GitHub, timeapi.io, ipapi.co)
+- User location (browser geolocation → IP lookup fallback)
+- User timezone for midnight calculation
+- Requires internet connection (offline = locked)
 
 #### Debug Mode
 Check console for helpful debug information on load.
@@ -221,17 +237,24 @@ setTimeout(() => {
 
 ### Architecture
 - **Single-File Structure**: All code in `src/index.html`
-  - Lines 1-50: HTML headers and meta tags
-  - Lines 51-2050: CSS styling (embedded `<style>`)
-  - Lines 2051-2280: HTML content structure
-  - Lines 2281-2980: JavaScript logic (embedded `<script>`)
+  - Lines 1-20: HTML headers, meta tags, and favicon
+  - Lines 21-2590: CSS styling (embedded `<style>`)
+  - Lines 2591-2945: HTML content structure
+  - Lines 2946-4264: JavaScript logic (embedded `<script>`)
+- **External Assets**: 
+  - `assets/images.json`: Photo metadata (slides object + 28-photo carousel array)
+  - `assets/audio/enchanted.mp3`: Background music
+  - `assets/images/*.jpg|png`: Monthly photo gallery
 
 ### Key Functions
-- `showSlide(index, direction)` - Core navigation handler
+- `initializeTimelock()` - Validates server time and location before unlocking
+- `fetchServerTime()` - Fetches tamper-proof time from APIs
+- `getLocationWithFallback()` - Gets user location (browser geo → IP fallback)
+- `showSlide(index, direction)` - Core navigation handler  
 - `nextSlide()` / `prevSlide()` - Navigation helpers
 - `toggleLetter()` - Envelope/letter interaction
-- `toggleAudio()` - Mock play/pause toggle
-- `updateIntroCompactMode()` - Responsive landscape detection
+- `toggleAudio()` - Play/pause audio with looping
+- `loadImagePool()` - Loads photo metadata from JSON
 - `restartJourney()` - Return to intro with fade transition
 
 ### State Management
@@ -285,7 +308,7 @@ Check console for debug info.
 **Solution**: Check `prefers-reduced-motion` setting. Animations are disabled when this is enabled.
 
 ### Issue: Valentine lock won't unlock
-**Solution**: Run `window.unlockApp()` in browser console or set `VALENTINE_LOCK_ENABLED = false` in code.
+**Solution**: Run `window.bypassTimelock()` in browser console.
 
 ## 📚 Learning Resources
 
@@ -305,19 +328,21 @@ This project is an excellent learning resource for beginners. Check out:
 
 ## 🎯 Project Stats
 
-- **Total Lines**: ~3000 (HTML: 350, CSS: 1750, JavaScript: 700, Comments: 200)
-- **File Size**: ~120 KB (single file, no dependencies)
-- **Load Time**: < 1 second on modern connections
+- **Total Lines**: ~4260 (HTML: 360, CSS: 2590, JavaScript: 1310)
+- **File Size**: ~155 KB (single file)
+- **External Assets**: images.json (~3.5KB), audio file, image files
+- **Load Time**: < 2 seconds on modern connections
 - **Browser Support**: All modern browsers (Chrome, Firefox, Safari, Edge)
 - **Mobile Support**: iOS Safari, Android Chrome tested
+- **Security**: Internet-based timelock with multi-API validation
 - **Accessibility Score**: A+ (keyboard nav, screen reader friendly, motion preferences)
 
 ## 🚧 Known Limitations
 
-- **Spotify Integration**: Music button is mock only—no actual audio playback
-- **Letter Photos**: Fixed content—could be made dynamic with data structure
 - **Global Variables**: For simplicity; could be refactored to module pattern
 - **No Persistence**: State resets on refresh (could add localStorage)
+- **Timelock Bypass**: Accessible via browser console (intended for development)
+- **API Dependencies**: Requires at least one time API to be accessible
 
 ## 🔮 Future Enhancements (Optional)
 
