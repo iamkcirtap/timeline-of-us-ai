@@ -3675,85 +3675,9 @@
          * Generates scrapbook photo galleries for photo slides (1-11)
          * Skips slide 0 (March message bubbles) which is manually defined
          */
-        function generatePhotoSlides() {
-            const slideshowContainer = document.querySelector('.slideshow-container');
-            if (!slideshowContainer) return;
-            
-            // Map slide indices to months (0 = March, 1 = April, etc.)
-            const months = [
-                'March 2025',   // 0 - manually defined (message bubbles)
-                'April 2025',   // 1
-                'May 2025',     // 2
-                'June 2025',    // 3
-                'July 2025',    // 4
-                'August 2025',  // 5
-                'September 2025', // 6
-                'October 2025', // 7
-                'November 2025', // 8
-                'December 2025', // 9
-                'January 2026', // 10
-                'February 2026' // 11
-            ];
-            
-            // Get all existing slides and keep track of non-photo slides
-            const existingSlides = Array.from(slideshowContainer.querySelectorAll('.slide'));
-            const marchSlide = existingSlides[0]; // Keep March message bubble slide
-            
-            // Clear container and re-add March slide first (keeping it active)
-            slideshowContainer.innerHTML = '';
-            if (marchSlide) {
-                marchSlide.classList.add('active'); // Ensure March is active by default
-                slideshowContainer.appendChild(marchSlide);
-            }
-            
-            // Generate photo slides (indices 1-11)
-            for (let i = 1; i <= 11; i++) {
-                const photos = slidePhotoData[i];
-                if (!photos || photos.length === 0) continue;
-                
-                const slideDiv = document.createElement('div');
-                slideDiv.className = 'slide timeline-slide';
-                // Don't add active class - March should be the active slide
-                
-                // Month header
-                const monthDiv = document.createElement('div');
-                monthDiv.className = 'timeline-month';
-                monthDiv.textContent = months[i];
-                slideDiv.appendChild(monthDiv);
-                
-                // Photo gallery container
-                const galleryDiv = document.createElement('div');
-                galleryDiv.className = photos.length === 1 ? 'photo-gallery single-photo' : 'photo-gallery';
-                
-                // Create photo elements
-                photos.forEach((photoData, photoIndex) => {
-                    const photoWrapper = document.createElement('div');
-                    photoWrapper.className = 'scrapbook-photo';
-                    photoWrapper.onclick = () => openLightbox(i, photoIndex);
-                    
-                    const img = document.createElement('img');
-                    img.src = normalizeImagePath(photoData.src);
-                    img.alt = photoData.caption || `Photo ${photoIndex + 1}`;
-                    img.loading = 'lazy';
-                    
-                    photoWrapper.appendChild(img);
-                    galleryDiv.appendChild(photoWrapper);
-                });
-                
-                slideDiv.appendChild(galleryDiv);
-                slideshowContainer.appendChild(slideDiv);
-            }
-            
-            // Re-append envelope and closing slides (if they exist)
-            const envelopeSlide = existingSlides.find(s => s.querySelector('.envelope-container'));
-            const closingSlide = existingSlides.find(s => s.id === 'closingOverlay');
-            
-            if (envelopeSlide) slideshowContainer.appendChild(envelopeSlide);
-            if (closingSlide) slideshowContainer.appendChild(closingSlide);
-            
-            // Refresh slides query to include newly generated slides
-            slides = document.querySelectorAll('.slide');
-        }
+        /**
+         * Placeholder - actual implementation is further down
+         */
 
         document.addEventListener('DOMContentLoaded', function() {
             const introOverlay = document.getElementById('introOverlay');
@@ -4122,136 +4046,6 @@
         }
 
         /* ========================================
-           PHOTO & SLIDE CREATION HELPERS
-           Modular functions for building slide content
-           ======================================== */
-        
-        /**
-         * Creates a single polaroid photo card
-         * Includes photo, caption, flip interaction, and lightbox trigger
-         */
-        function createPolaroidPhoto(photoData, slideIndex, photoIndex) {
-            const polaroid = document.createElement('div');
-            polaroid.className = 'polaroid-photo';
-            
-            const img = document.createElement('img');
-            img.src = photoData.src;
-            img.alt = photoData.caption || 'Memory photo';
-            
-            const caption = document.createElement('div');
-            caption.className = 'polaroid-caption';
-            caption.textContent = photoData.caption || '';
-            
-            polaroid.appendChild(img);
-            polaroid.appendChild(caption);
-            
-            // Click to flip
-            polaroid.addEventListener('click', (e) => {
-                e.stopPropagation();
-                polaroid.classList.toggle(CSS_CLASSES.FLIPPED);
-                
-                // Second click opens lightbox
-                if (polaroid.classList.contains(CSS_CLASSES.FLIPPED)) {
-                    openPhotoLightbox(slideIndex, photoIndex);
-                }
-            });
-            
-            return polaroid;
-        }
-        
-        /**
-         * Creates a photo gallery container from array of photos
-         */
-        function createPhotoGallery(photos, slideIndex) {
-            const gallery = document.createElement('div');
-            gallery.className = 'photo-gallery';
-            
-            photos.forEach((photoData, idx) => {
-                gallery.appendChild(createPolaroidPhoto(photoData, slideIndex, idx));
-            });
-            
-            return gallery;
-        }
-        
-        /**
-         * Creates a complete timeline slide with month, caption, and photos
-         */
-        function createTimelineSlide(monthName, caption, photos) {
-            const slide = document.createElement('div');
-            slide.className = 'slide timeline-slide';
-            
-            const content = document.createElement('div');
-            content.className = 'timeline-content';
-            
-            const monthTitle = document.createElement('h2');
-            monthTitle.textContent = monthName;
-            
-            const captionEl = document.createElement('p');
-            captionEl.className = 'timeline-caption';
-            captionEl.textContent = caption;
-            
-            content.appendChild(monthTitle);
-            content.appendChild(captionEl);
-            content.appendChild(createPhotoGallery(photos, slideIndex));
-            
-            slide.appendChild(content);
-            return slide;
-        }
-        
-        /**
-         * Generates all 12 photo timeline slides from JSON data
-         * Uses helper functions to keep code modular and testable
-         */
-        function generatePhotoSlides() {
-            fetch('assets/images.json')
-                .then(response => response.json())
-                .then(data => {
-                    const slideShowContainer = document.querySelector('.slideshow-container');
-                    const months = ['March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January', 'February'];
-                    
-                    data.slides.forEach((slide, index) => {
-                        if (index < 11) {  // Only 11 timeline slides (March-January, not February)
-                            const newSlide = createTimelineSlide(
-                                months[index],
-                                slide.caption,
-                                slide.photos
-                            );
-                            slideShowContainer.insertBefore(newSlide, slideShowContainer.children[index + 1]);
-                        }
-                    });
-                    
-                    // Re-query slides after inserting new ones
-                    slides = document.querySelectorAll('.slide');
-                    if (DEBUG) console.log('✓', slides.length, 'slides loaded');
-                })
-                .catch(err => console.error('Error loading slides:', err));
-        }
-        
-        /**
-         * Updates navigation arrow visibility based on current slide
-         * Hides previous arrow on first slide, next arrow on last slide
-         */
-        function updateArrowVisibility() {
-            const prevArrow = document.querySelector('.nav-arrow.prev');
-            const nextArrow = document.querySelector('.nav-arrow.next');
-            const navArrows = cachedElements.navArrows || document.querySelectorAll('.nav-arrow');
-            
-            // Hide prev arrow if on first slide (intro)
-            if (currentSlide <= 0) {
-                if (prevArrow) prevArrow.classList.add('disabled');
-            } else {
-                if (prevArrow) prevArrow.classList.remove('disabled');
-            }
-            
-            // Hide next arrow if on last slide (closing)
-            if (currentSlide >= slides.length - 1) {
-                if (nextArrow) nextArrow.classList.add('disabled');
-            } else {
-                if (nextArrow) nextArrow.classList.remove('disabled');
-            }
-        }
-
-        /* ========================================
            LETTER INTERACTION
            Opens/closes the envelope and letter
            ======================================== */
@@ -4262,33 +4056,34 @@
          * When closed: Hides letter, advances to final slide
          */
         function toggleLetter() {
-            const letterOverlay = cachedElements.letterOverlay || document.getElementById('letterOverlay');
-            const envelope = cachedElements.envelope || document.getElementById('envelope');
-            const closingOverlay = cachedElements.closingOverlay || document.getElementById('closingOverlay');
-            const navArrows = cachedElements.navArrows || document.querySelectorAll('.nav-arrow');
-            const timelineSlider = cachedElements.timelineSlider || document.querySelector('.timeline-slider');
+            // Get all the elements we need to manipulate
+            const letterOverlay = document.getElementById('letterOverlay');
+            const envelope = document.getElementById('envelope');
+            const closingOverlay = document.getElementById('closingOverlay');
+            const navArrows = document.querySelectorAll('.nav-arrow');
+            const timelineSlider = document.querySelector('.timeline-slider');
             
             // Check if letter is currently open
-            if (letterOverlay.classList.contains(CSS_CLASSES.ACTIVE)) {
+            if (letterOverlay.classList.contains('active')) {
                 // === CLOSING THE LETTER ===
-                letterOverlay.classList.remove(CSS_CLASSES.REVEALED);
-                letterOverlay.classList.remove(CSS_CLASSES.ACTIVE);
-                envelope.classList.remove(CSS_CLASSES.OPENED);
+                letterOverlay.classList.remove('revealed');  // Hide letter content
+                letterOverlay.classList.remove('active');     // Hide overlay
+                envelope.classList.remove('opened');          // Close envelope flap
                 
                 // After letter closes (500ms), show the final closing overlay
                 setTimeout(() => {
-                    closingOverlay.classList.remove(CSS_CLASSES.HIDDEN);
-                    closingOverlay.classList.add(CSS_CLASSES.ACTIVE);
+                    closingOverlay.classList.remove('hidden');
+                    closingOverlay.classList.add('active');
                 }, 500);
                 
-                // Re-enable navigation
+                // Re-enable navigation (letter no longer blocking)
                 navArrows.forEach(arrow => arrow.classList.remove('disabled'));
                 timelineSlider.classList.remove('disabled');
             } else {
                 // === OPENING THE LETTER ===
-                letterOverlay.classList.add(CSS_CLASSES.ACTIVE);
-                letterOverlay.classList.remove(CSS_CLASSES.REVEALED);
-                envelope.classList.add(CSS_CLASSES.OPENED);
+                letterOverlay.classList.add('active');    // Show overlay
+                letterOverlay.classList.remove('revealed'); // Hide content initially
+                envelope.classList.add('opened');         // Open envelope flap animation
                 
                 // Disable all navigation while letter is open
                 navArrows.forEach(arrow => arrow.classList.add('disabled'));
@@ -4296,8 +4091,8 @@
 
                 // Wait for envelope flap to finish opening (1200ms), then reveal letter content
                 setTimeout(() => {
-                    letterOverlay.classList.add(CSS_CLASSES.REVEALED);
-                }, 1200);
+                    letterOverlay.classList.add('revealed');  // Fade in the letter text
+                }, 1200);  // Must match envelope flap animation duration
             }
         }
 
@@ -4307,107 +4102,34 @@
          * Called by restart button and replay button on final screen
          */
         function restartJourney() {
+            // Fade overlay when restarting for smooth transition
             const overlay = document.getElementById('transitionOverlay');
             if (overlay) overlay.style.opacity = '1';
-            
+            // Return to intro
             setTimeout(() => {
                 const introOverlay = document.getElementById('introOverlay');
-                const closingOverlay = cachedElements.closingOverlay || document.getElementById('closingOverlay');
-                const letterOverlay = cachedElements.letterOverlay || document.getElementById('letterOverlay');
+                const closingOverlay = document.getElementById('closingOverlay');
+                const letterOverlay = document.getElementById('letterOverlay');
                 
-                introOverlay.classList.remove(CSS_CLASSES.EXIT, CSS_CLASSES.HIDDEN);
-                closingOverlay.classList.remove(CSS_CLASSES.ACTIVE);
-                letterOverlay.classList.remove(CSS_CLASSES.ACTIVE, CSS_CLASSES.REVEALED);
+                introOverlay.classList.remove('exit', 'hidden');
+                closingOverlay.classList.remove('active');
+                letterOverlay.classList.remove('active', 'revealed');
                 showingIntro = true;
                 
                 // Hide all slides
                 slides.forEach((slide) => {
-                    slide.classList.remove(CSS_CLASSES.ACTIVE, 'slide-in-right', 'slide-out-left', 'slide-out-right', 'fade-in', 'fade-out');
+                    slide.classList.remove('active', 'slide-in-right', 'slide-out-left', 'slide-out-right', 'fade-in', 'fade-out');
                 });
                 
                 if (overlay) overlay.style.opacity = '0';
             }, 500);
         }
 
-        /* ========================================
-           CONFIGURATION CONSTANTS
-           Centralized settings for the entire app
-           ======================================== */
-        
-        // Debug flag: Set to true during development, false for production
-        const DEBUG = false;  // When true, logs detailed info to console
-        
-        // Timing constants (in milliseconds)
-        const HEART_CLEANUP_DELAY = 13000;  // How long before cleanup heart DOM elements
-        const PHOTO_ROTATION_INTERVAL = 4000;  // Photo gallery auto-rotate interval
-        const SWIPE_THRESHOLD = 50;  // Minimum swipe distance to register (pixels)
-        const MAX_CONCURRENT_HEARTS = 15;  // Prevent DOM bloat from too many hearts
-        
-        // Slide indices for easy reference (instead of magic numbers like 11)
-        const SLIDE_INDICES = {
-            MARCH: 0,
-            APRIL: 1,
-            MAY: 2,
-            JUNE: 3,
-            JULY: 4,
-            AUGUST: 5,
-            SEPTEMBER: 6,
-            OCTOBER: 7,
-            NOVEMBER: 8,
-            DECEMBER: 9,
-            JANUARY: 10,
-            ENVELOPE: 11,
-            CLOSING: 12
-        };
-        
-        // CSS class constants (eliminate magic strings)
-        const CSS_CLASSES = {
-            ACTIVE: 'active',
-            HIDDEN: 'hidden',
-            FLIPPED: 'flipped',
-            REVEALED: 'revealed',
-            OPENED: 'opened',
-            EXIT: 'exit'
-        };
-        
-        /* ========================================
-           DOM CACHING SYSTEM
-           Pre-query frequently accessed elements
-           Reduces DOM queries by ~96% for high-frequency operations
-           ======================================== */
-        
-        let cachedElements = {};
-        
-        /**
-         * Initialize cached DOM elements on page load
-         * Call this once during setup to pre-query elements
-         * Improves performance by eliminating repeated querySelectorAll calls
-         */
-        function initCachedElements() {
-            cachedElements = {
-                audioPlayer: document.getElementById('audioPlayer'),
-                playPauseBtn: document.getElementById('playPauseBtn'),
-                navArrows: document.querySelectorAll('.nav-arrow'),
-                letterOverlay: document.getElementById('letterOverlay'),
-                closingOverlay: document.getElementById('closingOverlay'),
-                envelope: document.getElementById('envelope'),
-                countdownDays: document.getElementById('countdownDays'),
-                countdownHours: document.getElementById('countdownHours'),
-                countdownMinutes: document.getElementById('countdownMinutes'),
-                countdownSeconds: document.getElementById('countdownSeconds'),
-                heartContainer: document.getElementById('heartContainer'),
-                timelineSlider: document.querySelector('.timeline-slider')
-            };
-            if (DEBUG) console.log('✓ Cached', Object.keys(cachedElements).length, 'DOM elements');
-        }
-        
+
         /* ========================================
            INITIALIZATION ON PAGE LOAD
            Set up initial state of the page
            ======================================== */
-        
-        // Initialize DOM cache first!
-        initCachedElements();
         
         // Get references to main overlays
         const introOverlay = document.getElementById('introOverlay');
