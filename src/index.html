@@ -3468,62 +3468,102 @@
         /**
          * Main timelock initialization function
          * Validates time and location, then unlocks or locks the app
+         * On Feb 14+, bypasses lock screen entirely (no display)
+         * Priority: Local system time first (user-controlled), server time second (verification)
          */
         async function initializeTimelock() {
             const lockOverlay = DOMCache.get('lockOverlay');
             const lockStatus = DOMCache.get('lockStatus');
             
-            if (!lockOverlay || !lockStatus) return;
+            if (CONFIG.DEBUG) console.log('🔒 Initializing timelock...');
+            if (!lockOverlay || !lockStatus) {
+                if (CONFIG.DEBUG) console.warn('⚠️ Lock overlay or status element not found');
+                return;
+            }
 
             try {
-                lockStatus.textContent = 'Validating access...';
-                
-                // Fetch official server time (tamper-proof)
-                let serverTime = await fetchServerTime();
-                if (!serverTime) {
-                    const errorMsg = NetworkStatus.isOnline 
-                        ? 'Unable to verify time. Please refresh the page.' 
-                        : 'No internet connection. Please connect and refresh.';
-                    showLocked(errorMsg, lockOverlay, lockStatus);
-                    return;
-                }
+                // Get user's timezone from browser settings (instant, no API call)
+                const userTimezone = getUserTimezone();
 
-                // Get user's timezone from browser
-                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                // PRIMARY: Try to get server time in user's timezone (tamper-proof, official)
+                let timeToCheck = null;
+                let timeSource = 'unknown';
+                
+                try {
+                    const serverTime = await fetchServerTime(userTimezone);
+                    if (serverTime && serverTime instanceof Date && !isNaN(serverTime)) {
+                        timeToCheck = serverTime;
+                        timeSource = 'server (official)';
+                        if (CONFIG.DEBUG) console.log('✓ Using SERVER TIME as primary source');
+                    } else {
+                        throw new Error('Server time was null or invalid');
+                    }
+                } catch (e) {
+                    if (CONFIG.DEBUG) console.log('⚠️ Server time fetch failed:', e.message);
+                    if (CONFIG.DEBUG) console.log('⏳ Falling back to local system time');
+                    // FALLBACK: Use local system time if server fails
+                    timeToCheck = new Date();
+                    timeSource = 'local system (fallback)';
+                }
 
                 // Try to validate location (optional)
                 try {
-                    const location = await getLocationWithFallback();
+                    const browserGeo = await new Promise((resolve, reject) => {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (position) => {
+                                    if (CONFIG.DEBUG) console.log('✓ Browser location obtained');
+                                    resolve({
+                                        source: 'browser',
+                                        lat: position.coords.latitude,
+                                        lon: position.coords.longitude
+                                    });
+                                },
+                                () => {
+                                    if (CONFIG.DEBUG) console.log('ℹ️ Browser geolocation denied');
+                                    reject(new Error('Geolocation denied'));
+                                },
+                                { timeout: 5000, maximumAge: 0 }
+                            );
+                        } else {
+                            reject(new Error('Geolocation not supported'));
+                        }
+                    });
+                    
                     if (CONFIG.DEBUG) {
-                        console.log('📍 User Location:', {
-                            source: location.source,
-                            latitude: location.lat,
-                            longitude: location.lon,
-                            country: location.country || 'N/A',
-                            timezone: location.timezone || userTimezone
+                        console.log('📍 Browser Geolocation:', {
+                            latitude: browserGeo.lat,
+                            longitude: browserGeo.lon
                         });
                     }
                 } catch (e) {
-                    // Location check is optional - continue without it
-                    if (CONFIG.DEBUG) console.log('ℹ️ Location validation skipped (optional)');
+                    // Geolocation is optional - continue without it
+                    if (CONFIG.DEBUG) console.log('ℹ️ Geolocation validation skipped (optional):', e.message);
                 }
-
-                // Get and log timezone
-                if (CONFIG.DEBUG) console.log('🌍 User Timezone:', userTimezone);
 
                 // Check if current time >= Feb 14, 2026 midnight in user's timezone
                 const unlockDateTime = new Date(CONFIG.UNLOCK_DATE);
                 
-                // Convert server time to user's timezone
-                const userTime = new Date(serverTime.toLocaleString('en-US', { timeZone: userTimezone }));
+                // Since server already returns time in user's timezone, use it directly
+                const userTime = timeToCheck;
+
+                if (CONFIG.DEBUG) {
+                    console.log('📅 Time Source:', timeSource);
+                    console.log('📅 Time Used:', timeToCheck);
+                    console.log('📅 User Time (in timezone):', userTime);
+                    console.log('📅 Unlock DateTime:', unlockDateTime);
+                    console.log('🔍 Comparison: userTime >= unlockDateTime?', userTime >= unlockDateTime);
+                }
 
                 if (userTime >= unlockDateTime) {
-                    // UNLOCKED! Hide lock overlay and show app
+                    // UNLOCKED! Hide lock overlay silently (no message display)
                     lockOverlay.classList.add(CSS_CLASSES.HIDDEN);
-                    lockStatus.textContent = 'Access granted! ✨';
+                    lockOverlay.style.display = 'none';  // Force hide
+                    if (CONFIG.DEBUG) console.log('✨ Access granted! Bypassing lock screen. Time:', userTime, 'Unlock:', unlockDateTime);
                     return true;
                 } else {
-                    // Still locked
+                    // Still locked - show countdown
+                    lockStatus.textContent = 'Validating access...';
                     const daysLeft = Math.ceil((unlockDateTime - userTime) / (1000 * 60 * 60 * 24));
                     const dayLabel = daysLeft === 1 ? 'day' : 'days';
                     const message = `Get ready to celebrate! ${daysLeft} ${dayLabel} to go 💕`;
@@ -3533,6 +3573,7 @@
 
             } catch (error) {
                 console.error('Timelock error:', error);
+                lockStatus.textContent = 'Validating access...';
                 const errorMsg = NetworkStatus.isOnline
                     ? 'Unable to validate access. Please refresh the page.'
                     : 'No internet connection. Please check your connection and refresh.';
@@ -3545,26 +3586,50 @@
          * Fetch server time from multiple APIs for redundancy
          * Returns Date object or null if all fail
          * Now with timeout support to prevent hanging
+         * @param {string} timezone - User's timezone (e.g., 'Asia/Manila')
          */
-        async function fetchServerTime() {
+        async function fetchServerTime(timezone = 'Etc/UTC') {
             const apis = [
-                // timeapi.io - CORS-friendly
-                { url: 'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC', parser: (data) => new Date(data.dateTime) },
-                // GitHub API - includes server time in headers
-                { url: 'https://api.github.com', parser: (data, headers) => new Date(headers.get('date')) },
-                // Alternative: ipapi.co includes time
-                { url: 'https://ipapi.co/json/', parser: (data) => data.datetime ? new Date(data.datetime) : null }
+                // timeapi.io - CORS-friendly, fetch time in user's timezone
+                { 
+                    url: `https://timeapi.io/api/Time/current/zone?timeZone=${encodeURIComponent(timezone)}`, 
+                    parser: (data) => {
+                        if (CONFIG.DEBUG) console.log('timeapi.io response:', data);
+                        return new Date(data.dateTime);
+                    }
+                },
+                // GitHub API - includes server time in headers (always UTC)
+                { 
+                    url: 'https://api.github.com', 
+                    parser: (data, headers) => {
+                        const dateStr = headers.get('date');
+                        if (CONFIG.DEBUG) console.log('GitHub date header:', dateStr);
+                        return new Date(dateStr);
+                    }
+                },
+                // Alternative: ipapi.co includes time (returns local time for IP location)
+                { 
+                    url: 'https://ipapi.co/json/', 
+                    parser: (data) => {
+                        if (CONFIG.DEBUG) console.log('ipapi.co response:', data);
+                        return data.datetime ? new Date(data.datetime) : null;
+                    }
+                }
             ];
 
             for (const api of apis) {
                 try {
+                    if (CONFIG.DEBUG) console.log(`⏳ Fetching from: ${api.url}`);
                     const response = await fetchWithTimeout(api.url, { 
                         method: 'GET',
                         cache: 'no-store',
                         headers: { 'Accept': 'application/json' }
                     }, CONFIG.FETCH_TIMEOUT);
                     
-                    if (!response.ok) continue;
+                    if (!response.ok) {
+                        if (CONFIG.DEBUG) console.log(`⚠️ ${api.url} returned status ${response.status}`);
+                        continue;
+                    }
 
                     let time;
                     if (api.url.includes('github')) {
@@ -3576,8 +3641,10 @@
                     }
                     
                     if (time && time instanceof Date && !isNaN(time)) {
-                        if (CONFIG.DEBUG) console.log('✓ Server time fetched from:', api.url);
+                        if (CONFIG.DEBUG) console.log('✓ Server time fetched from:', api.url, '→', time);
                         return time;
+                    } else {
+                        if (CONFIG.DEBUG) console.log(`⚠️ ${api.url} returned invalid date:`, time);
                     }
                 } catch (e) {
                     if (CONFIG.DEBUG) console.log(`⚠️ Failed to fetch from ${api.url}:`, e.message);
@@ -3590,36 +3657,13 @@
         }
 
         /**
-         * Get user location via browser geolocation or IP fallback
-         * Used for extra security (optional, not blocking)
+         * Get user's timezone from browser settings
+         * @returns {string} Timezone string (e.g., 'Asia/Manila')
          */
-        async function getLocationWithFallback() {
-            return new Promise((resolve, reject) => {
-                // Try browser geolocation first
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            if (CONFIG.DEBUG) console.log('✓ Browser location obtained');
-                            resolve({
-                                source: 'browser',
-                                lat: position.coords.latitude,
-                                lon: position.coords.longitude
-                            });
-                        },
-                        async (error) => {
-                            // Location denied - skip IP fallback since it's rate-limited and optional
-                            if (CONFIG.DEBUG) console.log('ℹ️ Location access denied (optional)');
-                            reject(new Error('Location access denied'));
-                        },
-                        {
-                            timeout: 5000,
-                            maximumAge: 0
-                        }
-                    );
-                } else {
-                    reject(new Error('Geolocation not supported'));
-                }
-            });
+        function getUserTimezone() {
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if (CONFIG.DEBUG) console.log('🌍 Browser Timezone:', tz);
+            return tz;
         }
 
         /**
@@ -4294,6 +4338,9 @@
             // Initialize DOM cache and utilities
             DOMCache.init();
             NetworkStatus.init();
+            
+            // Check timelock and bypass lock screen if it's Feb 14+
+            initializeTimelock();
             
             const introOverlay = DOMCache.get('introOverlay');
             if (introOverlay) {
