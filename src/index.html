@@ -3512,7 +3512,7 @@
                 if (CONFIG.DEBUG) console.log('🌍 User Timezone:', userTimezone);
 
                 // Check if current time >= Feb 14, 2026 midnight in user's timezone
-                const unlockDateTime = new Date('2026-02-14T00:00:00');
+                const unlockDateTime = new Date(CONFIG.UNLOCK_DATE);
                 
                 // Convert server time to user's timezone
                 const userTime = new Date(serverTime.toLocaleString('en-US', { timeZone: userTimezone }));
@@ -4053,9 +4053,9 @@
             // Block swipe navigation when lightbox is open
             if (lightboxOpen) {
                 // Allow horizontal swipe in lightbox for photo navigation
-                if (touchEndX < touchStartX - 50) {
+                if (touchEndX < touchStartX - CONFIG.SWIPE_THRESHOLD) {
                     navigateLightbox(1); // Swipe left = next photo
-                } else if (touchEndX > touchStartX + 50) {
+                } else if (touchEndX > touchStartX + CONFIG.SWIPE_THRESHOLD) {
                     navigateLightbox(-1); // Swipe right = previous photo
                 }
                 return;
@@ -4073,10 +4073,10 @@
             // Block forward swipe is not needed since envelope is last slide
             
             // Calculate swipe distance
-            if (touchEndX < touchStartX - 50) {      // Swiped left (move forward)
+            if (touchEndX < touchStartX - CONFIG.SWIPE_THRESHOLD) {      // Swiped left (move forward)
                 nextSlide();
             }
-            if (touchEndX > touchStartX + 50) {      // Swiped right (move backward)
+            if (touchEndX > touchStartX + CONFIG.SWIPE_THRESHOLD) {      // Swiped right (move backward)
                 prevSlide();
             }
         }
@@ -4137,7 +4137,7 @@
             const countdownEl = DOMCache.get('lockCountdown');
             if (!countdownEl) return;
             
-            const targetDate = new Date('2026-02-14T00:00:00').getTime();
+            const targetDate = new Date(CONFIG.UNLOCK_DATE).getTime();
             const now = new Date().getTime();
             const difference = targetDate - now;
             
