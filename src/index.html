@@ -88,15 +88,6 @@
                 opacity: 0;   /* Fade out */
             }
         }
-            50% {
-                transform: scale(1) translateY(-100px) rotate(10deg);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(0.8) translateY(-300px) rotate(25deg);
-                opacity: 0;
-            }
-        }
 
         /* ============================================
            SLIDESHOW SYSTEM
@@ -876,6 +867,28 @@
             }
         }
 
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
         @keyframes glow {
             0%, 100% {
                 box-shadow: 0 0 10px rgba(255, 107, 157, 0.5), 0 0 20px rgba(255, 23, 68, 0.3);
@@ -1647,7 +1660,24 @@
         .lock-icon {
             font-size: clamp(3rem, 8vw, 6rem);
             margin-bottom: clamp(12px, 3vw, 25px);
-            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        .lock-countdown {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-top: clamp(20px, 4vw, 35px);
+            margin-bottom: clamp(20px, 4vw, 35px);
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .countdown-value {
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            line-height: 1.4;
+            white-space: normal;
         }
 
         .lock-content h1 {
@@ -2585,6 +2615,208 @@
             }
         }
 
+        /* ============================
+           INSTRUCTIONS MODAL
+           ============================ */
+        
+        .instructions-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 6000;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .instructions-modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .instructions-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: clamp(30px, 5vw, 50px);
+            max-width: clamp(280px, 85vw, 600px);
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideInUp 0.4s cubic-bezier(.22,.9,.37,1);
+        }
+
+        .instructions-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .instructions-close:hover {
+            color: var(--accent-red);
+        }
+
+        .instructions-modal-content h2 {
+            color: var(--accent-red);
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            text-align: center;
+        }
+
+        .instructions-body {
+            margin-bottom: 30px;
+        }
+
+        .instruction-step {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-pink), var(--accent-red));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .instruction-step p {
+            margin: 0;
+            color: #333;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .instructions-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .instructions-checkbox input {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .instructions-btn {
+            width: 100%;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, var(--primary-pink), var(--accent-red));
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }
+
+        .instructions-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        /* ============================
+           POLAROID FLIP STYLES
+           ============================ */
+        
+        .scrapbook-photo {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
+                        box-shadow 0.6s ease,
+                        filter 0.6s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .scrapbook-photo[data-flipped="false"] {
+            background: linear-gradient(135deg, #f5deb3 0%, #deb887 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: rotateY(0deg) rotateX(0deg);
+        }
+
+        .scrapbook-photo[data-flipped="false"]::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%);
+            border-radius: 8px;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        .scrapbook-photo[data-flipped="false"]:hover {
+            transform: translateY(-12px) scale(1.05) rotateX(5deg);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+        }
+
+        .scrapbook-photo[data-flipped="false"] img {
+            opacity: 0;
+            max-width: 50%;
+            max-height: 50%;
+            filter: blur(8px);
+            transition: opacity 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+                        filter 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backface-visibility: hidden;
+        }
+
+        .scrapbook-photo[data-flipped="true"] {
+            transform: rotateY(180deg);
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .scrapbook-photo[data-flipped="true"]::before {
+            opacity: 0;
+        }
+
+        .scrapbook-photo[data-flipped="true"] img {
+            opacity: 1;
+            filter: none;
+            transition: opacity 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+                        filter 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backface-visibility: hidden;
+        }
+
         /* ============================================
            TIMELOCK OVERLAY (Valentine's Day Lock)
            ============================================ */
@@ -2614,8 +2846,18 @@
         .lock-icon {
             font-size: 100px;
             margin-bottom: 30px;
-            animation: float 3s ease-in-out infinite;
         }
+
+        .lock-countdown {
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            opacity: 0.95;
+        }
+
+        /* Countdown value moved to lock screen section */
 
         .lock-content h1 {
             font-size: clamp(2rem, 5vw, 3.5rem);
@@ -2705,8 +2947,39 @@
             <div class="lock-icon">💝</div>
             <h1>This is a Valentine's Day Gift</h1>
             <p>Come back on <strong>February 14</strong> to open our love timeline.</p>
+            <div class="lock-countdown" id="lockCountdown"></div>
             <div class="lock-status" id="lockStatus">Validating access...</div>
             <button class="timelock-retry-btn" onclick="initializeTimelock()">Check Again</button>
+        </div>
+    </div>
+
+    <!-- ========================================
+         INSTRUCTIONS MODAL
+         Shows hints on how to interact with photos
+         ======================================== -->
+    
+    <div id="instructionsModal" class="instructions-modal hidden" onclick="if(event.target.id==='instructionsModal')closeInstructions()">
+        <div class="instructions-modal-content">
+            <button class="instructions-close" onclick="closeInstructions()">✕</button>
+            <h2>How to Explore the Timeline 📸</h2>
+            <div class="instructions-body">
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <p><strong>Tap to Flip:</strong> Click or tap a face-down polaroid to reveal the photo</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <p><strong>View Full:</strong> Tap the photo again to view it in full screen</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <p><strong>Navigate:</strong> Use arrows, swipes, or timeline dots to explore all months</p>
+                </div>
+            </div>
+            <label class="instructions-checkbox">
+                <input type="checkbox" id="dontShowInstructionsAgain"> Don't show this again
+            </label>
+            <button class="instructions-btn" onclick="closeInstructions()">Got it! ❤️</button>
         </div>
     </div>
 
@@ -2938,12 +3211,255 @@
     <audio id="audioPlayer" src="assets/audio/enchanted.mp3" preload="metadata" loop></audio>
 
     <!-- Transition overlay used for smooth restart fade -->
-    <div id="transitionOverlay" style="position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4000;transition:opacity 0.45s ease"></div>
+    <div id="transitionOverlay" style="position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:4000;transition:opacity 0.5s ease"></div>
 
     <!-- ============================================
          JAVASCRIPT CODE - Makes the page interactive
          ============================================ -->
     <script>
+        /* ========================================
+           CONFIGURATION & CONSTANTS
+           Centralized config values for the app
+           ======================================== */
+        
+        const CONFIG = {
+            DEBUG: false,
+            UNLOCK_DATE: '2026-02-14T00:00:00',
+            MAX_HEARTS: 15,
+            HEART_CLEANUP_DELAY: 13000,
+            HEART_CREATE_INTERVAL: 2000,
+            HEART_ANIMATION_MIN: 5000,
+            HEART_ANIMATION_MAX: 10000,
+            HEART_DELAY_MAX: 5000,
+            ANIMATION_DURATION_SHORT: 500,
+            ANIMATION_DURATION_MED: 650,
+            ANIMATION_DURATION_LONG: 1300,
+            END_REVEAL_DURATION: 700,
+            CAROUSEL_SHUFFLE_INTERVAL: 4000,
+            COUNTDOWN_UPDATE_INTERVAL: 1000,
+            FIRST_ENTER_DURATION: 1300,
+            RESTART_FADE_DURATION: 500,
+            SWIPE_THRESHOLD: 50,
+            DOUBLE_TAP_TIMEOUT: 300,
+            RESIZE_DEBOUNCE_DELAY: 150,
+            FETCH_TIMEOUT: 10000,
+            ENVELOPE_OPEN_DURATION: 1600,
+            TOAST_ANIMATION_DURATION: 300,
+            TOAST_DISPLAY_DURATION: 3000,
+        };
+
+        const SLIDE_INDICES = {
+            JANUARY: 10,
+            ENVELOPE: 11,
+        };
+
+        const CSS_CLASSES = {
+            ACTIVE: 'active',
+            HIDDEN: 'hidden',
+            FLIPPED: 'flipped',
+            GLOWING: 'glowing',
+            SLIDE_OUT_LEFT: 'slide-out-left',
+            SLIDE_OUT_RIGHT: 'slide-out-right',
+            SLIDE_IN_RIGHT: 'slide-in-right',
+            FADE_IN: 'fade-in',
+            FADE_OUT: 'fade-out',
+            FIRST_ENTER: 'first-enter',
+            END_REVEAL_IN: 'end-reveal-in',
+            NO_SLIDE: 'no-slide',
+            DISABLED: 'disabled',
+            REVEALED: 'revealed',
+            OPENED: 'opened',
+            EXIT: 'exit',
+        };
+
+        /* ========================================
+           ENHANCED DOM CACHE & UTILITIES
+           Optimized element access and safety
+           ======================================== */
+        
+        const DOMCache = {
+            // Cached element references
+            _cache: {},
+            
+            // Initialize cache with frequently accessed elements
+            init() {
+                this._cache = {
+                    lockOverlay: document.getElementById('lockOverlay'),
+                    lockStatus: document.getElementById('lockStatus'),
+                    audioPlayer: document.getElementById('audioPlayer'),
+                    audioPlayIcon: document.querySelector('.audio-play'),
+                    heartContainer: document.getElementById('heartContainer'),
+                    letterOverlay: document.getElementById('letterOverlay'),
+                    introOverlay: document.getElementById('introOverlay'),
+                    closingOverlay: document.getElementById('closingOverlay'),
+                    transitionOverlay: document.getElementById('transitionOverlay'),
+                    lightbox: document.getElementById('photoLightbox'),
+                    lockCountdown: document.getElementById('lockCountdown'),
+                    instructionsModal: document.getElementById('instructionsModal'),
+                    envelope: document.getElementById('envelope'),
+                    // Navigation elements (used in showSlide)
+                    letterDot: document.getElementById('letterDot'),
+                    timelineSlider: document.querySelector('.timeline-slider'),
+                    restartBtn: document.getElementById('restartBtn'),
+                    sliderTrack: document.getElementById('sliderTrack'),
+                    prevArrow: document.querySelector('.nav-arrow.prev'),
+                    nextArrow: document.querySelector('.nav-arrow.next'),
+                };
+                if (CONFIG.DEBUG) console.log('✓ DOM Cache initialized');
+            },
+            
+            // Safe getter with null check
+            get(key) {
+                const element = this._cache[key];
+                if (!element) {
+                    console.warn(`⚠️ DOM element not found in cache: ${key}`);
+                }
+                return element;
+            },
+            
+            // Query collections (not cached, live references)
+            getAll(selector) {
+                return document.querySelectorAll(selector);
+            },
+        };
+
+        /* ========================================
+           INTERVAL MANAGEMENT
+           Tracks and cleans up all intervals
+           ======================================== */
+        
+        const IntervalManager = {
+            intervals: [],
+            
+            // Create interval with tracking
+            create(callback, delay, name = '') {
+                const id = setInterval(callback, delay);
+                this.intervals.push({ id, name, delay });
+                if (name && CONFIG.DEBUG) console.log(`⏱️ Interval created: ${name} (${delay}ms)`);
+                return id;
+            },
+            
+            // Clear all intervals safely
+            clearAll() {
+                this.intervals.forEach(({ id, name }) => {
+                    clearInterval(id);
+                    if (name && CONFIG.DEBUG) console.log(`⏱️ Interval cleared: ${name}`);
+                });
+                this.intervals = [];
+            },
+            
+            // Clear specific interval
+            clear(id) {
+                clearInterval(id);
+                this.intervals = this.intervals.filter(i => i.id !== id);
+            },
+        };
+
+        /* ========================================
+           UTILITY FUNCTIONS
+           Performance and robustness helpers
+           ======================================== */
+        
+        /**
+         * Debounce function - delays execution until after delay has passed
+         * Prevents excessive calls during rapid events (e.g., window resize)
+         * @param {Function} func - Function to debounce
+         * @param {number} delay - Delay in milliseconds
+         * @returns {Function} Debounced function
+         */
+        function debounce(func, delay) {
+            let timeoutId;
+            return function(...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        /**
+         * Fetch with timeout support
+         * Prevents indefinite hanging on slow/unresponsive servers
+         * @param {string} url - URL to fetch
+         * @param {object} options - Fetch options
+         * @param {number} timeout - Timeout in milliseconds
+         * @returns {Promise} Fetch promise with timeout
+         */
+        async function fetchWithTimeout(url, options = {}, timeout = CONFIG.FETCH_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    throw new Error(`Request timeout after ${timeout}ms`);
+                }
+                throw error;
+            }
+        }
+
+        /**
+         * Online/Offline state management
+         * Tracks network connectivity and provides user feedback
+         */
+        const NetworkStatus = {
+            isOnline: navigator.onLine,
+            
+            init() {
+                window.addEventListener('online', () => {
+                    this.isOnline = true;
+                    if (CONFIG.DEBUG) console.log('🌐 Connection restored');
+                    this.showConnectionStatus('Connection restored', 'success');
+                });
+                
+                window.addEventListener('offline', () => {
+                    this.isOnline = false;
+                    if (CONFIG.DEBUG) console.log('📡 Connection lost');
+                    this.showConnectionStatus('No internet connection', 'error');
+                });
+            },
+            
+            showConnectionStatus(message, type) {
+                // Show subtle notification to user
+                const statusDiv = document.createElement('div');
+                statusDiv.className = `connection-status ${type}`;
+                statusDiv.textContent = message;
+                statusDiv.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                    color: white;
+                    border-radius: 4px;
+                    z-index: 10000;
+                    font-size: 14px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                    animation: slideIn ${CONFIG.TOAST_ANIMATION_DURATION}ms ease;
+                `;
+                document.body.appendChild(statusDiv);
+                
+                setTimeout(() => {
+                    statusDiv.style.animation = `slideOut ${CONFIG.TOAST_ANIMATION_DURATION}ms ease`;
+                    setTimeout(() => statusDiv.remove(), CONFIG.TOAST_ANIMATION_DURATION);
+                }, CONFIG.TOAST_DISPLAY_DURATION);
+            }
+        };
+
+        /* ========================================
+           RESOURCE CLEANUP ON PAGE UNLOAD
+           ========================================= */
+        
+        window.addEventListener('beforeunload', () => {
+            if (CONFIG.DEBUG) console.log('🧹 Cleaning up resources...');
+            IntervalManager.clearAll();
+        });
+
         /* ========================================
            VALENTINE'S DAY TIMELOCK (Security)
            Validates internet time & location before unlocking
@@ -2954,10 +3470,10 @@
          * Validates time and location, then unlocks or locks the app
          */
         async function initializeTimelock() {
-            const lockOverlay = document.getElementById('lockOverlay');
-            const lockStatus = document.getElementById('lockStatus');
+            const lockOverlay = DOMCache.get('lockOverlay');
+            const lockStatus = DOMCache.get('lockStatus');
             
-            if (!lockOverlay) return;
+            if (!lockOverlay || !lockStatus) return;
 
             try {
                 lockStatus.textContent = 'Validating access...';
@@ -2965,7 +3481,10 @@
                 // Fetch official server time (tamper-proof)
                 let serverTime = await fetchServerTime();
                 if (!serverTime) {
-                    showLocked('No internet connection detected. Please connect to the internet.', lockOverlay, lockStatus);
+                    const errorMsg = NetworkStatus.isOnline 
+                        ? 'Unable to verify time. Please refresh the page.' 
+                        : 'No internet connection. Please connect and refresh.';
+                    showLocked(errorMsg, lockOverlay, lockStatus);
                     return;
                 }
 
@@ -2975,20 +3494,22 @@
                 // Try to validate location (optional)
                 try {
                     const location = await getLocationWithFallback();
-                    console.log('📍 User Location:', {
-                        source: location.source,
-                        latitude: location.lat,
-                        longitude: location.lon,
-                        country: location.country || 'N/A',
-                        timezone: location.timezone || userTimezone
-                    });
+                    if (CONFIG.DEBUG) {
+                        console.log('📍 User Location:', {
+                            source: location.source,
+                            latitude: location.lat,
+                            longitude: location.lon,
+                            country: location.country || 'N/A',
+                            timezone: location.timezone || userTimezone
+                        });
+                    }
                 } catch (e) {
-                    console.log('Location validation skipped:', e.message);
-                    // Continue without location - time validation is the main check
+                    // Location check is optional - continue without it
+                    if (CONFIG.DEBUG) console.log('ℹ️ Location validation skipped (optional)');
                 }
 
                 // Get and log timezone
-                console.log('🌍 User Timezone:', userTimezone);
+                if (CONFIG.DEBUG) console.log('🌍 User Timezone:', userTimezone);
 
                 // Check if current time >= Feb 14, 2026 midnight in user's timezone
                 const unlockDateTime = new Date('2026-02-14T00:00:00');
@@ -2998,20 +3519,24 @@
 
                 if (userTime >= unlockDateTime) {
                     // UNLOCKED! Hide lock overlay and show app
-                    lockOverlay.classList.add('hidden');
+                    lockOverlay.classList.add(CSS_CLASSES.HIDDEN);
                     lockStatus.textContent = 'Access granted! ✨';
                     return true;
                 } else {
                     // Still locked
                     const daysLeft = Math.ceil((unlockDateTime - userTime) / (1000 * 60 * 60 * 24));
-                    const message = `Get ready to celebrate! ${daysLeft} days to go 💕`;
+                    const dayLabel = daysLeft === 1 ? 'day' : 'days';
+                    const message = `Get ready to celebrate! ${daysLeft} ${dayLabel} to go 💕`;
                     showLocked(message, lockOverlay, lockStatus);
                     return false;
                 }
 
             } catch (error) {
                 console.error('Timelock error:', error);
-                showLocked('Unable to validate. Please check your internet connection.', lockOverlay, lockStatus);
+                const errorMsg = NetworkStatus.isOnline
+                    ? 'Unable to validate access. Please refresh the page.'
+                    : 'No internet connection. Please check your connection and refresh.';
+                showLocked(errorMsg, lockOverlay, lockStatus);
                 return false;
             }
         }
@@ -3019,6 +3544,7 @@
         /**
          * Fetch server time from multiple APIs for redundancy
          * Returns Date object or null if all fail
+         * Now with timeout support to prevent hanging
          */
         async function fetchServerTime() {
             const apis = [
@@ -3032,11 +3558,11 @@
 
             for (const api of apis) {
                 try {
-                    const response = await fetch(api.url, { 
+                    const response = await fetchWithTimeout(api.url, { 
                         method: 'GET',
                         cache: 'no-store',
                         headers: { 'Accept': 'application/json' }
-                    });
+                    }, CONFIG.FETCH_TIMEOUT);
                     
                     if (!response.ok) continue;
 
@@ -3050,16 +3576,16 @@
                     }
                     
                     if (time && time instanceof Date && !isNaN(time)) {
-                        console.log('✓ Server time fetched successfully from:', api.url);
+                        if (CONFIG.DEBUG) console.log('✓ Server time fetched from:', api.url);
                         return time;
                     }
                 } catch (e) {
-                    console.log(`Failed to fetch from ${api.url}:`, e.message);
+                    if (CONFIG.DEBUG) console.log(`⚠️ Failed to fetch from ${api.url}:`, e.message);
                     continue;
                 }
             }
 
-            console.warn('⚠️ All time APIs failed. Please check your internet connection.');
+            console.warn('⚠️ All time APIs failed. Check internet connection.');
             return null; // All APIs failed
         }
 
@@ -3069,11 +3595,11 @@
          */
         async function getLocationWithFallback() {
             return new Promise((resolve, reject) => {
-                // Try browser geolocation first (no permission = deny access to IP lookup)
+                // Try browser geolocation first
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
-                            console.log('Browser location obtained');
+                            if (CONFIG.DEBUG) console.log('✓ Browser location obtained');
                             resolve({
                                 source: 'browser',
                                 lat: position.coords.latitude,
@@ -3081,27 +3607,9 @@
                             });
                         },
                         async (error) => {
-                            console.log('Geolocation denied, trying IP lookup...');
-                            
-                            // Fallback to IP-based geolocation
-                            try {
-                                const response = await fetch('https://ipapi.co/json/', {
-                                    cache: 'no-store'
-                                });
-                                const data = await response.json();
-                                
-                                console.log('IP location obtained:', data.country_name);
-                                resolve({
-                                    source: 'ip',
-                                    lat: data.latitude,
-                                    lon: data.longitude,
-                                    country: data.country_name,
-                                    timezone: data.timezone
-                                });
-                            } catch (e) {
-                                console.log('IP lookup failed:', e.message);
-                                reject(e);
-                            }
+                            // Location denied - skip IP fallback since it's rate-limited and optional
+                            if (CONFIG.DEBUG) console.log('ℹ️ Location access denied (optional)');
+                            reject(new Error('Location access denied'));
                         },
                         {
                             timeout: 5000,
@@ -3118,7 +3626,7 @@
          * Show locked overlay with message
          */
         function showLocked(message, lockOverlay, lockStatus) {
-            lockOverlay.classList.remove('hidden');
+            lockOverlay.classList.remove(CSS_CLASSES.HIDDEN);
             lockStatus.textContent = message;
         }
 
@@ -3148,16 +3656,18 @@
          * Creates a single floating heart element
          * - Adds a heart emoji to the heart container
          * - Gives it random position and animation timing
-         * - Auto-removes after HEART_CLEANUP_DELAY to prevent memory leaks
-         * - Respects MAX_CONCURRENT_HEARTS limit to prevent DOM bloat
+         * - Auto-removes after CONFIG.HEART_CLEANUP_DELAY to prevent memory leaks
+         * - Respects CONFIG.MAX_HEARTS limit to prevent DOM bloat
          */
         function createHeart() {
             // Check heart count - don't create if too many exist
-            const heartContainer = cachedElements.heartContainer || document.getElementById('heartContainer');
+            const heartContainer = DOMCache.get('heartContainer');
+            if (!heartContainer) return;
+            
             const existingHearts = heartContainer.querySelectorAll('.heart').length;
             
-            if (existingHearts >= MAX_CONCURRENT_HEARTS) {
-                if (DEBUG) console.log('⚠️ Max concurrent hearts reached:', MAX_CONCURRENT_HEARTS);
+            if (existingHearts >= CONFIG.MAX_HEARTS) {
+                if (CONFIG.DEBUG) console.log('⚠️ Max concurrent hearts reached:', CONFIG.MAX_HEARTS);
                 return;  // Don't create more
             }
             
@@ -3169,25 +3679,19 @@
             heart.style.left = Math.random() * 100 + '%';
             
             // Random animation duration (5-10 seconds)
-            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            const minDuration = CONFIG.HEART_ANIMATION_MIN / 1000;
+            const maxDuration = CONFIG.HEART_ANIMATION_MAX / 1000;
+            heart.style.animationDuration = (Math.random() * (maxDuration - minDuration) + minDuration) + 's';
             
             // Random start delay (0-5 seconds)
-            heart.style.animationDelay = Math.random() * 5 + 's';
+            heart.style.animationDelay = Math.random() * (CONFIG.HEART_DELAY_MAX / 1000) + 's';
             
             heartContainer.appendChild(heart);
 
             // Remove heart after animation completes
             setTimeout(() => {
                 heart.remove();
-            }, HEART_CLEANUP_DELAY);
-        }
-
-        // Start creating hearts: 1 heart every 2 seconds
-        setInterval(createHeart, 2000);
-        
-        // Create 5 initial hearts immediately (staggered by 0.5s each)
-        for (let i = 0; i < 5; i++) {
-            setTimeout(createHeart, i * 500);
+            }, CONFIG.HEART_CLEANUP_DELAY);
         }
 
         /* ========================================
@@ -3208,6 +3712,12 @@
          *   - 'none'  = no animation
          */
         function showSlide(index, direction = 'none') {
+            // Guard: Ensure slides exist
+            if (!slides || slides.length === 0) {
+                console.warn('⚠️ Slides not initialized');
+                return;
+            }
+            
             // Special case: Final slide defaults to fade animation
             if (index === slides.length - 1 && direction === 'none') {
                 direction = 'fade';
@@ -3233,139 +3743,140 @@
 
             // Loop through ALL slides to update their states
             slides.forEach((slide, i) => {
+                if (!slide) return;
+                
                 // First, remove all animation classes from every slide (clean slate)
-                slide.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-right');
+                slide.classList.remove(CSS_CLASSES.ACTIVE, CSS_CLASSES.SLIDE_OUT_LEFT, CSS_CLASSES.SLIDE_OUT_RIGHT, CSS_CLASSES.SLIDE_IN_RIGHT);
                 
                 // If this is the slide we're LEAVING, animate it out
                 if (i === previousSlide && direction !== 'none') {
                     // Choose exit animation based on direction
                     if (direction === 'next') {
-                        slide.classList.add('slide-out-left');  // Slide out to the left
+                        slide.classList.add(CSS_CLASSES.SLIDE_OUT_LEFT);
                     } else if (direction === 'prev') {
-                        slide.classList.add('slide-out-right');  // Slide out to the right
+                        slide.classList.add(CSS_CLASSES.SLIDE_OUT_RIGHT);
                     } else if (direction === 'fade') {
-                        slide.classList.add('fade-out');  // Fade out
+                        slide.classList.add(CSS_CLASSES.FADE_OUT);
                     }
                     
-                    // Clean up animation classes after animation completes (650ms)
+                    // Clean up animation classes after animation completes
                     setTimeout(() => {
-                        slide.classList.remove('slide-out-left', 'slide-out-right', 'fade-out');
-                    }, 650);  // Must match CSS animation duration
+                        if (slide) slide.classList.remove(CSS_CLASSES.SLIDE_OUT_LEFT, CSS_CLASSES.SLIDE_OUT_RIGHT, CSS_CLASSES.FADE_OUT);
+                    }, CONFIG.ANIMATION_DURATION_MED);
                 }
                 
                 // If this is the slide we're ENTERING, make it active and animate it in
                 if (i === currentSlide) {
-                    // If we're doing a fade or endReveal, avoid the default slide-in animation
                     if (direction === 'fade') {
-                        slide.classList.add('active', 'no-slide');
-                        slide.classList.add('fade-in');
+                        slide.classList.add(CSS_CLASSES.ACTIVE, CSS_CLASSES.NO_SLIDE, CSS_CLASSES.FADE_IN);
                         setTimeout(() => {
-                            slide.classList.remove('fade-in');
-                            slide.classList.remove('no-slide');
-                        }, 650);
+                            if (slide) {
+                                slide.classList.remove(CSS_CLASSES.FADE_IN, CSS_CLASSES.NO_SLIDE);
+                            }
+                        }, CONFIG.ANIMATION_DURATION_MED);
                         if (currentSlide === 0) {
-                            slide.classList.add('first-enter');
-                            setTimeout(() => slide.classList.remove('first-enter'), 1300);
+                            slide.classList.add(CSS_CLASSES.FIRST_ENTER);
+                            setTimeout(() => {
+                                if (slide) slide.classList.remove(CSS_CLASSES.FIRST_ENTER);
+                            }, CONFIG.FIRST_ENTER_DURATION);
                         }
                     } else if (direction === 'endReveal') {
-                        slide.classList.add('active');
-                        slide.classList.add('end-reveal-in');
+                        slide.classList.add(CSS_CLASSES.ACTIVE, CSS_CLASSES.END_REVEAL_IN);
                         setTimeout(() => {
-                            slide.classList.remove('end-reveal-in');
-                        }, 700);
+                            if (slide) slide.classList.remove(CSS_CLASSES.END_REVEAL_IN);
+                        }, CONFIG.END_REVEAL_DURATION);
                     } else {
-                        slide.classList.add('active', 'slide-in-right');
+                        slide.classList.add(CSS_CLASSES.ACTIVE, CSS_CLASSES.SLIDE_IN_RIGHT);
                         setTimeout(() => {
-                            slide.classList.remove('slide-in-right');
-                        }, 650);
+                            if (slide) slide.classList.remove(CSS_CLASSES.SLIDE_IN_RIGHT);
+                        }, CONFIG.ANIMATION_DURATION_MED);
                     }
                 }
             });
 
-            timelineDots.forEach((dot, i) => {
-                dot.classList.remove('active');
-            });
+            if (timelineDots) {
+                timelineDots.forEach((dot) => {
+                    if (dot) dot.classList.remove(CSS_CLASSES.ACTIVE);
+                });
+            }
             
             // Show/hide letter dot (Feb 2026) when reaching January (slide 10)
-            const letterDot = document.getElementById('letterDot');
-            if (currentSlide >= 10) {
-                letterDot.classList.remove('hidden');
-                // Add glowing effect to letter dot when on February envelope (slide 11)
-                if (currentSlide === 11) {
-                    letterDot.classList.add('glowing');
+            const letterDot = DOMCache.get('letterDot');
+            if (letterDot) {
+                if (currentSlide >= SLIDE_INDICES.JANUARY) {
+                    letterDot.classList.remove(CSS_CLASSES.HIDDEN);
+                    if (currentSlide === SLIDE_INDICES.ENVELOPE) {
+                        letterDot.classList.add(CSS_CLASSES.GLOWING);
+                    } else {
+                        letterDot.classList.remove(CSS_CLASSES.GLOWING);
+                    }
                 } else {
-                    letterDot.classList.remove('glowing');
+                    letterDot.classList.add(CSS_CLASSES.HIDDEN);
+                    letterDot.classList.remove(CSS_CLASSES.GLOWING);
                 }
-            } else {
-                letterDot.classList.add('hidden');
-                letterDot.classList.remove('glowing');
             }
             
             // Timeline slider and buttons visibility
-            const timelineSlider = document.querySelector('.timeline-slider');
-            const navArrows = document.querySelectorAll('.nav-arrow');
-            const restartBtn = document.getElementById('restartBtn');
+            const timelineSlider = DOMCache.get('timelineSlider');
+            const prevArrow = DOMCache.get('prevArrow');
+            const nextArrow = DOMCache.get('nextArrow');
+            const restartBtn = DOMCache.get('restartBtn');
             
-            // Hide timeline and buttons on envelope slide (slide 11)
-            if (currentSlide === 11 || timelineSlider.classList.contains('disabled')) {
-                timelineSlider.classList.add('hidden');
-                restartBtn.classList.add('hidden');
-            } else {
-                timelineSlider.classList.remove('hidden');
-                restartBtn.classList.remove('hidden');
+            if (timelineSlider) {
+                // Hide timeline and buttons on envelope slide (slide 11)
+                if (currentSlide === SLIDE_INDICES.ENVELOPE || timelineSlider.classList.contains(CSS_CLASSES.DISABLED)) {
+                    timelineSlider.classList.add(CSS_CLASSES.HIDDEN);
+                    if (restartBtn) restartBtn.classList.add(CSS_CLASSES.HIDDEN);
+                } else {
+                    timelineSlider.classList.remove(CSS_CLASSES.HIDDEN);
+                    if (restartBtn) restartBtn.classList.remove(CSS_CLASSES.HIDDEN);
+                }
             }
 
             // Hide navigation arrows on the envelope slide
-            if (currentSlide === 11) {
-                navArrows.forEach(arrow => arrow.classList.add('hidden'));
-                // Add animation to envelope when it's the active slide
-                const envelope = document.getElementById('envelope');
-                if (envelope) {
-                    envelope.classList.add('active');
-                }
+            const envelope = DOMCache.get('envelope');
+            if (currentSlide === SLIDE_INDICES.ENVELOPE) {
+                if (prevArrow) prevArrow.classList.add(CSS_CLASSES.HIDDEN);
+                if (nextArrow) nextArrow.classList.add(CSS_CLASSES.HIDDEN);
+                if (envelope) envelope.classList.add(CSS_CLASSES.ACTIVE);
             } else {
-                navArrows.forEach(arrow => arrow.classList.remove('hidden'));
-                // Remove animation from envelope when not on letter slide
-                const envelope = document.getElementById('envelope');
-                if (envelope) {
-                    envelope.classList.remove('active');
-                }
+                if (prevArrow) prevArrow.classList.remove(CSS_CLASSES.HIDDEN);
+                if (nextArrow) nextArrow.classList.remove(CSS_CLASSES.HIDDEN);
+                if (envelope) envelope.classList.remove(CSS_CLASSES.ACTIVE);
             }
             
             // Correctly map current slide to timeline dot using data-slide
             const activeDot = document.querySelector(`.timeline-dot[data-slide="${currentSlide}"]`);
             if (activeDot) {
-                activeDot.classList.add('active');
-                // Prefer precise centering inside the scrollable track so mobile shows the active month centered.
-                const sliderTrack = document.getElementById('sliderTrack');
-                if (sliderTrack && !sliderTrack.classList.contains('hidden')) {
+                activeDot.classList.add(CSS_CLASSES.ACTIVE);
+                const sliderTrack = DOMCache.get('sliderTrack');
+                if (sliderTrack && !sliderTrack.classList.contains(CSS_CLASSES.HIDDEN)) {
                     requestAnimationFrame(() => {
                         const trackRect = sliderTrack.getBoundingClientRect();
                         const dotRect = activeDot.getBoundingClientRect();
                         const delta = (dotRect.left - trackRect.left) - (trackRect.width / 2 - dotRect.width / 2);
                         sliderTrack.scrollBy({ left: delta, behavior: 'smooth' });
                     });
-                } else {
+                } else if (activeDot) {
                     activeDot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
             }
 
-            // Update arrow visibility (hide prev on first slide, hide next on last)
-            const prevArrow = document.querySelector('.nav-arrow.prev');
-            const nextArrow = document.querySelector('.nav-arrow.next');
-            
-            // Hide left arrow on first slide (can't go back further)
-            if (currentSlide === 0) {
-                prevArrow.classList.add('hidden');
-            } else {
-                prevArrow.classList.remove('hidden');
+            // Update arrow visibility (already cached above)
+            if (prevArrow) {
+                if (currentSlide === 0) {
+                    prevArrow.classList.add(CSS_CLASSES.HIDDEN);
+                } else {
+                    prevArrow.classList.remove(CSS_CLASSES.HIDDEN);
+                }
             }
+            
             
             // Hide right arrow on last slide (end of slideshow)
             if (currentSlide === slides.length - 1) {
-                nextArrow.classList.add('hidden');
+                nextArrow.classList.add(CSS_CLASSES.HIDDEN);
             } else {
-                nextArrow.classList.remove('hidden');
+                nextArrow.classList.remove(CSS_CLASSES.HIDDEN);
             }
         }  // End of showSlide function
 
@@ -3432,11 +3943,11 @@
             }
             
             // Disable keyboard navigation when letter overlay is active or on envelope slide (last slide)
-            const letterOverlay = document.getElementById('letterOverlay');
-            if (letterOverlay && letterOverlay.classList.contains('active')) {
+            const letterOverlay = DOMCache.get('letterOverlay');
+            if (letterOverlay && letterOverlay.classList.contains(CSS_CLASSES.ACTIVE)) {
                 return; // Block all keyboard interaction when letter is open
             }
-            if (currentSlide === 11) {
+            if (currentSlide === SLIDE_INDICES.ENVELOPE) {
                 return; // Block all keyboard interaction on final envelope slide
             }
             
@@ -3468,7 +3979,8 @@
             currentLightboxSlideIndex = slideIndex;
             currentPhotoIndex = photoIndex;
             
-            const lightbox = document.getElementById('photoLightbox');
+            const lightbox = DOMCache.get('lightbox');
+            if (!lightbox) return;
             const photo = lightbox.querySelector('.lightbox-photo');
             const caption = lightbox.querySelector('.lightbox-caption');
             const prevBtn = lightbox.querySelector('.lightbox-nav.prev');
@@ -3480,14 +3992,14 @@
             
             // Show/hide navigation arrows
             if (photos.length > 1) {
-                prevBtn.classList.toggle('hidden', photoIndex === 0);
-                nextBtn.classList.toggle('hidden', photoIndex === photos.length - 1);
+                prevBtn.classList.toggle(CSS_CLASSES.HIDDEN, photoIndex === 0);
+                nextBtn.classList.toggle(CSS_CLASSES.HIDDEN, photoIndex === photos.length - 1);
             } else {
-                prevBtn.classList.add('hidden');
-                nextBtn.classList.add('hidden');
+                prevBtn.classList.add(CSS_CLASSES.HIDDEN);
+                nextBtn.classList.add(CSS_CLASSES.HIDDEN);
             }
             
-            lightbox.classList.add('active');
+            lightbox.classList.add(CSS_CLASSES.ACTIVE);
         }
         
         /**
@@ -3495,8 +4007,9 @@
          */
         function closeLightbox() {
             lightboxOpen = false;
-            const lightbox = document.getElementById('photoLightbox');
-            lightbox.classList.remove('active');
+            const lightbox = DOMCache.get('lightbox');
+            if (!lightbox) return;
+            lightbox.classList.remove(CSS_CLASSES.ACTIVE);
         }
         
         /**
@@ -3549,11 +4062,11 @@
             }
             
             // Disable swipe navigation when letter overlay is active or on envelope slide (last slide)
-            const letterOverlay = document.getElementById('letterOverlay');
-            if (letterOverlay && letterOverlay.classList.contains('active')) {
+            const letterOverlay = DOMCache.get('letterOverlay');
+            if (letterOverlay && letterOverlay.classList.contains(CSS_CLASSES.ACTIVE)) {
                 return; // Block all swipe interaction when letter is open
             }
-            if (currentSlide === 11) {
+            if (currentSlide === SLIDE_INDICES.ENVELOPE) {
                 return; // Block all swipe interaction on final envelope slide
             }
             
@@ -3582,8 +4095,8 @@
          * Uses cached audio player for better performance
          */
         function toggleAudio() {
-            const playPauseIcon = document.querySelector('.audio-play');
-            const audioPlayer = cachedElements.audioPlayer || document.getElementById('audioPlayer');
+            const playPauseIcon = DOMCache.get('audioPlayIcon');
+            const audioPlayer = DOMCache.get('audioPlayer');
             if (!playPauseIcon) return;
 
             if (audioPlayer) {
@@ -3616,8 +4129,111 @@
          * Hides the intro overlay and shows the first slide
          * Called when user clicks the album cover
          */
+        /**
+         * Updates countdown timer on lock screen
+         * Shows days, hours, minutes remaining until Feb 14
+         */
+        function updateCountdown() {
+            const countdownEl = DOMCache.get('lockCountdown');
+            if (!countdownEl) return;
+            
+            const targetDate = new Date('2026-02-14T00:00:00').getTime();
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+            
+            if (difference <= 0) {
+                countdownEl.innerHTML = '<div class="countdown-value">🎉 It\'s here!</div>';
+                return;
+            }
+            
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            
+            const dayLabel = days === 1 ? 'day' : 'days';
+            const timeString = `⏳${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+            
+            countdownEl.innerHTML = `<div class="countdown-value">${timeString}</div>`;
+        }
+
+        /**
+         * Show instructions modal
+         */
+        function showInstructions() {
+            const modal = DOMCache.get('instructionsModal');
+            if (!modal) return;
+            
+            // Check if user has disabled instructions
+            const dontShow = localStorage.getItem('hidePhotoInstructions');
+            if (dontShow === 'true') return;  // Don't show if user opted out
+            
+            modal.classList.remove(CSS_CLASSES.HIDDEN);
+        }
+
+        /**
+         * Close instructions modal and save preference if checkbox is checked
+         */
+        function closeInstructions() {
+            const modal = DOMCache.get('instructionsModal');
+            if (!modal) return;
+            
+            const checkbox = document.getElementById('dontShowInstructionsAgain');
+            if (checkbox && checkbox.checked) {
+                localStorage.setItem('hidePhotoInstructions', 'true');
+            }
+            
+            modal.classList.add(CSS_CLASSES.HIDDEN);
+        }
+
+        /**
+         * Initialize polaroid flip animations and click handlers
+         * Uses event delegation for better performance (1 listener instead of N)
+         * Makes photos start face-down and flip on click
+         */
+        function initializePolaroidFlip() {
+            // Set initial state for all photos (face-down)
+            const photos = document.querySelectorAll('.scrapbook-photo');
+            photos.forEach(photo => {
+                if (!photo.hasAttribute('data-flipped')) {
+                    photo.setAttribute('data-flipped', 'false');
+                }
+            });
+            
+            // Use event delegation - single listener on document for all photos
+            document.addEventListener('click', function(e) {
+                const photo = e.target.closest('.scrapbook-photo');
+                if (!photo) return; // Not a photo click
+                
+                e.stopPropagation();
+                
+                const isFlipped = photo.getAttribute('data-flipped') === 'true';
+                
+                if (!isFlipped) {
+                    // First click: flip to reveal photo
+                    photo.setAttribute('data-flipped', 'true');
+                } else {
+                    // Second click: open lightbox (existing functionality)
+                    const slideIndex = parseInt(photo.dataset.slideIndex || 0);
+                    const photoIndex = parseInt(photo.dataset.photoIndex || 0);
+                    openLightbox(slideIndex, photoIndex);
+                }
+            });
+        }
+
+        /**
+         * Reset polaroid states to face-down when restarting journey
+         */
+        function resetPolaroidStates() {
+            const photos = document.querySelectorAll('.scrapbook-photo');
+            photos.forEach(photo => {
+                photo.setAttribute('data-flipped', 'false');
+            });
+        }
+
         function openAlbum() {
-            const introOverlay = document.getElementById('introOverlay');
+            const introOverlay = DOMCache.get('introOverlay');
+            if (!introOverlay) return;
             
             // Prevent multiple clicks
             if (introOverlay.classList.contains('exit') || introOverlay.classList.contains('hidden')) {
@@ -3627,9 +4243,12 @@
             introOverlay.classList.add('exit');  // Trigger fade-out animation
             showingIntro = false;  // Update state
             
+            // Show instructions modal
+            showInstructions();
+            
             // Auto-play audio when user opens the album
-            const audioPlayer = document.getElementById('audioPlayer');
-            const playPauseIcon = document.querySelector('.audio-play');
+            const audioPlayer = DOMCache.get('audioPlayer');
+            const playPauseIcon = DOMCache.get('audioPlayIcon');
             if (audioPlayer) {
                 audioPlayer.play().catch(() => {
                     // Playback may fail if browser requires user interaction or file is missing
@@ -3639,14 +4258,9 @@
             }
             
             // Wait for intro to fade out (650ms), then show first slide
-            setTimeout(() => showSlide(0, 'fade'), 650);
+            setTimeout(() => showSlide(0, 'fade'), CONFIG.ANIMATION_DURATION_MED);
         }
 
-        /**
-         * Checks if device is in landscape mode on a small screen
-         * Adds 'landscape-compact' class to body for special layout
-         * Called on page load and whenever window is resized
-         */
         /**
          * Checks if device is in landscape mode on a small screen
          * Adds 'landscape-compact' class to body for special layout
@@ -3675,34 +4289,48 @@
          * Generates scrapbook photo galleries for photo slides (1-11)
          * Skips slide 0 (March message bubbles) which is manually defined
          */
-        /**
-         * Placeholder - actual implementation is further down
-         */
 
         document.addEventListener('DOMContentLoaded', function() {
-            const introOverlay = document.getElementById('introOverlay');
+            // Initialize DOM cache and utilities
+            DOMCache.init();
+            NetworkStatus.init();
+            
+            const introOverlay = DOMCache.get('introOverlay');
             if (introOverlay) {
                 // Prevent double-tap zoom on intro
                 let lastTouchEnd = 0;
                 introOverlay.addEventListener('touchend', function(e) {
                     const now = Date.now();
-                    if (now - lastTouchEnd <= 300) {
+                    if (now - lastTouchEnd <= CONFIG.DOUBLE_TAP_TIMEOUT) {
                         e.preventDefault();
                     }
                     lastTouchEnd = now;
                 }, false);
             }
+            
             setupImageFallbacks();
             loadImagePool().then((pool) => {
                 startAlbumShuffle(pool);
                 startClosingCarousel(pool);
                 generatePhotoSlides(); // Generate dynamic photo slides after JSON loaded
+                initializePolaroidFlip();  // Initialize polaroid flip mechanics
+                updateCountdown();  // Update countdown timer on lock screen
+                IntervalManager.create(updateCountdown, CONFIG.COUNTDOWN_UPDATE_INTERVAL, 'Countdown Timer');  // Update every second
+                
+                // Start creating hearts: 1 heart every 2 seconds
+                IntervalManager.create(createHeart, CONFIG.HEART_CREATE_INTERVAL, 'Heart Creation');
+                
+                // Create 5 initial hearts immediately (staggered by 0.5s each)
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(createHeart, i * CONFIG.ANIMATION_DURATION_SHORT);
+                }
             });
             updateIntroCompactMode();  // Check if we need compact mode
         });
 
         // Re-check compact mode whenever window is resized (rotation, browser resize)
-        window.addEventListener('resize', updateIntroCompactMode);
+        // Debounced to prevent excessive calls during resize
+        window.addEventListener('resize', debounce(updateIntroCompactMode, CONFIG.RESIZE_DEBOUNCE_DELAY));
 
         /**
          * Returns to the intro screen
@@ -3713,8 +4341,10 @@
          * Called by the restart button
          */
         function goToIntro() {
-            const introOverlay = document.getElementById('introOverlay');
-            introOverlay.classList.remove('exit', 'hidden');  // Show intro again
+            const introOverlay = DOMCache.get('introOverlay');
+            if (!introOverlay) return;
+            
+            introOverlay.classList.remove(CSS_CLASSES.EXIT, CSS_CLASSES.HIDDEN);  // Show intro again
             showingIntro = true;  // Update state
             
             // Hide all slides and remove all animation classes
@@ -3872,7 +4502,43 @@
             };
 
             updateMiniPhotos();
-            setInterval(updateMiniPhotos, 4000);
+            IntervalManager.create(updateMiniPhotos, CONFIG.CAROUSEL_SHUFFLE_INTERVAL, 'carouselShuffle');
+        }
+
+        /**
+         * Helper function to create a polaroid photo element
+         * Consolidates photo creation logic to reduce duplication
+         */
+        function createPolaroidPhoto(photoData, slideIndex, photoIndex, caption) {
+            const photoWrapper = document.createElement('div');
+            photoWrapper.className = 'scrapbook-photo';
+            photoWrapper.setAttribute('data-flipped', 'false');  // Initialize face-down state
+            photoWrapper.setAttribute('data-slide-index', slideIndex);
+            photoWrapper.setAttribute('data-photo-index', photoIndex);
+            const normalizedSrc = normalizeImagePath(photoData.src);
+            photoWrapper.style.setProperty('--photo-src', `url('${normalizedSrc}')`);
+
+            const tapeLeft = document.createElement('span');
+            tapeLeft.className = 'polaroid-tape left';
+
+            const tapeRight = document.createElement('span');
+            tapeRight.className = 'polaroid-tape right';
+            
+            const img = document.createElement('img');
+            img.src = normalizedSrc;
+            img.alt = caption;
+            img.loading = 'lazy';
+
+            const captionDiv = document.createElement('div');
+            captionDiv.className = 'polaroid-caption';
+            captionDiv.textContent = caption;
+            
+            photoWrapper.appendChild(tapeLeft);
+            photoWrapper.appendChild(tapeRight);
+            photoWrapper.appendChild(img);
+            photoWrapper.appendChild(captionDiv);
+            
+            return photoWrapper;
         }
 
         /* ========================================
@@ -3908,7 +4574,7 @@
             // Clear container and re-add March slide first (keeping it active)
             slideshowContainer.innerHTML = '';
             if (marchSlide) {
-                marchSlide.classList.add('active'); // Ensure March is active by default
+                marchSlide.classList.add(CSS_CLASSES.ACTIVE); // Ensure March is active by default
                 slideshowContainer.appendChild(marchSlide);
             }
             
@@ -3957,6 +4623,9 @@
                 photos.forEach((photoData, photoIndex) => {
                     const photoWrapper = document.createElement('div');
                     photoWrapper.className = 'scrapbook-photo';
+                    photoWrapper.setAttribute('data-flipped', 'false');  // Initialize face-down state
+                    photoWrapper.setAttribute('data-slide-index', i);
+                    photoWrapper.setAttribute('data-photo-index', photoIndex);
                     const normalizedSrc = normalizeImagePath(photoData.src);
                     photoWrapper.style.setProperty('--photo-src', `url('${normalizedSrc}')`);
 
@@ -3974,11 +4643,6 @@
                     const caption = document.createElement('div');
                     caption.className = 'polaroid-caption';
                     caption.textContent = monthNames[i];
-                    
-                    // Add click handler to open lightbox
-                    photoWrapper.addEventListener('click', () => {
-                        openLightbox(i, photoIndex);
-                    });
                     
                     photoWrapper.appendChild(tapeLeft);
                     photoWrapper.appendChild(tapeRight);
@@ -4057,42 +4721,50 @@
          */
         function toggleLetter() {
             // Get all the elements we need to manipulate
-            const letterOverlay = document.getElementById('letterOverlay');
-            const envelope = document.getElementById('envelope');
-            const closingOverlay = document.getElementById('closingOverlay');
-            const navArrows = document.querySelectorAll('.nav-arrow');
-            const timelineSlider = document.querySelector('.timeline-slider');
+            const letterOverlay = DOMCache.get('letterOverlay');
+            const envelope = DOMCache.get('envelope');
+            const closingOverlay = DOMCache.get('closingOverlay');
+            const prevArrow = DOMCache.get('prevArrow');
+            const nextArrow = DOMCache.get('nextArrow');
+            const timelineSlider = DOMCache.get('timelineSlider');
+            
+            if (!letterOverlay || !envelope || !closingOverlay) {
+                console.warn('⚠️ Letter elements not found');
+                return;
+            }
             
             // Check if letter is currently open
-            if (letterOverlay.classList.contains('active')) {
+            if (letterOverlay.classList.contains(CSS_CLASSES.ACTIVE)) {
                 // === CLOSING THE LETTER ===
-                letterOverlay.classList.remove('revealed');  // Hide letter content
-                letterOverlay.classList.remove('active');     // Hide overlay
-                envelope.classList.remove('opened');          // Close envelope flap
+                letterOverlay.classList.remove(CSS_CLASSES.REVEALED);
+                letterOverlay.classList.remove(CSS_CLASSES.ACTIVE);
+                envelope.classList.remove(CSS_CLASSES.OPENED);
                 
-                // After letter closes (500ms), show the final closing overlay
+                // After letter closes, show the final closing overlay
                 setTimeout(() => {
-                    closingOverlay.classList.remove('hidden');
-                    closingOverlay.classList.add('active');
-                }, 500);
+                    closingOverlay.classList.remove(CSS_CLASSES.HIDDEN);
+                    closingOverlay.classList.add(CSS_CLASSES.ACTIVE);
+                }, CONFIG.ANIMATION_DURATION_SHORT);
                 
-                // Re-enable navigation (letter no longer blocking)
-                navArrows.forEach(arrow => arrow.classList.remove('disabled'));
-                timelineSlider.classList.remove('disabled');
+                // Re-enable navigation
+                if (prevArrow) prevArrow.classList.remove(CSS_CLASSES.DISABLED);
+                if (nextArrow) nextArrow.classList.remove(CSS_CLASSES.DISABLED);
+                if (timelineSlider) timelineSlider.classList.remove(CSS_CLASSES.DISABLED);
             } else {
                 // === OPENING THE LETTER ===
-                letterOverlay.classList.add('active');    // Show overlay
-                letterOverlay.classList.remove('revealed'); // Hide content initially
-                envelope.classList.add('opened');         // Open envelope flap animation
+                letterOverlay.classList.add(CSS_CLASSES.ACTIVE);    // Show overlay
+                letterOverlay.classList.remove(CSS_CLASSES.REVEALED); // Hide content initially
+                envelope.classList.add(CSS_CLASSES.OPENED);         // Open envelope flap animation
                 
                 // Disable all navigation while letter is open
-                navArrows.forEach(arrow => arrow.classList.add('disabled'));
-                timelineSlider.classList.add('disabled');
+                if (prevArrow) prevArrow.classList.add(CSS_CLASSES.DISABLED);
+                if (nextArrow) nextArrow.classList.add(CSS_CLASSES.DISABLED);
+                if (timelineSlider) timelineSlider.classList.add(CSS_CLASSES.DISABLED);
 
-                // Wait for envelope flap to finish opening (1200ms), then reveal letter content
+                // Wait for envelope flap to finish opening, then reveal letter content
                 setTimeout(() => {
-                    letterOverlay.classList.add('revealed');  // Fade in the letter text
-                }, 1200);  // Must match envelope flap animation duration
+                    letterOverlay.classList.add(CSS_CLASSES.REVEALED);  // Fade in the letter text
+                }, CONFIG.ENVELOPE_OPEN_DURATION);  // Must match envelope flap CSS animation (1.6s)
             }
         }
 
@@ -4103,26 +4775,42 @@
          */
         function restartJourney() {
             // Fade overlay when restarting for smooth transition
-            const overlay = document.getElementById('transitionOverlay');
+            const overlay = DOMCache.get('transitionOverlay');
             if (overlay) overlay.style.opacity = '1';
-            // Return to intro
+            
+            // Return to intro after delay
             setTimeout(() => {
-                const introOverlay = document.getElementById('introOverlay');
-                const closingOverlay = document.getElementById('closingOverlay');
-                const letterOverlay = document.getElementById('letterOverlay');
+                const introOverlay = DOMCache.get('introOverlay');
+                const closingOverlay = DOMCache.get('closingOverlay');
+                const letterOverlay = DOMCache.get('letterOverlay');
                 
-                introOverlay.classList.remove('exit', 'hidden');
-                closingOverlay.classList.remove('active');
-                letterOverlay.classList.remove('active', 'revealed');
+                if (introOverlay) introOverlay.classList.remove(CSS_CLASSES.EXIT, CSS_CLASSES.HIDDEN);
+                if (closingOverlay) closingOverlay.classList.remove(CSS_CLASSES.ACTIVE);
+                if (letterOverlay) letterOverlay.classList.remove(CSS_CLASSES.ACTIVE, CSS_CLASSES.REVEALED);
+                
                 showingIntro = true;
                 
                 // Hide all slides
-                slides.forEach((slide) => {
-                    slide.classList.remove('active', 'slide-in-right', 'slide-out-left', 'slide-out-right', 'fade-in', 'fade-out');
-                });
+                if (slides) {
+                    slides.forEach((slide) => {
+                        if (slide) {
+                            slide.classList.remove(
+                                CSS_CLASSES.ACTIVE,
+                                CSS_CLASSES.SLIDE_IN_RIGHT,
+                                CSS_CLASSES.SLIDE_OUT_LEFT,
+                                CSS_CLASSES.SLIDE_OUT_RIGHT,
+                                CSS_CLASSES.FADE_IN,
+                                CSS_CLASSES.FADE_OUT
+                            );
+                        }
+                    });
+                }
+                
+                // Reset polaroid states to face-down
+                resetPolaroidStates();
                 
                 if (overlay) overlay.style.opacity = '0';
-            }, 500);
+            }, CONFIG.RESTART_FADE_DURATION);
         }
 
 
@@ -4138,13 +4826,13 @@
         
         // Set initial visibility: Show intro, hide everything else
         if (introOverlay) {
-            introOverlay.classList.remove('hidden');  // Show intro
+            introOverlay.classList.remove(CSS_CLASSES.HIDDEN);  // Show intro
         }
         if (closingOverlay) {
-            closingOverlay.classList.add('hidden');   // Hide closing page
+            closingOverlay.classList.add(CSS_CLASSES.HIDDEN);   // Hide closing page
         }
         if (letterOverlay) {
-            letterOverlay.classList.remove('active', 'revealed');  // Hide letter
+            letterOverlay.classList.remove(CSS_CLASSES.ACTIVE, CSS_CLASSES.REVEALED);  // Hide letter
         }
         currentSlide = -1;  // Not on any slide yet (intro is showing)
 
@@ -4156,23 +4844,25 @@
         // Initialize timelock on page load
         // This validates server time and location before unlocking the app
         window.addEventListener('load', function() {
-            console.log('🔒 Initializing Valentine\'s Day timelock...');
+            if (CONFIG.DEBUG) console.log('🔒 Initializing Valentine\'s Day timelock...');
             initializeTimelock();
         });
         
         // Unlock function for development (console only)
         // Use: window.bypassTimelock() in browser console to skip validation
         window.bypassTimelock = function() {
-            const lockOverlay = document.getElementById('lockOverlay');
+            const lockOverlay = DOMCache.get('lockOverlay');
             if (lockOverlay) {
-                lockOverlay.classList.add('hidden');
-                console.log('✅ Timelock bypassed for development.');
+                lockOverlay.classList.add(CSS_CLASSES.HIDDEN);
+                if (CONFIG.DEBUG) console.log('✅ Timelock bypassed for development.');
             }
         };
 
-        console.log('🔒 Valentine\'s Day Timelock Active');
-        console.log('Validating internet time and location...');
-        console.log('To bypass for development, run: window.bypassTimelock()');
+        if (CONFIG.DEBUG) {
+            console.log('🔒 Valentine\'s Day Timelock Active');
+            console.log('Validating internet time and location...');
+            console.log('To bypass for development, run: window.bypassTimelock()');
+        }
         
         /* ========================================
            END OF JAVASCRIPT
